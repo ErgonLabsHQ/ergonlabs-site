@@ -1,0 +1,971 @@
+---
+// Variation 6: six animated demos presented as engraved instrument plates.
+// Timeline engine: any element with data-t="<seconds>" gets the class "on" at that moment.
+import { aiPoints } from '../../site';
+
+const agent = [
+  { t: 0.4, k: 'read', text: 'Ticket 4812: customer asks for a refund on a duplicate charge.' },
+  { t: 1.3, k: 'lookup', text: 'Two charges of €49.00 found, 40 seconds apart.', ok: true },
+  { t: 2.2, k: 'policy', text: 'Duplicate charges can be refunded without approval up to €100.', ok: true },
+  { t: 3.1, k: 'check', text: 'The second charge is on a different card. The policy does not cover that.' },
+];
+const bug = [
+  { t: 0.5, k: 'Error', text: '500 on POST /checkout. 3.1% of requests since 14:02.' },
+  { t: 2.0, k: 'Cause', text: 'A retry after a payment timeout sent the charge twice. No idempotency key.' },
+  { t: 3.5, k: 'Fix', text: 'One key per order. A test written from the failing request. 212 of 212 pass.' },
+  { t: 5.0, k: 'Deployed', text: '14:41. Error rate back to 0.0%. Two affected customers refunded.' },
+];
+const sources = [
+  { name: 'Finance policy', where: 'section 4.2', ref: '1', used: true },
+  { name: 'Contractor handbook', where: 'page 11', ref: '2', used: true },
+  { name: 'Board minutes, March', where: 'restricted', ref: '', used: false },
+];
+const chat = [
+  { t: 0.4, who: 'c', text: 'My order arrived with a cracked screen.' },
+  { t: 1.5, who: 'a', text: 'Sorry about that. I can see order 20931, delivered yesterday. Would you like a replacement or a refund?' },
+  { t: 3.2, who: 'c', text: 'A replacement. But I am travelling from Friday.' },
+  { t: 4.6, who: 'a', text: 'A delivery date before Friday needs a person to confirm stock. I am passing you to the support team now.' },
+];
+const weeks = [
+  { d: '3 Mar', text: 'Login and one real screen' },
+  { d: '10 Mar', text: 'Orders load from the live API' },
+  { d: '17 Mar', text: 'Checkout works with test cards' },
+  { d: '24 Mar', text: 'First five users invited' },
+  { d: '31 Mar', text: 'Fixes from what they tripped on' },
+  { d: '7 Apr', text: 'Launch' },
+];
+const gauges = [
+  { id: 'pass', label: 'Pass rate', unit: '%', limit: 0.62, note: 'floor 95%' },
+  { id: 'cost', label: 'Cost per task', unit: '€', limit: 0.7, note: 'ceiling €0.06' },
+  { id: 'p95', label: 'Response, p95', unit: 's', limit: 0.72, note: 'ceiling 2.5 s' },
+];
+const ticks = Array.from({ length: 13 }, (_, i) => -90 + i * 15);
+---
+
+<div class="figs" data-demos>
+  <!-- agent -->
+  <figure class="fig" data-rv>
+    <div class="plate demo" data-demo>
+      <div class="pl-head">
+        <span class="pl-name">Agent run</span>
+        <span class="pl-status" data-status>starting</span>
+        <span class="ex">Example</span>
+        <button type="button" class="replay" data-replay>Replay</button>
+      </div>
+      <div class="pl-body log">
+        <span hidden data-t="0.4" data-say="working"></span>
+        {agent.map((r) => (
+          <p class="row" data-t={r.t}>
+            <span class="k">{r.k}</span>
+            <span>
+              {r.text}
+              {r.ok && <b class="ok">ok</b>}
+            </span>
+          </p>
+        ))}
+        <span hidden data-t="4.0" data-say="waiting for a person"></span>
+        <div class="row ask" data-t="4.0">
+          <span class="k">stop</span>
+          <span>
+            Not sure enough to act. Asking a person:
+            <q>Refund €49.00 to the card ending 0317?</q>
+            <span class="btns">
+              <i class="b yes">Approve</i>
+              <i class="b">Decline</i>
+            </span>
+          </span>
+        </div>
+        <span hidden data-t="5.9" data-cls=".ask|answered"></span>
+        <span hidden data-t="6.3" data-say="done"></span>
+        <p class="row" data-t="6.3">
+          <span class="k">refund</span>
+          <span>
+            Approved by finance. €49.00 refunded, customer emailed, full trail saved.
+            <b class="ok">ok</b>
+          </span>
+        </p>
+      </div>
+    </div>
+    <figcaption>
+      <h3>{aiPoints[2].title}</h3>
+      <p>{aiPoints[2].text}</p>
+    </figcaption>
+  </figure>
+
+  <!-- documents -->
+  <figure class="fig" data-rv>
+    <div class="plate demo" data-demo>
+      <div class="pl-head">
+        <span class="pl-name">Answer from documents</span>
+        <span class="ex">Example</span>
+        <button type="button" class="replay" data-replay>Replay</button>
+      </div>
+      <div class="pl-body docs">
+        <p class="ask-q" data-t="0.3">
+          <span class="k">question</span>
+          <span data-type>Can a contractor approve an invoice over €5,000?</span>
+        </p>
+        <p class="found" data-t="2.0">Searched 1,240 documents this person is allowed to read.</p>
+        <ul class="srcs">
+          {sources.map((s, i) => (
+            <li class:list={{ no: !s.used }} data-t={2.5 + i * 0.35}>
+              {s.ref && <sup>{s.ref}</sup>}
+              <b>{s.name}</b>
+              <span>{s.where}</span>
+            </li>
+          ))}
+        </ul>
+        <span hidden data-t="3.8" data-cls=".srcs|lit"></span>
+        <p class="ans" data-t="4.0">
+          <span class="k">answer</span>
+          <span data-type>
+            No. An invoice over €5,000 needs an employee with budget authority [1]. A contractor can prepare it but
+            cannot approve it [2].
+          </span>
+        </p>
+        <p class="found" data-t="7.6">Two sources cited. One skipped: no permission to read it.</p>
+      </div>
+    </div>
+    <figcaption>
+      <h3>{aiPoints[0].title}</h3>
+      <p>{aiPoints[0].text}</p>
+    </figcaption>
+  </figure>
+
+  <!-- bug -->
+  <figure class="fig" data-rv>
+    <div class="plate demo" data-demo>
+      <div class="pl-head">
+        <span class="pl-name">Incident, checkout</span>
+        <span class="ex">Example</span>
+        <button type="button" class="replay" data-replay>Replay</button>
+      </div>
+      <div class="pl-body bug">
+        <svg class="trace" viewBox="0 0 320 84" preserveAspectRatio="none" aria-hidden="true">
+          <path class="grid" d="M0 20.5H320M0 49.5H320M0 78.5H320" />
+          <path class="rise" data-t="0.4" pathLength="1" d="M0 78 L58 78 L76 75 L94 44 L112 24 L140 19 L176 21 L214 20" />
+          <path class="fall" data-t="5.0" pathLength="1" d="M214 20 L228 58 L242 75 L262 78 L320 78" />
+          <path class="mark" data-t="5.0" d="M214 6V82" />
+        </svg>
+        <p class="axis"><span>14:00</span><span>error rate</span><span>15:00</span></p>
+        {bug.map((r) => (
+          <p class="row" data-t={r.t}>
+            <span class="k">{r.k}</span>
+            <span>{r.text}</span>
+          </p>
+        ))}
+      </div>
+    </div>
+    <figcaption>
+      <h3>{aiPoints[1].title}</h3>
+      <p>{aiPoints[1].text}</p>
+    </figcaption>
+  </figure>
+
+  <!-- dashboard -->
+  <figure class="fig" data-rv>
+    <div class="plate demo" data-demo data-live>
+      <div class="pl-head">
+        <span class="pl-name">Running costs</span>
+        <span class="pl-status">live</span>
+        <span class="ex">Example</span>
+        <button type="button" class="replay" data-replay>Replay</button>
+      </div>
+      <div class="pl-body dash">
+        <div class="dials">
+          {gauges.map((g) => (
+            <div class="dial" data-gauge={g.id}>
+              <svg viewBox="0 0 120 70" aria-hidden="true">
+                <path class="arc" d="M12 60 A48 48 0 0 1 108 60" />
+                {ticks.map((a) => (
+                  <line class="tk" x1="60" y1="12" x2="60" y2={a % 45 === 0 ? 19 : 16} transform={`rotate(${a} 60 60)`} />
+                ))}
+                <line class="lim" x1="60" y1="8" x2="60" y2="22" transform={`rotate(${-90 + g.limit * 180} 60 60)`} />
+                <line class="needle" data-needle x1="60" y1="60" x2="60" y2="20" />
+                <circle class="hub" cx="60" cy="60" r="3.2" />
+              </svg>
+              <b data-val>&nbsp;</b>
+              <span>{g.label}</span>
+              <em>{g.note}</em>
+            </div>
+          ))}
+        </div>
+        <div class="strip">
+          <p><span>Tasks per minute</span><b data-tpm>&nbsp;</b></p>
+          <svg viewBox="0 0 300 46" preserveAspectRatio="none" aria-hidden="true"><polyline data-spark points="" /></svg>
+        </div>
+        <div class="route">
+          <p><span>Where the work went</span></p>
+          <div class="bar" data-route><i></i><i></i><i></i></div>
+          <p class="legend"><span>small model</span><span>large model</span><span>answered from cache</span></p>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      <h3>{aiPoints[3].title}</h3>
+      <p>{aiPoints[3].text}</p>
+    </figcaption>
+  </figure>
+
+  <!-- support -->
+  <figure class="fig" data-rv>
+    <div class="plate demo" data-demo>
+      <div class="pl-head">
+        <span class="pl-name">Support line</span>
+        <span class="pl-status" data-status>assistant</span>
+        <span class="ex">Example</span>
+        <button type="button" class="replay" data-replay>Replay</button>
+      </div>
+      <div class="pl-body chat">
+        <span hidden data-t="0.1" data-say="assistant"></span>
+        {chat.map((m) => (
+          <p class:list={['msg', m.who]} data-t={m.t}>
+            {m.text}
+          </p>
+        ))}
+        <span hidden data-t="6.0" data-say="with a person"></span>
+        <p class="handoff" data-t="6.0">Handed to a person. Summary, order and photos attached.</p>
+        <p class="msg h" data-t="7.3">Hello, I have the details in front of me. We can deliver on Thursday morning.</p>
+      </div>
+    </div>
+    <figcaption>
+      <h3>The hand-off carries its notes</h3>
+      <p>When a conversation goes to a person, the summary and the order go with it. The customer does not start again.</p>
+    </figcaption>
+  </figure>
+
+  <!-- weekly demos -->
+  <figure class="fig" data-rv>
+    <div class="plate demo" data-demo>
+      <div class="pl-head">
+        <span class="pl-name">A short build, week by week</span>
+        <span class="ex">Example</span>
+        <button type="button" class="replay" data-replay>Replay</button>
+      </div>
+      <div class="pl-body weeks">
+        <svg class="arc-line" viewBox="0 0 320 70" aria-hidden="true">
+          <path class="base" d="M10 58 Q160 -18 310 58" />
+          <path class="go" data-t="0.3" pathLength="1" d="M10 58 Q160 -18 310 58" />
+          {weeks.map((_, i) => {
+            const u = i / (weeks.length - 1);
+            const x = (1 - u) * (1 - u) * 10 + 2 * (1 - u) * u * 160 + u * u * 310;
+            const y = (1 - u) * (1 - u) * 58 + 2 * (1 - u) * u * -18 + u * u * 58;
+            return <circle class="wk" data-t={0.5 + i * 1.05} cx={x} cy={y} r="4" />;
+          })}
+        </svg>
+        <ul>
+          {weeks.map((w, i) => (
+            <li data-t={0.5 + i * 1.05}>
+              <span class="k">{w.d}</span>
+              <span>{w.text}</span>
+              <b class="ok">demo opened</b>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <figcaption>
+      <h3>Something to click every week</h3>
+      <p>Each week ends on a link you can open. This is roughly what the log of a six-week build looks like.</p>
+    </figcaption>
+  </figure>
+</div>
+
+<style is:global>
+  .v6 .figs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(36px, 4.5vw, 64px) clamp(24px, 3.4vw, 48px);
+  }
+  .v6 .fig {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .v6 .fig figcaption {
+    padding: 18px 6px 0 22px;
+    margin-left: 14px;
+    border-left: 1px solid rgba(217, 164, 65, 0.5);
+    margin-top: 16px;
+  }
+  .v6 .fig figcaption h3 {
+    font: italic 400 21px/1.25 'Libre Caslon Text', serif;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .v6 .fig figcaption p {
+    color: var(--dim);
+    font-size: 15.5px;
+    max-width: 52ch;
+  }
+  .v6 .plate {
+    position: relative;
+    flex: 1;
+    border: 1px solid rgba(241, 231, 207, 0.3);
+    background: linear-gradient(180deg, rgba(14, 21, 44, 0.94), rgba(9, 14, 30, 0.94));
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+  }
+  .v6 .plate::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid rgba(241, 231, 207, 0.12);
+    pointer-events: none;
+  }
+  .v6 .pl-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px 13px;
+    margin: 0 6px;
+    border-bottom: 1px solid rgba(241, 231, 207, 0.14);
+    font: 500 11px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .v6 .pl-name {
+    color: var(--gold);
+    margin-right: auto;
+  }
+  .v6 .pl-status {
+    color: var(--dim);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .v6 .pl-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: v6-blink 1.4s ease-in-out infinite;
+  }
+  .v6 .ex {
+    padding: 4px 7px;
+    border: 1px solid rgba(241, 231, 207, 0.3);
+    color: var(--dim);
+    font-size: 10px;
+  }
+  .v6 .replay {
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: var(--cream);
+    background: none;
+    border: 0;
+    border-bottom: 1px solid rgba(241, 231, 207, 0.4);
+    padding: 3px 0;
+    cursor: pointer;
+  }
+  .v6 .replay:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+  .v6 .pl-body {
+    padding: 18px 26px 26px;
+    min-height: 300px;
+    font: 400 13px/1.55 'IBM Plex Mono', monospace;
+    color: rgba(241, 231, 207, 0.88);
+  }
+  .v6 .demo .k {
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+  .v6 .demo .row,
+  .v6 .demo .ask-q,
+  .v6 .demo .ans {
+    display: grid;
+    grid-template-columns: 78px 1fr;
+    gap: 12px;
+    padding: 7px 0;
+    border-bottom: 1px dotted rgba(241, 231, 207, 0.13);
+  }
+  .v6 .demo .ok {
+    font-weight: 500;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #a9c39a;
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+  /* timeline states: only hidden once the script has armed the demo */
+  .v6 .demo.armed [data-t]:not([hidden]) {
+    opacity: 0;
+    transform: translateY(7px);
+    transition: opacity 0.45s, transform 0.45s;
+  }
+  .v6 .demo.armed [data-t].on {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* agent */
+  .v6 .demo .ask {
+    border: 1px solid rgba(217, 164, 65, 0.55);
+    background: rgba(217, 164, 65, 0.07);
+    padding: 10px 12px;
+    margin: 8px -12px;
+  }
+  .v6 .demo .ask q {
+    display: block;
+    font: italic 400 17px/1.35 'Libre Caslon Text', serif;
+    color: var(--cream);
+    margin: 6px 0 10px;
+  }
+  .v6 .demo .btns {
+    display: flex;
+    gap: 8px;
+  }
+  .v6 .demo .b {
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 11px;
+    border: 1px solid rgba(241, 231, 207, 0.35);
+    transition: background 0.25s, color 0.25s, opacity 0.25s;
+  }
+  .v6 .demo .ask.answered .b {
+    opacity: 0.35;
+  }
+  .v6 .demo .ask.answered .b.yes {
+    opacity: 1;
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+  }
+
+  /* documents */
+  .v6 .docs .found {
+    color: var(--dim);
+    font-size: 12px;
+    padding: 9px 0 2px;
+  }
+  .v6 .docs .srcs {
+    list-style: none;
+    margin: 8px 0 6px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .v6 .docs .srcs li {
+    position: relative;
+    border: 1px solid rgba(241, 231, 207, 0.2);
+    padding: 10px 10px 9px;
+    font-size: 11.5px;
+    line-height: 1.35;
+  }
+  .v6 .docs .srcs b {
+    display: block;
+    font: 500 13.5px/1.25 'Hanken Grotesk', sans-serif;
+    color: var(--cream);
+  }
+  .v6 .docs .srcs span {
+    color: var(--dim);
+  }
+  .v6 .docs .srcs sup {
+    position: absolute;
+    right: 7px;
+    top: 5px;
+    color: var(--gold);
+    font-size: 10.5px;
+  }
+  .v6 .docs .srcs li {
+    transition: opacity 0.45s, transform 0.45s, border-color 0.4s, background 0.4s;
+  }
+  .v6 .docs .srcs.lit li:not(.no) {
+    border-color: var(--gold);
+    background: rgba(217, 164, 65, 0.08);
+  }
+  .v6 .docs .srcs.lit li.no {
+    border-style: dashed;
+    border-color: rgba(163, 58, 51, 0.8);
+  }
+  .v6 .docs .srcs.lit li.no span {
+    color: #d0766c;
+  }
+  .v6 .docs .ans {
+    border-bottom: 0;
+    font: 400 16px/1.5 'Hanken Grotesk', sans-serif;
+    color: var(--cream);
+    min-height: 5.6em;
+  }
+
+  /* bug */
+  .v6 .bug .trace {
+    width: 100%;
+    height: 92px;
+    display: block;
+    overflow: visible;
+  }
+  .v6 .bug .trace path {
+    fill: none;
+  }
+  .v6 .bug .grid,
+  .v6 .bug .mark {
+    vector-effect: non-scaling-stroke;
+  }
+  .v6 .bug .grid {
+    stroke: rgba(241, 231, 207, 0.12);
+    stroke-dasharray: 2 4;
+  }
+  .v6 .bug .rise,
+  .v6 .bug .fall {
+    stroke-width: 1.6;
+    stroke-dasharray: 1;
+  }
+  .v6 .bug .rise {
+    stroke: #c9554a;
+  }
+  .v6 .bug .fall {
+    stroke: var(--gold);
+  }
+  .v6 .bug .mark {
+    stroke: var(--gold);
+    stroke-dasharray: 3 3;
+  }
+  .v6 .demo.armed .bug .rise,
+  .v6 .demo.armed .bug .fall {
+    opacity: 1;
+    transform: none;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1.5s ease-in-out;
+  }
+  .v6 .demo.armed .bug .rise.on,
+  .v6 .demo.armed .bug .fall.on {
+    stroke-dashoffset: 0;
+  }
+  .v6 .bug .axis {
+    display: flex;
+    justify-content: space-between;
+    color: var(--dim);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 0 8px;
+  }
+
+  /* dashboard */
+  .v6 .dash .dials {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    text-align: center;
+  }
+  .v6 .dial svg {
+    width: 100%;
+    max-width: 150px;
+    display: block;
+    margin: 0 auto;
+  }
+  .v6 .dial .arc {
+    fill: none;
+    stroke: rgba(241, 231, 207, 0.5);
+    stroke-width: 1;
+  }
+  .v6 .dial .tk {
+    stroke: rgba(241, 231, 207, 0.5);
+    stroke-width: 0.8;
+  }
+  .v6 .dial .lim {
+    stroke: #c9554a;
+    stroke-width: 1.6;
+  }
+  .v6 .dial .needle {
+    stroke: var(--gold);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    transform-origin: 60px 60px;
+    transform: rotate(-90deg);
+    transition: transform 0.9s cubic-bezier(0.3, 1.5, 0.5, 1);
+  }
+  .v6 .dial .hub {
+    fill: var(--navy);
+    stroke: var(--gold);
+  }
+  .v6 .dial b {
+    display: block;
+    font: 400 26px/1.1 'Libre Caslon Display', serif;
+    color: var(--cream);
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .v6 .dial span {
+    display: block;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 5px;
+  }
+  .v6 .dial em {
+    font-style: normal;
+    font-size: 10.5px;
+    color: var(--dim);
+  }
+  .v6 .dash .strip,
+  .v6 .dash .route {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dotted rgba(241, 231, 207, 0.18);
+  }
+  .v6 .dash p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .v6 .dash p b {
+    color: var(--cream);
+    font-weight: 500;
+  }
+  .v6 .dash .strip svg {
+    width: 100%;
+    height: 46px;
+    display: block;
+    margin-top: 6px;
+  }
+  .v6 .dash polyline {
+    fill: none;
+    stroke: var(--cream);
+    stroke-width: 1.2;
+    vector-effect: non-scaling-stroke;
+  }
+  .v6 .dash .bar {
+    display: flex;
+    height: 10px;
+    margin: 8px 0 7px;
+    border: 1px solid rgba(241, 231, 207, 0.35);
+  }
+  .v6 .dash .bar i {
+    display: block;
+    width: 33%;
+    transition: width 0.9s;
+    background: var(--gold);
+  }
+  .v6 .dash .bar i:nth-child(2) {
+    background: repeating-linear-gradient(45deg, var(--cream) 0 1px, transparent 1px 4px);
+  }
+  .v6 .dash .bar i:nth-child(3) {
+    background: repeating-linear-gradient(90deg, rgba(241, 231, 207, 0.6) 0 1px, transparent 1px 3px);
+  }
+  .v6 .dash .legend {
+    justify-content: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    font-size: 11.5px;
+  }
+  .v6 .dash .legend span::before {
+    content: '';
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 6px;
+    background: var(--gold);
+    vertical-align: -1px;
+  }
+  .v6 .dash .legend span:nth-child(2)::before {
+    background: repeating-linear-gradient(45deg, var(--cream) 0 1px, transparent 1px 3px);
+    outline: 1px solid rgba(241, 231, 207, 0.4);
+  }
+  .v6 .dash .legend span:nth-child(3)::before {
+    background: repeating-linear-gradient(90deg, rgba(241, 231, 207, 0.7) 0 1px, transparent 1px 3px);
+    outline: 1px solid rgba(241, 231, 207, 0.4);
+  }
+
+  /* chat */
+  .v6 .chat {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font: 400 14.5px/1.45 'Hanken Grotesk', sans-serif;
+  }
+  .v6 .chat .msg {
+    max-width: 82%;
+    padding: 9px 13px;
+    border: 1px solid rgba(241, 231, 207, 0.22);
+    position: relative;
+  }
+  .v6 .chat .msg::before {
+    display: block;
+    font: 500 10px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 5px;
+  }
+  .v6 .chat .c {
+    align-self: flex-end;
+    background: rgba(241, 231, 207, 0.07);
+  }
+  .v6 .chat .c::before {
+    content: 'Customer';
+  }
+  .v6 .chat .a::before {
+    content: 'Assistant';
+    color: var(--gold);
+  }
+  .v6 .chat .h {
+    border-color: var(--gold);
+  }
+  .v6 .chat .h::before {
+    content: 'Support team';
+    color: var(--gold);
+  }
+  .v6 .chat .handoff {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font: 500 10.5px/1.3 'IBM Plex Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 4px 0;
+  }
+  .v6 .chat .handoff::before,
+  .v6 .chat .handoff::after {
+    content: '';
+    flex: 1;
+    min-width: 12px;
+    border-top: 1px dashed rgba(217, 164, 65, 0.6);
+  }
+
+  /* weeks */
+  .v6 .weeks .arc-line {
+    width: 100%;
+    display: block;
+    overflow: visible;
+    margin-bottom: 6px;
+  }
+  .v6 .weeks .arc-line path {
+    fill: none;
+  }
+  .v6 .weeks .base {
+    stroke: rgba(241, 231, 207, 0.22);
+    stroke-dasharray: 2 4;
+  }
+  .v6 .weeks .go {
+    stroke: var(--gold);
+    stroke-width: 1.3;
+    stroke-dasharray: 1;
+  }
+  .v6 .demo.armed .weeks .go {
+    opacity: 1;
+    transform: none;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 5.6s linear;
+  }
+  .v6 .demo.armed .weeks .go.on {
+    stroke-dashoffset: 0;
+  }
+  .v6 .weeks .wk {
+    fill: var(--navy);
+    stroke: var(--cream);
+  }
+  .v6 .demo.armed .weeks .wk {
+    opacity: 1;
+    transform: none;
+    transition: fill 0.4s, stroke 0.4s;
+  }
+  .v6 .demo.armed .weeks .wk.on,
+  .v6 .demo:not(.armed) .weeks .wk {
+    fill: var(--gold);
+    stroke: var(--gold);
+  }
+  .v6 .weeks ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .v6 .weeks li {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px dotted rgba(241, 231, 207, 0.13);
+  }
+  @keyframes v6-blink {
+    50% {
+      opacity: 0.25;
+    }
+  }
+  @media (max-width: 900px) {
+    .v6 .figs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .v6 .pl-body {
+      padding: 14px 18px 20px;
+      font-size: 12.5px;
+      min-height: 0;
+    }
+    .v6 .pl-head {
+      padding: 14px 12px 11px;
+      gap: 9px;
+      flex-wrap: wrap;
+    }
+    .v6 .demo .row,
+    .v6 .demo .ask-q,
+    .v6 .demo .ans {
+      grid-template-columns: 62px 1fr;
+      gap: 8px;
+    }
+    .v6 .docs .srcs {
+      grid-template-columns: 1fr;
+    }
+    .v6 .weeks li {
+      grid-template-columns: 52px 1fr;
+    }
+    .v6 .weeks li .ok {
+      display: none;
+    }
+    .v6 .dial b {
+      font-size: 21px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v6 .pl-status::before {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const demos = [...document.querySelectorAll<HTMLElement>('.v6 [data-demo]')];
+
+  type State = { timers: number[]; live?: number; played: boolean };
+  const states = new Map<HTMLElement, State>();
+
+  const typeInto = (el: HTMLElement, st: State) => {
+    const full = el.dataset.full || '';
+    let i = 0;
+    const step = () => {
+      i += 2;
+      el.textContent = full.slice(0, i);
+      if (i < full.length) st.timers.push(window.setTimeout(step, 28));
+    };
+    step();
+  };
+
+  // ---- the live dashboard: needles wander around values inside their limits
+  const live = (demo: HTMLElement, st: State) => {
+    const hist: number[] = Array.from({ length: 44 }, (_, i) => 38 + Math.sin(i / 3) * 6);
+    const g = (id: string) => demo.querySelector<HTMLElement>(`[data-gauge="${id}"]`)!;
+    const set = (id: string, frac: number, text: string) => {
+      const el = g(id);
+      el.querySelector<SVGElement>('[data-needle]')!.style.transform = `rotate(${-90 + frac * 180}deg)`;
+      el.querySelector<HTMLElement>('[data-val]')!.textContent = text;
+    };
+    const spark = demo.querySelector<SVGPolylineElement>('[data-spark]')!;
+    const tpm = demo.querySelector<HTMLElement>('[data-tpm]')!;
+    const bars = [...demo.querySelectorAll<HTMLElement>('[data-route] i')];
+    let n = 0;
+    const tick = () => {
+      n++;
+      const r = () => Math.random() - 0.5;
+      const pass = 96.4 + r() * 1.6;
+      const cost = 0.041 + r() * 0.012;
+      const p95 = 1.8 + r() * 0.5;
+      set('pass', 0.62 + (pass - 95) / 13, pass.toFixed(1) + '%');
+      set('cost', (cost / 0.06) * 0.7, '€' + cost.toFixed(3));
+      set('p95', (p95 / 2.5) * 0.72, p95.toFixed(1) + ' s');
+      hist.push(Math.max(14, Math.min(60, hist[hist.length - 1] + r() * 12 + (40 - hist[hist.length - 1]) * 0.15)));
+      hist.shift();
+      spark.setAttribute('points', hist.map((v, i) => `${(i / (hist.length - 1)) * 300},${46 - (v / 64) * 44}`).join(' '));
+      tpm.textContent = String(Math.round(hist[hist.length - 1]));
+      const small = 68 + Math.sin(n / 3) * 5;
+      const cache = 9 + Math.cos(n / 4) * 3;
+      bars[0].style.width = small + '%';
+      bars[1].style.width = 100 - small - cache + '%';
+      bars[2].style.width = cache + '%';
+    };
+    tick();
+    if (!reduced) st.live = window.setInterval(tick, 1100);
+  };
+
+  const reset = (demo: HTMLElement) => {
+    const st = states.get(demo)!;
+    st.timers.forEach(clearTimeout);
+    st.timers = [];
+    if (st.live) clearInterval(st.live);
+    st.live = undefined;
+    demo.querySelectorAll('[data-t]').forEach((el) => el.classList.remove('on'));
+    demo.querySelectorAll<HTMLElement>('[data-cls]').forEach((el) => {
+      const [sel, cls] = el.dataset.cls!.split('|');
+      demo.querySelector(sel)?.classList.remove(cls);
+    });
+    demo.querySelectorAll<HTMLElement>('[data-type]').forEach((el) => (el.textContent = ''));
+  };
+
+  const play = (demo: HTMLElement) => {
+    const st = states.get(demo)!;
+    reset(demo);
+    st.played = true;
+    if (demo.hasAttribute('data-live')) live(demo, st);
+    const status = demo.querySelector<HTMLElement>('[data-status]');
+    demo.querySelectorAll<HTMLElement>('[data-t]').forEach((el) => {
+      st.timers.push(
+        window.setTimeout(() => {
+          el.classList.add('on');
+          if (el.dataset.say && status) status.textContent = el.dataset.say;
+          if (el.dataset.cls) {
+            const [sel, cls] = el.dataset.cls.split('|');
+            demo.querySelector(sel)?.classList.add(cls);
+          }
+          el.querySelectorAll<HTMLElement>('[data-type]').forEach((ty) => typeInto(ty, st));
+        }, Number(el.dataset.t) * 1000),
+      );
+    });
+  };
+
+  demos.forEach((demo) => {
+    const st: State = { timers: [], played: false };
+    states.set(demo, st);
+    demo.querySelectorAll<HTMLElement>('[data-type]').forEach((el) => (el.dataset.full = el.textContent!.replace(/\s+/g, ' ').trim()));
+    if (reduced) {
+      // final state, no playback
+      demo.querySelectorAll<HTMLElement>('[data-cls]').forEach((el) => {
+        const [sel, cls] = el.dataset.cls!.split('|');
+        demo.querySelector(sel)?.classList.add(cls);
+      });
+      const says = demo.querySelectorAll<HTMLElement>('[data-say]');
+      const status = demo.querySelector<HTMLElement>('[data-status]');
+      if (status && says.length) status.textContent = says[says.length - 1].dataset.say!;
+      if (demo.hasAttribute('data-live')) live(demo, st);
+      demo.querySelector<HTMLElement>('[data-replay]')!.hidden = true;
+      return;
+    }
+    demo.classList.add('armed');
+    demo.querySelector('[data-replay]')!.addEventListener('click', () => play(demo));
+  });
+
+  if (!reduced) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const demo = e.target as HTMLElement;
+          const st = states.get(demo)!;
+          if (e.isIntersecting && !st.played) play(demo);
+          // the live panel stops ticking while it is off screen
+          if (!e.isIntersecting && st.live) {
+            clearInterval(st.live);
+            st.live = undefined;
+            st.played = !demo.hasAttribute('data-live');
+          }
+        }
+      },
+      { threshold: 0.35 },
+    );
+    demos.forEach((d) => io.observe(d));
+  }
+</script>

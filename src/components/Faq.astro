@@ -1,0 +1,106 @@
+---
+import { faqs } from '../site';
+---
+
+<section class="section faq" id="faq">
+  <div class="wrap layout">
+    <div class="head">
+      <p class="tag">Questions</p>
+      <h2 class="h-lg" data-reveal>Things people ask before they sign.</h2>
+    </div>
+    <div class="list">
+      {faqs.map((f) => (
+        <details data-reveal>
+          <summary>
+            <span>{f.q}</span>
+            <i aria-hidden="true"></i>
+          </summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding-top: 0;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: start;
+  }
+  .head {
+    display: grid;
+    gap: 20px;
+  }
+  details {
+    border-bottom: 2px solid var(--ink);
+  }
+  details:first-child {
+    border-top: 2px solid var(--ink);
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 20px 0;
+    font-family: var(--display);
+    font-size: clamp(19px, 1.7vw, 24px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover span {
+    color: var(--blue);
+  }
+  summary i {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    background: var(--sun);
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    transition: transform 0.25s var(--ease), background 0.2s;
+  }
+  summary i::before,
+  summary i::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 2.5px;
+    background: var(--ink);
+    transform: translate(-50%, -50%);
+  }
+  summary i::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  details[open] summary i {
+    transform: rotate(45deg);
+    background: var(--mint);
+  }
+  details p {
+    color: var(--muted);
+    max-width: 60ch;
+    padding: 0 50px 24px 0;
+  }
+  @media (max-width: 860px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    details p {
+      padding-right: 0;
+    }
+  }
+</style>

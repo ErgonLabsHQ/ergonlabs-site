@@ -1,0 +1,230 @@
+---
+import { engagements, principles } from '../site';
+const colours = ['var(--sun)', 'var(--blue)', 'var(--mint)', 'var(--coral)'];
+---
+
+<section class="section" id="engagements">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="tag">Working together</p>
+      <h2 class="h-xl" data-reveal>Four ways to work with us.</h2>
+      <p class="lede" data-reveal>
+        All four start the same way: a free call, then a written quote. You know what it costs before you owe us
+        anything.
+      </p>
+    </div>
+
+    <ul class="plans">
+      {engagements.map((e, i) => (
+        <li data-reveal style={`--i:${i}`}>
+          <a class="plan panel" href="#contact" style={`--c:${colours[i % colours.length]}`}>
+            <span class="band">
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              {e.featured && <span class="most">Most common</span>}
+            </span>
+            <h3>{e.name}</h3>
+            <p class="for">{e.for}</p>
+            <p class="text">{e.text}</p>
+            <ul>
+              {e.points.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+            <span class="go">Ask about this <span aria-hidden="true">→</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="rules" id="why">
+      <div class="rules-head">
+        <p class="tag">House rules</p>
+        <h2 class="h-lg" data-reveal>Five things we do every time.</h2>
+      </div>
+      <ol>
+        {principles.map((p, i) => (
+          <li data-reveal>
+            <span class="rn">{i + 1}</span>
+            <div>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .plans {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .plans > li {
+    display: flex;
+  }
+  .plan {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .plan:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--ink);
+  }
+  .band {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 18px 11px;
+    background: var(--c);
+    border-bottom: 2px solid var(--ink);
+    font-family: var(--pixel);
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  .most {
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    padding: 1px 7px 2px;
+    font-size: 10.5px;
+  }
+  .plan h3 {
+    font-size: clamp(40px, 3.8vw, 56px);
+    padding: 22px 20px 0;
+  }
+  .for {
+    padding: 8px 20px 0;
+    font-weight: 700;
+    font-size: 15.5px;
+    color: var(--blue);
+  }
+  .text {
+    padding: 12px 20px 0;
+    color: var(--muted);
+  }
+  .plan ul {
+    list-style: none;
+    margin: auto 20px 0;
+    padding: 16px 0 0;
+    display: grid;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .plan ul li::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 10px;
+    background: var(--c);
+    border: 1.5px solid var(--ink);
+  }
+  .go {
+    margin: 20px;
+    font-weight: 700;
+  }
+  .go span {
+    display: inline-block;
+    transition: transform 0.2s var(--ease);
+  }
+  .plan:hover .go span {
+    transform: translateX(5px);
+  }
+
+  .rules {
+    margin-top: clamp(80px, 10vw, 140px);
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: start;
+  }
+  .rules-head {
+    display: grid;
+    gap: 20px;
+    position: sticky;
+    top: 100px;
+  }
+  .rules ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .rules li {
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    gap: 18px;
+    align-items: start;
+    padding: 20px 22px 22px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+  }
+  .rn {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    font-family: var(--pixel);
+    font-size: 22px;
+    background: var(--sun);
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .rules li:nth-child(2n) .rn {
+    background: var(--mint);
+  }
+  .rules li:nth-child(3n) .rn {
+    background: var(--coral);
+  }
+  .rules h3 {
+    font-size: clamp(22px, 2vw, 28px);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .rules p {
+    color: var(--muted);
+    max-width: 54ch;
+  }
+  @media (max-width: 1100px) {
+    .plans {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 860px) {
+    .rules {
+      grid-template-columns: 1fr;
+    }
+    .rules-head {
+      position: static;
+    }
+  }
+  @media (max-width: 600px) {
+    .plans {
+      grid-template-columns: 1fr;
+    }
+    .rules li {
+      grid-template-columns: 44px 1fr;
+      gap: 14px;
+      padding: 16px;
+    }
+    .rn {
+      width: 44px;
+      height: 44px;
+      font-size: 18px;
+    }
+  }
+</style>

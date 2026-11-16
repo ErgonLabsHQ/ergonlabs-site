@@ -1,0 +1,423 @@
+---
+// Variation 3, "Gallery": warm black, a large serif headline, and interface cards floating over
+// a slow-moving painted panel (generated in a shader, so there is no image to load).
+import Variant from '../../layouts/Variant.astro';
+import VariantSections from '../../components/VariantSections.astro';
+import VariantLog from '../../components/VariantLog.astro';
+import { site } from '../../site';
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=DM+Sans:opsz,wght@9..40,400..600&family=DM+Mono&display=swap';
+---
+
+<Variant n={3} fonts={fonts}>
+  <header class="top">
+    <a class="logo" href="/v/3">{site.name}</a>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#work">AI work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="cta" href="#contact">Start a project</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="words">
+        <p class="eyebrow">{site.tagline}, {site.location}</p>
+        <h1>We build software that keeps working <em>after launch.</em></h1>
+        <p class="sub">
+          A small studio of senior engineers and AI specialists, with more than ten years of production software behind
+          us.
+        </p>
+        <div class="actions">
+          <a class="cta" href="#contact">Start a project</a>
+          <a class="text-link" href="#services">See what we do</a>
+        </div>
+      </div>
+      <div class="art">
+        <canvas data-paint aria-hidden="true"></canvas>
+        <VariantLog />
+      </div>
+    </section>
+
+    <section class="work" id="work">
+      <p class="v-label">AI work</p>
+      <h2>The demo is the easy part. <em>We do the other 90%.</em></h2>
+      <p>
+        Getting a model to look clever in a meeting takes an afternoon. Getting it to be right on a Tuesday, when the
+        input is a crooked scan and the API is slow, is ordinary engineering.
+      </p>
+    </section>
+
+    <VariantSections />
+  </main>
+</Variant>
+
+<style is:global>
+  .v3 {
+    --bg: #0d0c0a;
+    --fg: #efe8da;
+    --muted: #9c9588;
+    --line: rgba(239, 232, 218, 0.14);
+    --gold: #e2b25a;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .v3 h1,
+  .v3 h2,
+  .v3 h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  .v3 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .v3 .top {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(20px, 4vw, 56px);
+    background: linear-gradient(var(--bg) 30%, transparent);
+  }
+  .v3 .logo {
+    font: 400 24px/1 'Fraunces', serif;
+    letter-spacing: -0.02em;
+  }
+  .v3 .top nav {
+    display: flex;
+    gap: 32px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  .v3 .top nav a:hover {
+    color: var(--fg);
+  }
+  .v3 .cta {
+    display: inline-flex;
+    padding: 11px 20px;
+    border-radius: 999px;
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 500;
+    font-size: 15px;
+    transition: background 0.2s;
+  }
+  .v3 .cta:hover {
+    background: var(--gold);
+  }
+  .v3 .text-link {
+    align-self: center;
+    border-bottom: 1px solid var(--muted);
+    padding-bottom: 2px;
+  }
+  .v3 .hero {
+    min-height: 100svh;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(28px, 4vw, 64px);
+    align-items: center;
+    padding: 100px clamp(20px, 4vw, 56px) 60px;
+  }
+  .v3 .eyebrow,
+  .v3 .v-label {
+    font: 400 12.5px/1 'DM Mono', monospace;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .v3 h1 {
+    font-size: clamp(44px, 6.6vw, 112px);
+    margin: 26px 0 28px;
+  }
+  .v3 .sub {
+    color: var(--muted);
+    max-width: 42ch;
+    font-size: clamp(17px, 1.4vw, 20px);
+    margin-bottom: 32px;
+  }
+  .v3 .actions {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .v3 .art {
+    position: relative;
+    height: min(76vh, 680px);
+    min-height: 460px;
+    border-radius: 28px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    padding: clamp(18px, 3vw, 44px);
+  }
+  .v3 .art canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .v3 .v-log {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    padding: 6px 20px 18px;
+    border-radius: 18px;
+    background: rgba(250, 245, 235, 0.82);
+    backdrop-filter: blur(18px) saturate(1.3);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    color: #1d1a15;
+    font: 400 13px/1.5 'DM Mono', monospace;
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.55);
+  }
+  .v3 .v-log-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(29, 26, 21, 0.14);
+    margin-bottom: 8px;
+    font-size: 11.5px;
+    color: #6d6558;
+  }
+  .v3 .v-line {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    gap: 10px;
+    padding: 5px 0;
+  }
+  .v3 .v-k {
+    color: #8a8172;
+  }
+  .v3 .v-line em {
+    font-style: normal;
+    color: #1f7a48;
+  }
+  .v3 .v-line.warn {
+    color: #a3360f;
+  }
+  .v3 .work {
+    padding: clamp(70px, 10vw, 150px) clamp(20px, 4vw, 56px);
+    border-top: 1px solid var(--line);
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .v3 .work h2 {
+    font-size: clamp(36px, 5.4vw, 84px);
+    margin: 24px 0 28px;
+  }
+  .v3 .work > p:last-child {
+    color: var(--muted);
+    max-width: 52ch;
+    margin: 0 auto;
+    font-size: clamp(17px, 1.4vw, 20px);
+  }
+  .v3 .v-facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    padding: 0 clamp(20px, 4vw, 56px);
+  }
+  .v3 .v-facts div {
+    padding: 26px 24px 30px;
+    border-radius: 20px;
+    background: rgba(239, 232, 218, 0.05);
+    border: 1px solid var(--line);
+  }
+  .v3 .v-facts b {
+    display: block;
+    font: 300 clamp(30px, 3.4vw, 50px) / 1 'Fraunces', serif;
+    letter-spacing: -0.03em;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .v3 .v-facts span {
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+  .v3 .v-services {
+    padding: clamp(70px, 10vw, 150px) clamp(20px, 4vw, 56px) 0;
+  }
+  .v3 .v-services h2 {
+    font-size: clamp(36px, 5vw, 78px);
+    margin: 24px 0 clamp(36px, 5vw, 64px);
+    max-width: 16ch;
+  }
+  .v3 .v-services ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(28px, 5vw, 80px);
+  }
+  .v3 .v-services li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    padding: 26px 0 28px;
+    border-top: 1px solid var(--line);
+  }
+  .v3 .v-num {
+    font: 400 12px/1 'DM Mono', monospace;
+    color: var(--gold);
+    padding-top: 12px;
+  }
+  .v3 .v-services h3 {
+    font-size: clamp(26px, 2.8vw, 40px);
+    margin-bottom: 8px;
+    transition: color 0.2s;
+  }
+  .v3 .v-services li:hover h3 {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .v3 .v-services li p {
+    grid-column: 2;
+    color: var(--muted);
+    max-width: 44ch;
+  }
+  .v3 .v-cta {
+    text-align: center;
+    padding: clamp(90px, 12vw, 180px) 24px clamp(120px, 14vw, 200px);
+  }
+  .v3 .v-cta h2 {
+    font-size: clamp(42px, 7vw, 120px);
+    max-width: 12ch;
+    margin: 0 auto 40px;
+  }
+  .v3 .v-btn {
+    display: inline-flex;
+    padding: 16px 30px;
+    border-radius: 999px;
+    background: var(--gold);
+    color: var(--bg);
+    font-weight: 500;
+    font-size: 18px;
+  }
+  @media (max-width: 900px) {
+    .v3 .top nav {
+      display: none;
+    }
+    .v3 .hero {
+      grid-template-columns: 1fr;
+    }
+    .v3 .art {
+      height: auto;
+    }
+    .v3 .v-facts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .v3 .v-services ul {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Slow domain-warped noise mapped onto a small paint palette, with a little canvas grain.
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-paint]')!;
+  const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (gl) {
+    const vert = `attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
+    const frag = `
+      precision highp float;
+      uniform vec2 u_res; uniform float u_time; uniform vec2 u_mouse;
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float noise(vec2 p){
+        vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
+        return mix(mix(hash(i), hash(i+vec2(1.,0.)), f.x), mix(hash(i+vec2(0.,1.)), hash(i+vec2(1.,1.)), f.x), f.y);
+      }
+      float fbm(vec2 p){
+        float v = 0.0, a = 0.5; mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+        for(int i=0;i<5;i++){ v += a*noise(p); p = m*p; a *= 0.5; }
+        return v;
+      }
+      void main(){
+        vec2 uv = gl_FragCoord.xy / u_res;
+        vec2 p = (gl_FragCoord.xy - 0.5*u_res) / u_res.y;
+        float t = u_time * 0.035;
+        p += (u_mouse - 0.5) * 0.12;
+        // stretch the field sideways so it reads as brush strokes
+        vec2 s = p * vec2(1.1, 2.3);
+        vec2 q = vec2(fbm(s + t), fbm(s + vec2(5.2, 1.3) - t));
+        vec2 r = vec2(fbm(s + 3.2*q + vec2(1.7, 9.2) + t), fbm(s + 3.2*q + vec2(8.3, 2.8)));
+        float f = fbm(s + 3.0*r);
+
+        vec3 night = vec3(0.07, 0.10, 0.20);
+        vec3 teal  = vec3(0.10, 0.36, 0.38);
+        vec3 rust  = vec3(0.72, 0.22, 0.12);
+        vec3 ochre = vec3(0.90, 0.66, 0.26);
+        vec3 cream = vec3(0.96, 0.90, 0.78);
+
+        vec3 col = mix(night, teal, smoothstep(0.20, 0.55, f));
+        col = mix(col, rust, smoothstep(0.42, 0.72, r.x) * 0.9);
+        col = mix(col, ochre, smoothstep(0.50, 0.80, q.y * f * 1.9));
+        col = mix(col, cream, smoothstep(0.66, 0.92, f * r.y * 2.1) * 0.85);
+        // bristle texture along the stroke direction, then grain
+        col *= 0.93 + 0.07 * noise(vec2(gl_FragCoord.x * 0.9, gl_FragCoord.y * 0.06) + r * 40.0);
+        col += (hash(gl_FragCoord.xy + u_time) - 0.5) * 0.035;
+        col *= mix(0.72, 1.0, smoothstep(0.0, 0.5, uv.y));
+        gl_FragColor = vec4(col, 1.0);
+      }`;
+    const compile = (type: number, src: string) => {
+      const sh = gl.createShader(type)!;
+      gl.shaderSource(sh, src);
+      gl.compileShader(sh);
+      return sh;
+    };
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, vert));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, frag));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'p');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const uRes = gl.getUniformLocation(prog, 'u_res');
+    const uTime = gl.getUniformLocation(prog, 'u_time');
+    const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+    const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.floor(canvas.clientWidth * dpr);
+      canvas.height = Math.floor(canvas.clientHeight * dpr);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
+    const draw = (now: number) => {
+      mouse.x += (mouse.tx - mouse.x) * 0.03;
+      mouse.y += (mouse.ty - mouse.y) * 0.03;
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, now / 1000 + 30);
+      gl.uniform2f(uMouse, mouse.x, mouse.y);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if (!reduced) requestAnimationFrame(draw);
+    };
+    resize();
+    window.addEventListener('resize', () => {
+      resize();
+      if (reduced) draw(0);
+    });
+    window.addEventListener('pointermove', (e) => {
+      mouse.tx = e.clientX / window.innerWidth;
+      mouse.ty = 1 - e.clientY / window.innerHeight;
+    });
+    requestAnimationFrame(draw);
+  } else {
+    canvas.style.background = 'linear-gradient(140deg, #1a3b4a, #b83a1f 55%, #e6a942)';
+  }
+</script>

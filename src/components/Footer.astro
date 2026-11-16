@@ -1,0 +1,108 @@
+---
+import { site, nav } from '../site';
+const year = new Date().getFullYear();
+---
+
+<footer class="foot">
+  <div class="wrap top">
+    <p class="line">
+      {site.tagline}.<br />
+      <span>{site.location}, and wherever the client is.</span>
+    </p>
+    <nav aria-label="Footer">
+      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+    </nav>
+    <nav aria-label="Elsewhere">
+      {site.socials.map((s) => <a href={s.href}>{s.label}</a>)}
+      <a href={`mailto:${site.email}`}>Email</a>
+    </nav>
+  </div>
+  <div class="mark" aria-hidden="true">{site.name}</div>
+  <!-- a strip of the valley, drawn with gradients so it costs no image request -->
+  <div class="land" aria-hidden="true"></div>
+  <div class="wrap base">
+    <span>© {year} {site.name}</span>
+    <span class="colophon">No analytics, no cookies, no banner asking about them.</span>
+    <a href="#top">Back to top</a>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    background: var(--ink);
+    color: var(--paper);
+    overflow: hidden;
+    padding-top: clamp(44px, 5vw, 72px);
+  }
+  .top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 30px;
+  }
+  .line {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(22px, 2.2vw, 30px);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+  .line span {
+    font-family: var(--body);
+    font-weight: 400;
+    font-size: 17px;
+    letter-spacing: 0;
+    color: rgba(246, 241, 230, 0.65);
+  }
+  nav {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    font-weight: 500;
+    color: rgba(246, 241, 230, 0.8);
+  }
+  nav a {
+    width: fit-content;
+  }
+  nav a:hover {
+    color: var(--sun);
+  }
+  .mark {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 14vw;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: clamp(40px, 5vw, 70px);
+    user-select: none;
+  }
+  .land {
+    height: 28px;
+    margin-top: 1.4vw;
+    background:
+      linear-gradient(var(--mint) 0 6px, transparent 6px),
+      repeating-linear-gradient(#d9a273 0 8px, #cb8f60 8px 16px, #bb7d50 16px 24px);
+    border-top: 4px solid #5fc27e;
+  }
+  .base {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    padding-block: 16px;
+    font-size: 14px;
+    color: rgba(246, 241, 230, 0.65);
+  }
+  .base a:hover {
+    color: var(--sun);
+  }
+  @media (max-width: 720px) {
+    .top {
+      grid-template-columns: 1fr 1fr;
+    }
+    .line {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

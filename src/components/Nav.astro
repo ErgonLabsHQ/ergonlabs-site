@@ -1,0 +1,114 @@
+---
+import { site, nav } from '../site';
+const cta = site.bookingUrl || '#contact';
+---
+
+<header class="nav" data-nav>
+  <div class="wrap inner">
+    <a href="#top" class="logo">
+      <svg viewBox="0 0 16 16" width="26" height="26" shape-rendering="crispEdges" aria-hidden="true">
+        <path d="M0 9h5v7H0zM11 9h5v7h-5z" fill="#c98a5b"></path>
+        <path d="M0 8h5v1H0zM11 8h5v1h-5z" fill="#5fc27e"></path>
+        <rect x="5" y="14" width="6" height="2" fill="#2d5bff"></rect>
+        <rect x="4" y="8" width="8" height="2" fill="#171a2e"></rect>
+        <rect x="7" y="4" width="2" height="4" fill="#171a2e"></rect>
+        <path d="M4 7h1V6h1V5h1v1H6v1H5v1H4zM12 7h-1V6h-1V5H9v1h1v1h1v1h1z" fill="#ff6b4a"></path>
+      </svg>
+      <span>{site.name}</span>
+    </a>
+    <nav class="links" aria-label="Primary">
+      {nav.map((n) => <a href={n.href} data-navlink>{n.label}</a>)}
+    </nav>
+    <a class="btn cta" href={cta}>Start a project</a>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    border-bottom: 2px solid transparent;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .nav.scrolled {
+    background: var(--paper);
+    border-color: var(--ink);
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 68px;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 21px;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+  .links {
+    display: flex;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .links a {
+    padding: 7px 12px;
+    border-radius: 9px;
+    transition: background 0.2s;
+  }
+  .links a:hover {
+    background: rgba(23, 26, 46, 0.08);
+  }
+  .links a.on {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .cta {
+    padding: 9px 16px;
+    font-size: 15px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 var(--ink);
+    white-space: nowrap;
+  }
+  @media (max-width: 1000px) {
+    .links {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector('[data-nav]');
+  const onScroll = () => nav?.classList.toggle('scrolled', window.scrollY > 24);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // highlight the section currently on screen
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-navlink]')];
+  const byId = new Map(links.map((a) => [a.getAttribute('href')!.slice(1), a]));
+  const spy = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          links.forEach((a) => a.classList.remove('on'));
+          byId.get(e.target.id)?.classList.add('on');
+        }
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  // the contact section has no link of its own, so watching it clears the highlight there
+  [...byId.keys(), 'contact'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) spy.observe(el);
+  });
+</script>

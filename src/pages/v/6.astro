@@ -1,0 +1,2108 @@
+---
+// Variation 6, "Observatory": an engraved star atlas. The pinned opening starts on scattered stars,
+// which drift into five constellations that read as a software system, and the four process steps
+// are then drawn onto that chart. A moth, an owl, a comet and shooting stars cross the whole page.
+import Variant from '../../layouts/Variant.astro';
+import Demos from '../../components/v6/Demos.astro';
+import { site, nav, services, process, engagements, principles, faqs } from '../../site';
+
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;1,400&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap';
+const topics = ['AI or an agent', 'A web or mobile app', 'Backend, data or cloud', 'A rescue job', 'Extra senior engineers', 'Something else'];
+const star = 'M6 0 L7.1 4.9 L12 6 L7.1 7.1 L6 12 L4.9 7.1 L0 6 L4.9 4.9Z';
+
+// a small chart for each service: one star per item, joined in order
+const rnd = (seed: number) => {
+  let s = seed;
+  return () => (s = (s * 9301 + 49297) % 233280) / 233280;
+};
+const charts = services.map((s, i) => {
+  const r = rnd(i * 71 + 17);
+  const n = s.items.length;
+  return s.items.map((_, k) => [12 + (k / (n - 1)) * 216 + (r() - 0.5) * 16, 14 + r() * 62] as [number, number]);
+});
+---
+
+<Variant n={6} fonts={fonts}>
+  <script is:inline>
+    document.body.classList.add('v6js');
+  </script>
+  <canvas class="sky" data-sky aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="fauna" data-fauna aria-hidden="true">
+    <img data-comet src="/art/v6/comet.webp" width="520" height="55" alt="" />
+    <img data-owl src="/art/v6/owl.webp" width="440" height="229" alt="" />
+    <img data-moth src="/art/v6/moth.webp" width="320" height="182" alt="" />
+  </div>
+
+  <header class="top" data-top>
+    <a class="logo" href="/v/6">
+      <svg viewBox="0 0 12 12" aria-hidden="true"><path d={star}></path></svg>
+      {site.name}
+    </a>
+    <nav aria-label="Sections">
+      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+    </nav>
+    <a class="btn small" href="#contact">Start a project</a>
+  </header>
+
+  <main>
+    <section class="scene" data-scene>
+      <span class="anchor" id="process"></span>
+      <div class="pin">
+        <img class="art-tele" data-tele src="/art/v6/telescope.webp" width="560" height="723" alt="" />
+        <div class="art-dome" data-dome>
+          <img src="/art/v6/dome.webp" width="1200" height="361" alt="Engraving of an observatory dome on a hill at night, its telescope pointing at the sky" />
+        </div>
+        <canvas data-chart aria-hidden="true"></canvas>
+
+        <div class="lead" data-lead>
+          <p class="eyebrow">{site.tagline} · {site.location}</p>
+          <h1>We build software that <em>keeps working</em> after launch.</h1>
+          <p class="sub">
+            A small studio of senior engineers and AI specialists, with more than ten years of production software
+            behind us.
+          </p>
+          <div class="actions">
+            <a class="btn" href="#contact">Start a project</a>
+            <a class="btn ghost" href="#services">See what we do</a>
+          </div>
+        </div>
+
+        <div class="side" data-side>
+          <div class="cards">
+            <article data-note>
+              <p class="eyebrow">The chart</p>
+              <h2>Most projects arrive as a scatter of parts.</h2>
+              <p>
+                We start by drawing the map: what talks to what, who depends on it, and what happens when one part goes
+                dark.
+              </p>
+            </article>
+            {process.map((s) => (
+              <article data-step>
+                <p class="eyebrow">{s.time}</p>
+                <h2>{s.title}</h2>
+                <p>{s.text}</p>
+              </article>
+            ))}
+          </div>
+          <div class="rail" data-rail aria-hidden="true">
+            {process.map((s) => <span>{s.title}</span>)}
+            <i data-rail-line></i>
+          </div>
+        </div>
+
+        <p class="cue" data-cue aria-hidden="true">Scroll to draw the chart</p>
+      </div>
+    </section>
+
+    <section class="sec" id="services">
+      <div class="wrap">
+        <header class="head" data-rv>
+          <p class="eyebrow">Services</p>
+          <h2>The catalogue: fourteen kinds of work, one team.</h2>
+          <p class="lede">Pick an entry to see what is in it.</p>
+        </header>
+        <div class="svc" data-svc data-rv>
+          {services.map((s, i) => (
+            <div class:list={['svc-item', { on: i === 0 }]}>
+              <button type="button" class="svc-tab" aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`v6-svc-${s.id}`}>
+                <svg viewBox="0 0 12 12" aria-hidden="true"><path d={star}></path></svg>
+                <span>{s.title}</span>
+                {s.note && <em>{s.note}</em>}
+              </button>
+              <div class="svc-panel" id={`v6-svc-${s.id}`}>
+                <svg class="mini" viewBox="0 0 240 90" aria-hidden="true">
+                  <polyline points={charts[i].map((p) => p.join(',')).join(' ')} />
+                  {charts[i].map((p) => <circle cx={p[0]} cy={p[1]} r="2.2" />)}
+                </svg>
+                <h3>{s.title}</h3>
+                <p class="blurb">{s.blurb}</p>
+                <ul>
+                  {s.items.map((it) => <li>{it}</li>)}
+                </ul>
+              </div>
+            </div>
+          ))}
+          <img class="svc-art" data-par="0.1" src="/art/v6/armillary.webp" width="520" height="754" loading="lazy" alt="" />
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="ai">
+      <div class="wrap">
+        <header class="head" data-rv>
+          <p class="eyebrow">AI work</p>
+          <h2>What the work looks like when it is running.</h2>
+          <p class="lede">
+            Six small recordings of the kind of thing we ship. The data is made up. The behaviour is what we build.
+          </p>
+        </header>
+        <Demos />
+      </div>
+    </section>
+
+    <section class="sec" id="engagements">
+      <div class="wrap">
+        <div class="eng-head">
+          <header class="head" data-rv>
+            <p class="eyebrow">Working together</p>
+            <h2>Four ways to work with us.</h2>
+            <p class="lede">They differ in how much of the work is ours. The standard of the work does not change.</p>
+          </header>
+          <img class="eng-art" data-par="0.14" src="/art/v6/orrery.webp" width="800" height="555" loading="lazy" alt="Engraving of a clockwork orrery with planets on brass arms" />
+        </div>
+        <svg class="orbit" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+          <path data-draw pathLength="1" d="M0 50 C300 -6 900 -6 1200 50" />
+        </svg>
+        <div class="eng">
+          {engagements.map((e) => (
+            <article class:list={['eng-card', { featured: 'featured' in e && e.featured }]} data-rv>
+              <h3>{e.name}</h3>
+              <p class="for">{e.for}</p>
+              <p class="text">{e.text}</p>
+              <ul>
+                {e.points.map((pt) => <li>{pt}</li>)}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="rules">
+      <div class="wrap rules">
+        <div class="rules-art">
+          <img data-spin src="/art/v6/astrolabe.webp" width="600" height="752" loading="lazy" alt="Engraving of a brass astrolabe" />
+        </div>
+        <div>
+          <header class="head" data-rv>
+            <p class="eyebrow">House rules</p>
+            <h2>Five things we do on every job.</h2>
+          </header>
+          <ul class="rule-list" data-rules>
+            {principles.map((r) => (
+              <li data-rv>
+                <svg viewBox="0 0 12 12" aria-hidden="true"><path d={star}></path></svg>
+                <div>
+                  <h3>{r.title}</h3>
+                  <p>{r.text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="faq">
+      <div class="wrap faq">
+        <header class="head" data-rv>
+          <p class="eyebrow">Questions</p>
+          <h2>Asked on most first calls.</h2>
+          <p class="lede">If yours is not here, put it in the form below.</p>
+        </header>
+        <div class="faq-list">
+          {faqs.map((f, i) => (
+            <details open={i === 0} data-rv>
+              <summary>
+                <span>{f.q}</span>
+                <i aria-hidden="true"></i>
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="sec contact" id="contact">
+      <div class="wrap contact-grid">
+        <div class="contact-copy">
+          <header class="head" data-rv>
+            <p class="eyebrow">Contact</p>
+            <h2>Tell us what is broken, missing or late.</h2>
+            <p class="lede">
+              A few lines are enough. The reply comes from one of the engineers, or write to
+              <a class="mail" href={`mailto:${site.email}`}>{site.email}</a>.
+            </p>
+          </header>
+          <img class="contact-art" data-par="0.1" src="/art/v6/hand.webp" width="900" height="614" loading="lazy" alt="Engraving of a hand holding dividers over a star chart" />
+        </div>
+        <form class="plate form" data-form data-to={site.email} data-rv>
+          <label>
+            <span>Name</span>
+            <input type="text" name="name" autocomplete="name" required />
+          </label>
+          <label>
+            <span>Work email</span>
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <fieldset>
+            <legend>What is it about?</legend>
+            <div class="checks">
+              {topics.map((t) => (
+                <label class="check">
+                  <input type="checkbox" name="topic" value={t} />
+                  <span>{t}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <label>
+            <span>Message</span>
+            <textarea name="message" rows="5" required></textarea>
+          </label>
+          <div class="send">
+            <button type="submit" class="btn">Write the email</button>
+            <p>This opens your own mail app with the message filled in. The page stores nothing.</p>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-grid">
+      <div>
+        <p class="foot-name">{site.name}</p>
+        <p>{site.tagline} · {site.location}</p>
+      </div>
+      <nav aria-label="Footer">
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+      </nav>
+      <div class="foot-links">
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        {site.socials.map((s) => <a href={s.href}>{s.label}</a>)}
+      </div>
+    </div>
+    <img class="foot-art" src="/art/v6/dome.webp" width="1200" height="361" loading="lazy" alt="" />
+    <p class="foot-legal">© {new Date().getFullYear()} {site.name}</p>
+  </footer>
+</Variant>
+
+<style is:global>
+  .v6 {
+    --navy: #070b1a;
+    --cream: #f1e7cf;
+    --gold: #d9a441;
+    --ox: #a33a33;
+    --dim: rgba(241, 231, 207, 0.64);
+    --line: rgba(241, 231, 207, 0.16);
+    background: radial-gradient(130% 70% at 50% 0%, #0e1634 0%, #070b1a 62%) fixed, #070b1a;
+    color: var(--cream);
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .v6 ::selection {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .v6 h1,
+  .v6 h2 {
+    font-family: 'Libre Caslon Display', 'Libre Caslon Text', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.012em;
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+  .v6 h1 em,
+  .v6 h2 em {
+    font-family: 'Libre Caslon Text', Georgia, serif;
+    font-style: italic;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+  }
+  .v6 h3 {
+    font-weight: 400;
+  }
+  .v6 :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+  .v6 .sky,
+  .v6 .grain {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .v6 .grain {
+    opacity: 0.11;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .v6 main,
+  .v6 .foot {
+    position: relative;
+    z-index: 1;
+  }
+  .v6 .fauna {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .v6 .fauna img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: auto;
+    opacity: 0;
+    will-change: transform;
+  }
+  .v6 .fauna [data-moth] {
+    width: 78px;
+    margin: -22px 0 0 -39px;
+  }
+  .v6 .fauna [data-comet] {
+    width: 300px;
+    margin: -16px 0 0 -285px;
+    transform-origin: 285px 16px;
+  }
+  .v6 .fauna [data-owl] {
+    width: 170px;
+    margin: -44px 0 0 -85px;
+  }
+
+  /* header */
+  .v6 .top {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 clamp(18px, 3.4vw, 48px);
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .v6 .top.solid {
+    background: rgba(7, 11, 26, 0.82);
+    backdrop-filter: blur(12px);
+    border-color: var(--line);
+  }
+  .v6 .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font: 400 22px/1 'Libre Caslon Display', serif;
+    letter-spacing: 0.005em;
+    white-space: nowrap;
+  }
+  .v6 .logo svg {
+    width: 13px;
+    height: 13px;
+    fill: var(--gold);
+  }
+  .v6 .top nav {
+    display: flex;
+    gap: clamp(16px, 2.2vw, 32px);
+    font: 400 11.5px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .v6 .top nav a:hover {
+    color: var(--gold);
+  }
+  .v6 .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 24px;
+    font: 500 12.5px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: var(--gold);
+    border: 1px solid var(--gold);
+    box-shadow: 0 0 0 3px var(--navy), 0 0 0 4px rgba(217, 164, 65, 0.55);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+  .v6 .btn:hover {
+    background: var(--cream);
+    border-color: var(--cream);
+  }
+  .v6 .btn.ghost {
+    background: rgba(7, 11, 26, 0.6);
+    color: var(--cream);
+    border-color: rgba(241, 231, 207, 0.5);
+    box-shadow: none;
+  }
+  .v6 .btn.ghost:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+  .v6 .btn.small {
+    padding: 10px 15px;
+    font-size: 11.5px;
+    box-shadow: none;
+  }
+  .v6 .eyebrow {
+    font: 500 11.5px/1.3 'IBM Plex Mono', monospace;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ---------- pinned opening ---------- */
+  .v6 .scene {
+    position: relative;
+    height: 640vh;
+  }
+  .v6 .scene .anchor {
+    position: absolute;
+    top: 37%;
+  }
+  .v6 .pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+  .v6 .pin canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .v6 .art-dome {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: min(960px, 150vw);
+    transform-origin: 0 100%;
+    will-change: transform, opacity;
+  }
+  .v6 .art-dome img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: scaleX(-1);
+  }
+  .v6 .art-tele {
+    position: absolute;
+    right: -4vw;
+    bottom: -20vh;
+    height: 74vh;
+    width: auto;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .v6 .lead {
+    position: absolute;
+    left: 50%;
+    top: clamp(92px, 14vh, 150px);
+    width: min(1080px, 100% - 40px);
+    transform: translateX(-50%);
+    text-align: center;
+    will-change: opacity, transform;
+  }
+  .v6 h1 {
+    font-size: clamp(40px, min(6vw, 10.8vh), 92px);
+    margin: 20px 0 22px;
+  }
+  .v6 .sub {
+    color: var(--dim);
+    max-width: 50ch;
+    margin: 0 auto 30px;
+    font-size: clamp(16.5px, 1.35vw, 19px);
+  }
+  .v6 .actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .v6 .side {
+    position: absolute;
+    left: clamp(20px, 5.4vw, 96px);
+    top: 43%;
+    width: min(420px, 33vw);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .v6 .side .cards {
+    display: grid;
+  }
+  .v6 .side article {
+    grid-area: 1 / 1;
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+  .v6 .side h2 {
+    font-size: clamp(34px, 3.7vw, 58px);
+    margin: 14px 0 16px;
+  }
+  .v6 .side [data-note] h2 {
+    font-size: clamp(30px, 3vw, 46px);
+  }
+  .v6 .side article > p:last-child {
+    color: rgba(241, 231, 207, 0.82);
+    font-size: clamp(15.5px, 1.2vw, 17.5px);
+    text-shadow: 0 0 12px var(--navy), 0 0 4px var(--navy);
+  }
+  .v6 .rail {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 28px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font: 500 11px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(241, 231, 207, 0.4);
+    opacity: 0;
+  }
+  .v6 .rail span {
+    transition: color 0.3s;
+  }
+  .v6 .rail span.on {
+    color: var(--gold);
+  }
+  .v6 .rail i {
+    position: absolute;
+    left: 0;
+    top: -1px;
+    width: 100%;
+    height: 1px;
+    background: var(--gold);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  .v6 .cue {
+    position: absolute;
+    right: clamp(18px, 3.4vw, 48px);
+    bottom: 26px;
+    font: 500 10.5px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream);
+    padding: 7px 12px;
+    background: rgba(7, 11, 26, 0.7);
+    transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  /* without script the opening is a plain stacked section */
+  body.v6:not(.v6js) .scene {
+    height: auto;
+  }
+  body.v6:not(.v6js) .pin {
+    position: relative;
+    height: auto;
+    padding: 110px 20px 60px;
+  }
+  body.v6:not(.v6js) .lead,
+  body.v6:not(.v6js) .side {
+    position: static;
+    transform: none;
+    width: auto;
+    max-width: 720px;
+    margin: 0 auto 48px;
+  }
+  body.v6:not(.v6js) .side .cards {
+    gap: 32px;
+  }
+  body.v6:not(.v6js) .side article {
+    grid-area: auto;
+    opacity: 1;
+  }
+  body.v6:not(.v6js) .art-dome,
+  body.v6:not(.v6js) .cue {
+    display: none;
+  }
+
+  /* ---------- shared section pieces ---------- */
+  .v6 .sec {
+    padding: clamp(84px, 10vw, 150px) 0;
+  }
+  .v6 .wrap {
+    max-width: 1288px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 4vw, 48px);
+  }
+  .v6 .head {
+    max-width: 780px;
+    margin-bottom: clamp(36px, 5vw, 64px);
+  }
+  .v6 .head h2 {
+    font-size: clamp(36px, 4.8vw, 68px);
+    margin: 18px 0 18px;
+  }
+  .v6 .lede {
+    color: var(--dim);
+    font-size: clamp(16.5px, 1.3vw, 19px);
+    max-width: 54ch;
+  }
+  .v6js [data-rv] {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .v6js [data-rv].in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- services ---------- */
+  .v6 .svc {
+    position: relative;
+    border-top: 1px solid var(--line);
+  }
+  .v6 .svc-tab {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    width: 100%;
+    padding: 13px 4px 12px;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--cream);
+    font: 400 21px/1.2 'Libre Caslon Text', serif;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.2s, padding 0.3s;
+  }
+  .v6 .svc-tab svg {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    fill: rgba(241, 231, 207, 0.35);
+    transition: fill 0.2s, transform 0.4s;
+  }
+  .v6 .svc-tab em {
+    margin-left: auto;
+    font: 400 10.5px/1.2 'IBM Plex Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-align: right;
+  }
+  .v6 .svc-tab:hover,
+  .v6 .svc-item.on .svc-tab {
+    color: var(--gold);
+  }
+  .v6 .svc-item.on .svc-tab {
+    padding-left: 14px;
+  }
+  .v6 .svc-item.on .svc-tab svg {
+    fill: var(--gold);
+    transform: rotate(45deg) scale(1.3);
+  }
+  .v6 .svc-panel {
+    position: relative;
+    padding: 20px 4px 30px;
+  }
+  .v6js .svc-panel {
+    display: none;
+  }
+  .v6js .svc-item.on .svc-panel {
+    display: block;
+    animation: v6-panel 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  @keyframes v6-panel {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  .v6 .svc-panel h3 {
+    display: none;
+  }
+  .v6 .svc-panel .blurb {
+    font: italic 400 clamp(21px, 2.2vw, 31px) / 1.3 'Libre Caslon Text', serif;
+    max-width: 24em;
+    text-wrap: pretty;
+  }
+  .v6 .svc-panel ul,
+  .v6 .eng-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .v6 .svc-panel ul {
+    margin-top: 26px;
+    columns: 2;
+    column-gap: 36px;
+    max-width: 640px;
+  }
+  .v6 .svc-panel li,
+  .v6 .eng-card li {
+    position: relative;
+    padding: 8px 0 8px 22px;
+    border-bottom: 1px dotted rgba(241, 231, 207, 0.16);
+    font-size: 15.5px;
+    break-inside: avoid;
+  }
+  .v6 .svc-panel li::before,
+  .v6 .eng-card li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 15px;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  }
+  .v6 .svc-panel .mini {
+    display: block;
+    width: 240px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 14px;
+    overflow: visible;
+  }
+  .v6 .mini polyline {
+    fill: none;
+    stroke: rgba(217, 164, 65, 0.7);
+    stroke-width: 0.8;
+    stroke-dasharray: 900;
+    animation: v6-draw 1.6s ease-out both;
+  }
+  .v6 .mini circle {
+    fill: var(--cream);
+  }
+  @keyframes v6-draw {
+    from {
+      stroke-dashoffset: 900;
+    }
+  }
+  .v6 .svc-art {
+    display: none;
+  }
+  @media (min-width: 901px) {
+    .v6js .svc {
+      display: grid;
+      grid-template-columns: minmax(300px, 400px) 1fr;
+      column-gap: clamp(28px, 4vw, 64px);
+      border-top: 0;
+    }
+    .v6js .svc-item {
+      display: contents;
+    }
+    .v6js .svc-tab {
+      grid-column: 1;
+      padding-top: 11px;
+      padding-bottom: 10px;
+      font-size: 19.5px;
+    }
+    .v6js .svc-item:first-child .svc-tab {
+      border-top: 1px solid var(--line);
+    }
+    .v6js .svc-panel {
+      grid-column: 2;
+      grid-row: 1 / span 14;
+      padding: clamp(28px, 3.4vw, 52px);
+      border: 1px solid rgba(241, 231, 207, 0.3);
+      background: linear-gradient(180deg, rgba(14, 21, 44, 0.9), rgba(9, 14, 30, 0.9));
+      outline: 1px solid rgba(241, 231, 207, 0.12);
+      outline-offset: -6px;
+    }
+    .v6js .svc-panel ul {
+      max-width: min(640px, 100% - 250px);
+    }
+    .v6js .svc-art {
+      display: block;
+      grid-column: 2;
+      grid-row: 1 / span 14;
+      align-self: end;
+      justify-self: end;
+      width: clamp(200px, 22vw, 300px);
+      height: auto;
+      margin: 0 -18px -34px 0;
+      z-index: 2;
+      pointer-events: none;
+      filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
+    }
+  }
+
+  /* ---------- engagements ---------- */
+  .v6 .eng-head {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 470px);
+    gap: 40px;
+    align-items: end;
+  }
+  .v6 .eng-art {
+    width: 100%;
+    height: auto;
+    margin-bottom: 18px;
+  }
+  .v6 .orbit {
+    display: block;
+    width: 100%;
+    height: 60px;
+    margin-bottom: -8px;
+    overflow: visible;
+  }
+  .v6 .orbit path {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 1.2;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .v6 .eng {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .v6 .eng-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 26px 26px;
+    border: 1px solid rgba(241, 231, 207, 0.26);
+    background: linear-gradient(180deg, rgba(14, 21, 44, 0.9), rgba(9, 14, 30, 0.9));
+    outline: 1px solid rgba(241, 231, 207, 0.1);
+    outline-offset: -6px;
+  }
+  .v6 .eng-card::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -6px;
+    width: 11px;
+    height: 11px;
+    margin-left: -5px;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 1px solid var(--gold);
+  }
+  .v6 .eng-card.featured {
+    border-color: var(--gold);
+    outline-color: rgba(217, 164, 65, 0.35);
+  }
+  .v6 .eng-card.featured::before {
+    background: var(--gold);
+  }
+  .v6 .eng-card:nth-child(2),
+  .v6 .eng-card:nth-child(3) {
+    margin-top: -22px;
+    margin-bottom: 22px;
+  }
+  .v6 .eng-card:nth-child(2) {
+    transition-delay: 0.08s;
+  }
+  .v6 .eng-card:nth-child(3) {
+    transition-delay: 0.16s;
+  }
+  .v6 .eng-card:nth-child(4) {
+    transition-delay: 0.24s;
+  }
+  .v6 .eng-card h3 {
+    font: 400 42px/1 'Libre Caslon Display', serif;
+  }
+  .v6 .eng-card .for {
+    font: italic 400 16.5px/1.35 'Libre Caslon Text', serif;
+    color: var(--gold);
+    margin: 10px 0 16px;
+    min-height: 2.7em;
+  }
+  .v6 .eng-card .text {
+    color: rgba(241, 231, 207, 0.82);
+    font-size: 15.5px;
+    margin-bottom: 18px;
+  }
+  .v6 .eng-card ul {
+    margin-top: auto;
+    border-top: 1px dotted rgba(241, 231, 207, 0.16);
+  }
+  .v6 .eng-card li {
+    font-size: 14.5px;
+  }
+
+  /* ---------- house rules ---------- */
+  .v6 .rules {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: start;
+  }
+  .v6 .rules-art {
+    position: sticky;
+    top: 110px;
+  }
+  .v6 .rules-art img {
+    display: block;
+    width: min(100%, 440px);
+    height: auto;
+    margin: 0 auto;
+    transform-origin: 50% 57.8%;
+    will-change: transform;
+  }
+  .v6 .rule-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .v6 .rule-list li {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 14px;
+    padding: 26px 0 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .v6 .rule-list svg {
+    width: 13px;
+    height: 13px;
+    margin-top: 12px;
+    fill: rgba(241, 231, 207, 0.3);
+    transition: fill 0.4s, transform 0.6s;
+  }
+  .v6 .rule-list h3 {
+    font: 400 clamp(25px, 2.6vw, 36px) / 1.12 'Libre Caslon Display', serif;
+    margin-bottom: 8px;
+    transition: color 0.4s;
+  }
+  .v6 .rule-list p {
+    color: var(--dim);
+    max-width: 52ch;
+  }
+  .v6 .rule-list li.lit h3 {
+    color: var(--gold);
+  }
+  .v6 .rule-list li.lit svg {
+    fill: var(--gold);
+    transform: rotate(45deg) scale(1.35);
+  }
+
+  /* ---------- faq ---------- */
+  .v6 .faq {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: start;
+  }
+  .v6 .faq .head {
+    position: sticky;
+    top: 110px;
+  }
+  .v6 .faq-list {
+    border-top: 1px solid var(--line);
+  }
+  .v6 .faq details {
+    border-bottom: 1px solid var(--line);
+  }
+  .v6 .faq summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 2px;
+    cursor: pointer;
+    list-style: none;
+    font: 400 clamp(19px, 1.7vw, 23px) / 1.25 'Libre Caslon Text', serif;
+    transition: color 0.2s;
+  }
+  .v6 .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .v6 .faq summary:hover,
+  .v6 .faq details[open] summary {
+    color: var(--gold);
+  }
+  .v6 .faq summary i {
+    position: relative;
+    flex: none;
+    width: 15px;
+    height: 15px;
+    transition: transform 0.35s;
+  }
+  .v6 .faq summary i::before,
+  .v6 .faq summary i::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 15px;
+    height: 1px;
+    background: currentColor;
+  }
+  .v6 .faq summary i::after {
+    transform: rotate(90deg);
+  }
+  .v6 .faq details[open] summary i {
+    transform: rotate(45deg);
+  }
+  .v6 .faq details p {
+    color: rgba(241, 231, 207, 0.8);
+    padding: 0 40px 24px 2px;
+    max-width: 62ch;
+  }
+
+  /* ---------- contact ---------- */
+  .v6 .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 80px);
+    align-items: start;
+  }
+  .v6 .contact .head {
+    margin-bottom: 20px;
+  }
+  .v6 .mail {
+    color: var(--gold);
+    border-bottom: 1px solid rgba(217, 164, 65, 0.5);
+  }
+  .v6 .mail:hover {
+    color: var(--cream);
+  }
+  .v6 .contact-art {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+  }
+  .v6 .plate.form {
+    position: relative;
+    display: grid;
+    gap: 20px;
+    padding: clamp(24px, 3vw, 40px);
+    border: 1px solid rgba(241, 231, 207, 0.3);
+    background: linear-gradient(180deg, rgba(14, 21, 44, 0.94), rgba(9, 14, 30, 0.94));
+    outline: 1px solid rgba(241, 231, 207, 0.12);
+    outline-offset: -6px;
+  }
+  .v6 .form label > span,
+  .v6 .form legend {
+    display: block;
+    font: 500 11px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  .v6 .form fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .v6 .form input[type='text'],
+  .v6 .form input[type='email'],
+  .v6 .form textarea {
+    width: 100%;
+    padding: 12px 2px;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(241, 231, 207, 0.4);
+    color: var(--cream);
+    font: 400 17px/1.4 'Hanken Grotesk', sans-serif;
+    border-radius: 0;
+    resize: vertical;
+  }
+  .v6 .form input:focus,
+  .v6 .form textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 1px 0 var(--gold);
+  }
+  .v6 .checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .v6 .check {
+    position: relative;
+    cursor: pointer;
+  }
+  .v6 .check input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+  .v6 .form .check span {
+    display: block;
+    margin: 0;
+    padding: 9px 13px;
+    border: 1px solid rgba(241, 231, 207, 0.32);
+    font: 400 14.5px/1.2 'Hanken Grotesk', sans-serif;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--cream);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .v6 .check:hover span {
+    border-color: var(--gold);
+  }
+  .v6 .form .check input:checked + span {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+  }
+  .v6 .check input:focus-visible + span {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+  .v6 .send {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-top: 6px;
+  }
+  .v6 .send p {
+    font-size: 14px;
+    color: var(--dim);
+    max-width: 34ch;
+  }
+
+  /* ---------- footer ---------- */
+  .v6 .foot {
+    overflow: hidden;
+    padding: 70px 0 0;
+    border-top: 1px solid var(--line);
+    text-align: left;
+    color: var(--dim);
+    font-size: 15px;
+  }
+  .v6 .foot-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 32px;
+  }
+  .v6 .foot-name {
+    font: 400 34px/1.1 'Libre Caslon Display', serif;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .v6 .foot nav,
+  .v6 .foot-links {
+    display: grid;
+    gap: 9px;
+    align-content: start;
+    justify-items: start;
+  }
+  .v6 .foot a:hover {
+    color: var(--gold);
+  }
+  .v6 .foot-art {
+    display: block;
+    width: min(760px, 120vw);
+    max-width: none;
+    height: auto;
+    margin: 30px auto 0;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 0;
+  }
+  .v6 .foot-legal {
+    text-align: center;
+    font: 400 11px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0 0 78px;
+    margin-top: 14px;
+  }
+
+  /* ---------- small screens ---------- */
+  @media (max-width: 900px) {
+    .v6 .top nav {
+      display: none;
+    }
+    .v6 .lead {
+      top: 88px;
+    }
+    .v6 h1 {
+      font-size: clamp(38px, 11vw, 56px);
+      margin: 16px 0 16px;
+    }
+    .v6 .sub {
+      margin-bottom: 24px;
+    }
+    .v6 .art-tele {
+      display: none;
+    }
+    .v6 .cue {
+      right: 50%;
+      transform: translateX(50%);
+      bottom: 70px;
+    }
+    .v6 .side {
+      left: 20px;
+      right: 20px;
+      width: auto;
+      top: auto;
+      bottom: 74px;
+      transform: none;
+    }
+    .v6 .side article {
+      align-self: end;
+    }
+    .v6 .side h2,
+    .v6 .side [data-note] h2 {
+      font-size: 31px;
+      margin: 10px 0 10px;
+    }
+    .v6 .side article > p:last-child {
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .v6 .rail {
+      margin-top: 16px;
+      font-size: 10px;
+    }
+    .v6 .svc-tab em {
+      display: none;
+    }
+    .v6 .svc-panel ul {
+      columns: 1;
+    }
+    .v6 .eng-head {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .v6 .eng-art {
+      max-width: 340px;
+      margin: 0 auto 10px;
+      display: block;
+    }
+    .v6 .eng {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+    .v6 .eng-card:nth-child(n) {
+      margin: 0;
+    }
+    .v6 .eng-card .for {
+      min-height: 0;
+    }
+    .v6 .rules,
+    .v6 .faq,
+    .v6 .contact-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .v6 .rules-art,
+    .v6 .faq .head {
+      position: static;
+    }
+    .v6 .rules-art img {
+      width: 230px;
+    }
+    .v6 .contact-art {
+      max-width: 330px;
+      margin: 0 auto;
+    }
+    .v6 .send {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .v6 .foot-grid {
+      grid-template-columns: 1fr;
+    }
+    .v6 .fauna img {
+      filter: opacity(0.6);
+    }
+    .v6 .fauna [data-moth] {
+      width: 54px;
+      margin: -15px 0 0 -27px;
+    }
+    .v6 .fauna [data-owl] {
+      width: 120px;
+      margin: -31px 0 0 -60px;
+    }
+    .v6 .fauna [data-comet] {
+      width: 200px;
+      margin: -11px 0 0 -190px;
+      transform-origin: 190px 11px;
+    }
+  }
+  @media (min-width: 901px) and (max-width: 1180px) {
+    .v6 .eng {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 26px 18px;
+    }
+    .v6 .eng-card:nth-child(n) {
+      margin: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v6 .fauna {
+      display: none;
+    }
+    .v6js [data-rv] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .v6 .mini polyline,
+    .v6js .svc-item.on .svc-panel {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ease = (v: number) => v * v * (3 - 2 * v);
+  const mix = (a: number, b: number, k: number) => a + (b - a) * k;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CREAM = '241,231,207';
+  const GOLD = '217,164,65';
+  const OX = '201,85,74';
+
+  const pointer = { x: -9999, y: -9999, at: -1e9 };
+  window.addEventListener(
+    'pointermove',
+    (e) => {
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.at = performance.now();
+    },
+    { passive: true },
+  );
+  document.addEventListener('pointerleave', () => (pointer.x = pointer.y = -9999));
+
+  // =====================================================================================
+  // The sky: a fixed field of twinkling stars behind the whole page. Stars near the cursor
+  // brighten and get joined to it by hairlines. Shooting stars cross at intervals and a
+  // fast scroll throws more of them, bent in the direction of the scroll.
+  // =====================================================================================
+  const sky = document.querySelector<HTMLCanvasElement>('[data-sky]')!;
+  const sctx = sky.getContext('2d')!;
+  let sw = 0;
+  let sh = 0;
+  type Star = { x: number; y: number; z: number; r: number; ph: number; sp: number; gold: boolean };
+  type Shot = { x: number; y: number; vx: number; vy: number; life: number; max: number };
+  let field: Star[] = [];
+  const shots: Shot[] = [];
+  let nextShot = 1.5;
+
+  const sizeSky = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    sw = window.innerWidth;
+    sh = window.innerHeight;
+    sky.width = sw * dpr;
+    sky.height = sh * dpr;
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.min(460, Math.round((sw * sh) / 4200));
+    field = Array.from({ length: n }, () => {
+      const z = Math.random();
+      return {
+        x: Math.random(),
+        y: Math.random(),
+        z: 0.15 + z * 0.85,
+        r: 0.35 + z * z * 1.25,
+        ph: Math.random() * 6.28,
+        sp: 0.6 + Math.random() * 2.2,
+        gold: Math.random() < 0.16,
+      };
+    });
+  };
+
+  const spawnShot = (bend = 0) => {
+    const fromLeft = Math.random() < 0.5;
+    const speed = 7 + Math.random() * 6;
+    const ang = (fromLeft ? 0.35 : Math.PI - 0.35) + (Math.random() - 0.5) * 0.4;
+    shots.push({
+      x: fromLeft ? Math.random() * sw * 0.6 : sw * (0.4 + Math.random() * 0.6),
+      y: Math.random() * sh * 0.55,
+      vx: Math.cos(ang) * speed,
+      vy: Math.sin(ang) * speed + bend,
+      life: 0,
+      max: 46 + Math.random() * 30,
+    });
+  };
+
+  const drawSky = (t: number, shove: number) => {
+    sctx.clearRect(0, 0, sw, sh);
+    const sy = window.scrollY;
+    const near = performance.now() - pointer.at < 4000;
+    for (const s of field) {
+      const x = s.x * sw;
+      const y = (((s.y * sh - sy * s.z * 0.14) % sh) + sh) % sh;
+      let a = (0.28 + 0.6 * s.z) * (0.62 + 0.38 * Math.sin(t * s.sp + s.ph));
+      let r = s.r;
+      if (near) {
+        const dx = x - pointer.x;
+        const dy = y - pointer.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < 19600) {
+          const k = 1 - Math.sqrt(d2) / 140;
+          a = Math.min(1, a + k * 0.7);
+          r += k * 1.1;
+          sctx.strokeStyle = `rgba(${GOLD},${k * 0.42})`;
+          sctx.lineWidth = 0.7;
+          sctx.beginPath();
+          sctx.moveTo(pointer.x, pointer.y);
+          sctx.lineTo(x, y);
+          sctx.stroke();
+        }
+      }
+      sctx.fillStyle = `rgba(${s.gold ? GOLD : CREAM},${a})`;
+      sctx.beginPath();
+      sctx.arc(x, y, r, 0, 6.3);
+      sctx.fill();
+      if (s.r > 1.25) {
+        sctx.strokeStyle = `rgba(${CREAM},${a * 0.5})`;
+        sctx.lineWidth = 0.6;
+        sctx.beginPath();
+        sctx.moveTo(x - r * 3.2, y);
+        sctx.lineTo(x + r * 3.2, y);
+        sctx.moveTo(x, y - r * 3.2);
+        sctx.lineTo(x, y + r * 3.2);
+        sctx.stroke();
+      }
+    }
+    if (reduced) return;
+    if (t > nextShot) {
+      spawnShot();
+      nextShot = t + 2.2 + Math.random() * 4;
+    }
+    if (Math.abs(shove) > 26 && shots.length < 7 && Math.random() < 0.3) spawnShot(-shove * 0.12);
+    for (let i = shots.length - 1; i >= 0; i--) {
+      const s = shots[i];
+      s.vy -= shove * 0.012;
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life++;
+      const a = Math.sin((s.life / s.max) * Math.PI);
+      const g = sctx.createLinearGradient(s.x, s.y, s.x - s.vx * 13, s.y - s.vy * 13);
+      g.addColorStop(0, `rgba(${CREAM},${a})`);
+      g.addColorStop(1, `rgba(${GOLD},0)`);
+      sctx.strokeStyle = g;
+      sctx.lineWidth = 1.3;
+      sctx.beginPath();
+      sctx.moveTo(s.x, s.y);
+      sctx.lineTo(s.x - s.vx * 13, s.y - s.vy * 13);
+      sctx.stroke();
+      if (s.life > s.max) shots.splice(i, 1);
+    }
+  };
+
+  // =====================================================================================
+  // Creatures. The moth wanders and is drawn to the cursor like a lamp. The owl glides
+  // across now and then. The comet drifts slowly. Fast scrolling knocks all three about.
+  // =====================================================================================
+  const mothEl = document.querySelector<HTMLElement>('[data-moth]')!;
+  const owlEl = document.querySelector<HTMLElement>('[data-owl]')!;
+  const cometEl = document.querySelector<HTMLElement>('[data-comet]')!;
+  const moth = { x: -60, y: 300, h: 0, spin: 0 };
+  const owl = { x: -400, y: 200, dir: 1, at: 7, on: false, bank: 0, base: 200 };
+  const comet = { x: -400, y: 100, h: 0.2, at: 3, on: false };
+
+  const drawFauna = (t: number, shove: number, f: number) => {
+    // moth
+    const lamp = performance.now() - pointer.at < 2600 && pointer.x > 0;
+    const side = Math.sin(t * 0.11) > 0 ? 0.9 : 0.1;
+    const tx = lamp ? pointer.x + Math.cos(t * 2.2) * 46 : sw * (side + 0.07 * Math.sin(t * 0.9));
+    const ty = lamp ? pointer.y + Math.sin(t * 2.2) * 46 : sh * (0.5 + 0.34 * Math.sin(t * 0.37 + 1));
+    let diff = Math.atan2(ty - moth.y, tx - moth.x) - moth.h;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+    moth.spin += (shove * 0.012 - moth.spin) * 0.1;
+    moth.h += clamp(diff, -0.06, 0.06) * f + Math.sin(t * 5.3) * 0.035 + moth.spin * 0.25;
+    const mv = (lamp ? 2.6 : 1.9) + Math.abs(shove) * 0.05;
+    moth.x += Math.cos(moth.h) * mv * f;
+    moth.y += Math.sin(moth.h) * mv * f - shove * 0.5;
+    if (moth.y < -90) moth.y = sh + 60;
+    if (moth.y > sh + 90) moth.y = -60;
+    const flap = 0.5 + 0.5 * Math.abs(Math.sin(t * 13));
+    mothEl.style.opacity = '1';
+    mothEl.style.transform = `translate(${moth.x}px,${moth.y}px) rotate(${moth.h + Math.PI / 2}rad) scaleX(${flap})`;
+
+    // owl
+    if (!owl.on && t > owl.at) {
+      owl.on = true;
+      owl.dir = Math.random() < 0.5 ? 1 : -1;
+      owl.x = owl.dir > 0 ? -140 : sw + 140;
+      owl.base = owl.y = sh * (0.22 + Math.random() * 0.5);
+    }
+    if (owl.on) {
+      owl.bank += (clamp(shove, -60, 60) * 0.012 - owl.bank) * 0.08;
+      owl.x += owl.dir * (2.5 + Math.abs(shove) * 0.04) * f;
+      owl.base -= shove * 0.6;
+      owl.y = owl.base + Math.sin(t * 1.3) * 16;
+      owlEl.style.opacity = '1';
+      owlEl.style.transform = `translate(${owl.x}px,${owl.y}px) scaleX(${owl.dir}) rotate(${Math.sin(t * 1.3 + 1.5) * 0.07 - owl.bank}rad) scaleY(${0.9 + 0.1 * Math.sin(t * 2.6)})`;
+      if (owl.x < -200 || owl.x > sw + 200 || owl.base < -260 || owl.base > sh + 260) {
+        owl.on = false;
+        owl.at = t + 20 + Math.random() * 20;
+        owlEl.style.opacity = '0';
+      }
+    }
+
+    // comet
+    if (!comet.on && t > comet.at) {
+      comet.on = true;
+      const left = Math.random() < 0.5;
+      comet.x = left ? -20 : sw + 20;
+      comet.y = sh * (0.08 + Math.random() * 0.4);
+      comet.h = left ? 0.12 + Math.random() * 0.25 : Math.PI - 0.12 - Math.random() * 0.25;
+    }
+    if (comet.on) {
+      comet.h += shove * 0.0012 * (Math.cos(comet.h) > 0 ? -1 : 1);
+      comet.x += Math.cos(comet.h) * 1.15 * f;
+      comet.y += Math.sin(comet.h) * 1.15 * f - shove * 0.3;
+      cometEl.style.opacity = '0.95';
+      cometEl.style.transform = `translate(${comet.x}px,${comet.y}px) rotate(${comet.h}rad)`;
+      if (comet.x < -340 || comet.x > sw + 340 || comet.y < -340 || comet.y > sh + 340) {
+        comet.on = false;
+        comet.at = t + 5 + Math.random() * 9;
+        cometEl.style.opacity = '0';
+      }
+    }
+  };
+
+  let lastY = window.scrollY;
+  let lastT = 0;
+  let shove = 0;
+  const frame = (now: number) => {
+    const t = now / 1000;
+    const f = clamp((now - lastT) / 16.7, 0.2, 3);
+    lastT = now;
+    const dy = window.scrollY - lastY;
+    lastY = window.scrollY;
+    shove += (clamp(dy, -110, 110) - shove) * 0.2;
+    drawSky(t, shove);
+    drawFauna(t, shove, f);
+    requestAnimationFrame(frame);
+  };
+  sizeSky();
+  window.addEventListener('resize', sizeSky);
+  if (reduced) {
+    drawSky(3, 0);
+    window.addEventListener('resize', () => drawSky(3, 0));
+    window.addEventListener('scroll', () => drawSky(3, 0), { passive: true });
+  } else requestAnimationFrame(frame);
+
+  // =====================================================================================
+  // The chart. Each named star has a scattered position and a place in a constellation.
+  // Scroll progress moves it from one to the other, then draws the lines, the labels and
+  // the four process steps on top.
+  // =====================================================================================
+  type Con = { name: string; sub: string; pts: [number, number][]; edges: [number, number][]; lab: [number, number] };
+  const CONS: Con[] = [
+    {
+      name: 'Interface',
+      sub: 'what people touch',
+      pts: [[0.04, 0.2], [0.16, 0.1], [0.28, 0.16], [0.25, 0.33], [0.08, 0.35]],
+      edges: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0], [1, 3]],
+      lab: [0.04, 0.04],
+    },
+    {
+      name: 'AI',
+      sub: 'models and agents',
+      pts: [[0.53, 0.38], [0.44, 0.22], [0.61, 0.2], [0.67, 0.4], [0.57, 0.54], [0.41, 0.47]],
+      edges: [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [1, 2], [3, 4]],
+      lab: [0.44, 0.115],
+    },
+    {
+      name: 'Backend',
+      sub: 'rules and APIs',
+      pts: [[0.1, 0.62], [0.22, 0.56], [0.32, 0.67], [0.24, 0.81], [0.1, 0.79]],
+      edges: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0], [0, 2]],
+      lab: [0.04, 0.9],
+    },
+    {
+      name: 'Data',
+      sub: 'what it remembers',
+      pts: [[0.52, 0.72], [0.64, 0.68], [0.75, 0.74], [0.53, 0.86], [0.65, 0.9], [0.76, 0.87]],
+      edges: [[0, 1], [1, 2], [3, 4], [4, 5], [0, 3], [2, 5], [1, 4]],
+      lab: [0.52, 0.985],
+    },
+    {
+      name: 'Cloud',
+      sub: 'where it runs',
+      pts: [[0.74, 0.12], [0.83, 0.05], [0.93, 0.1], [0.97, 0.22], [0.86, 0.27], [0.76, 0.23]],
+      edges: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]],
+      lab: [0.84, 0.36],
+    },
+  ];
+  // links between constellations: [constellation, star, constellation, star]
+  const LINKS: [number, number, number, number][] = [
+    [0, 3, 2, 1],
+    [0, 2, 1, 1],
+    [2, 2, 1, 5],
+    [2, 2, 3, 0],
+    [1, 4, 3, 1],
+    [4, 5, 1, 2],
+    [4, 4, 3, 2],
+  ];
+  // the thin slice proved in week two: one path through every part
+  const SLICE: [number, number][] = [[0, 3], [2, 1], [2, 2], [1, 5], [1, 0], [1, 4], [3, 1], [3, 2], [4, 4]];
+  const BUILD_ORDER = [0, 2, 1, 3, 4];
+  const FAULT: [number, number] = [3, 4];
+
+  const scene = document.querySelector<HTMLElement>('[data-scene]')!;
+  const chart = document.querySelector<HTMLCanvasElement>('[data-chart]')!;
+  const ctx = chart.getContext('2d')!;
+  const lead = document.querySelector<HTMLElement>('[data-lead]')!;
+  const dome = document.querySelector<HTMLElement>('[data-dome]')!;
+  const tele = document.querySelector<HTMLElement>('[data-tele]')!;
+  const note = document.querySelector<HTMLElement>('[data-note]')!;
+  const steps = [...document.querySelectorAll<HTMLElement>('[data-step]')];
+  const rail = document.querySelector<HTMLElement>('[data-rail]')!;
+  const railLine = document.querySelector<HTMLElement>('[data-rail-line]')!;
+  const railNames = [...rail.querySelectorAll('span')];
+  const cue = document.querySelector<HTMLElement>('[data-cue]')!;
+
+  type CS = { c: number; i: number; sx: number; sy: number; d: number; ph: number; r: number; x: number; y: number };
+  const cstars: CS[] = [];
+  const idx: number[][] = [];
+  CONS.forEach((con, c) => {
+    idx.push([]);
+    con.pts.forEach((_, i) => {
+      idx[c].push(cstars.length);
+      cstars.push({ c, i, sx: Math.random(), sy: 0.08 + Math.random() * 0.84, d: Math.random(), ph: Math.random() * 6.28, r: i === 0 ? 2.5 : 1.7 + Math.random() * 0.6, x: 0, y: 0 });
+    });
+  });
+
+  let w = 0;
+  let h = 0;
+  let p = 0;
+  let sceneOn = true;
+  const sizeChart = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = chart.clientWidth;
+    h = chart.clientHeight;
+    chart.width = w * dpr;
+    chart.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  const box = () => {
+    const narrow = w < 900;
+    return narrow
+      ? { narrow, x0: 22, x1: w - 22, y0: 100, y1: Math.max(270, h * 0.57) }
+      : { narrow, x0: w * 0.405, x1: w * 0.8, y0: 104, y1: h - 92 };
+  };
+
+  const glyph = (x: number, y: number, r: number, rgb: string, a: number) => {
+    const k = r * 2.9;
+    ctx.fillStyle = `rgba(${rgb},${a})`;
+    ctx.beginPath();
+    ctx.moveTo(x, y - k);
+    ctx.quadraticCurveTo(x, y, x + k, y);
+    ctx.quadraticCurveTo(x, y, x, y + k);
+    ctx.quadraticCurveTo(x, y, x - k, y);
+    ctx.quadraticCurveTo(x, y, x, y - k);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 6.3);
+    ctx.fill();
+  };
+  const seg = (ax: number, ay: number, bx: number, by: number, k: number) => {
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(mix(ax, bx, k), mix(ay, by, k));
+    ctx.stroke();
+  };
+
+  const drawChart = (now: number) => {
+    const t = reduced ? 4 : now / 1000;
+    const B = box();
+    const bw = B.x1 - B.x0;
+    const bh = B.y1 - B.y0;
+    const top = chart.getBoundingClientRect().top;
+    const mx = pointer.x;
+    const my = pointer.y - top;
+    ctx.clearRect(0, 0, w, h);
+
+    // which process step we are in
+    const sp = (p - 0.42) / 0.145;
+    const step = p < 0.42 ? -1 : Math.min(3, Math.floor(sp));
+    const f = step < 0 ? 0 : clamp(sp - step);
+    const scopeK = step === 0 ? ease(clamp(f / 0.62)) : step > 0 ? 1 : 0;
+    const scopeA = step === 0 ? 1 : step === 1 ? 1 - ease(clamp(f / 0.3)) : 0;
+    const proveK = step === 1 ? ease(clamp((f - 0.12) / 0.7)) : step > 1 ? 1 : 0;
+    const proveA = step === 1 ? 1 : step === 2 ? 1 - clamp(f / 0.45) : 0;
+    const buildK = step === 2 ? clamp(f / 0.85) : step === 3 ? 1 : 0;
+    const run = step === 3 ? ease(clamp(f / 0.18)) : 0;
+
+    // the graticule of the plate
+    const kG = ease(clamp((p - 0.1) / 0.2));
+    const gcx = (B.x0 + B.x1) / 2;
+    const gcy = (B.y0 + B.y1) / 2;
+    if (kG > 0) {
+      ctx.lineWidth = 0.7;
+      for (let i = 1; i <= 4; i++) {
+        ctx.strokeStyle = `rgba(${CREAM},${(i === 4 ? 0.2 : 0.075) * kG})`;
+        ctx.beginPath();
+        ctx.ellipse(gcx, gcy, (bw / 2) * (i / 4) * 1.04, (bh / 2) * (i / 4) * 1.06, 0, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * kG);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = `rgba(${CREAM},${0.06 * kG})`;
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2 + 0.26;
+        seg(gcx, gcy, gcx + Math.cos(a) * (bw / 2) * 1.04 * kG, gcy + Math.sin(a) * (bh / 2) * 1.06 * kG, 1);
+      }
+      ctx.strokeStyle = `rgba(${CREAM},${0.3 * kG})`;
+      for (let i = 0; i < 72; i++) {
+        const a = (i / 72) * Math.PI * 2;
+        const len = i % 6 === 0 ? 1.03 : 1.015;
+        seg(gcx + Math.cos(a) * (bw / 2) * 1.04, gcy + Math.sin(a) * (bh / 2) * 1.06, gcx + Math.cos(a) * (bw / 2) * 1.04 * len, gcy + Math.sin(a) * (bh / 2) * 1.06 * len, 1);
+      }
+    }
+
+    // the scope circle, stepped off with dividers
+    const scx = B.x0 + 0.373 * bw;
+    const scy = B.y0 + 0.417 * bh;
+    const sr = Math.min(bw * 0.265, bh * 0.36);
+    const dim = scopeA * scopeK;
+
+    // star positions
+    for (const s of cstars) {
+      const con = CONS[s.c];
+      const k1 = ease(clamp((p - 0.07 - s.d * 0.09) / 0.2));
+      const fx = s.sx * w + Math.sin(t * 0.21 + s.ph) * 16;
+      const fy = s.sy * h + Math.cos(t * 0.17 + s.ph * 1.7) * 12;
+      const tx = B.x0 + con.pts[s.i][0] * bw;
+      const ty = B.y0 + con.pts[s.i][1] * bh;
+      // a loose arc on the way in, so they drift rather than slide
+      const arc = Math.sin(Math.PI * k1) * 60 * (s.d - 0.5);
+      s.x = mix(fx, tx, k1) + arc;
+      s.y = mix(fy, ty, k1) - arc * 0.6;
+      const dx = s.x - mx;
+      const dy = s.y - my;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < 9000) {
+        const push = (1 - d2 / 9000) * 14 * (1 - k1 * 0.6);
+        const d = Math.sqrt(d2) || 1;
+        s.x += (dx / d) * push;
+        s.y += (dy / d) * push;
+      }
+    }
+    const at = (c: number, i: number) => cstars[idx[c][i]];
+    const gold = (c: number) => clamp(buildK * 5.6 - BUILD_ORDER.indexOf(c));
+    const inScope = (s: CS) => Math.hypot(s.x - scx, s.y - scy) < sr;
+
+    // links between constellations
+    const kLink = clamp((p - 0.33) / 0.07);
+    if (kLink > 0) {
+      ctx.setLineDash([2, 5]);
+      LINKS.forEach(([c1, i1, c2, i2], n) => {
+        const a = at(c1, i1);
+        const b = at(c2, i2);
+        const g = Math.min(gold(c1), gold(c2));
+        const fade = 1 - 0.7 * dim * (inScope(a) && inScope(b) ? 0 : 1);
+        ctx.lineWidth = 0.9 + g * 0.4;
+        ctx.strokeStyle = g > 0 ? `rgba(${GOLD},${(0.45 + 0.4 * g) * fade})` : `rgba(${CREAM},${0.34 * fade})`;
+        seg(a.x, a.y, b.x, b.y, clamp(kLink * 1.6 - n * 0.08));
+      });
+      ctx.setLineDash([]);
+    }
+
+    // constellation figures
+    CONS.forEach((con, c) => {
+      const kL = clamp((p - 0.22 - c * 0.022) / 0.11);
+      if (kL <= 0) return;
+      const g = gold(c);
+      con.edges.forEach(([i, j], n) => {
+        const a = at(c, i);
+        const b = at(c, j);
+        const k = clamp(kL * con.edges.length - n);
+        if (k <= 0) return;
+        const fade = 1 - 0.72 * dim * (inScope(a) && inScope(b) ? 0 : 1);
+        ctx.lineWidth = 1 + g * 0.5;
+        ctx.strokeStyle = `rgba(${CREAM},${0.6 * fade * (1 - g)})`;
+        seg(a.x, a.y, b.x, b.y, k);
+        if (g > 0) {
+          ctx.strokeStyle = `rgba(${GOLD},${0.95 * fade})`;
+          seg(a.x, a.y, b.x, b.y, clamp(g * con.edges.length - n));
+        }
+      });
+    });
+
+    // Scope: a circle around the smallest version worth shipping
+    if (scopeA > 0 && scopeK > 0) {
+      const end = -Math.PI * 0.62 + Math.PI * 2 * scopeK;
+      ctx.strokeStyle = `rgba(${GOLD},${0.95 * scopeA})`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(scx, scy, sr, -Math.PI * 0.62, end);
+      ctx.stroke();
+      ctx.lineWidth = 0.8;
+      ctx.strokeStyle = `rgba(${GOLD},${0.6 * scopeA * (1 - ease(clamp((scopeK - 0.9) / 0.1)))})`;
+      seg(scx, scy, scx + Math.cos(end) * sr, scy + Math.sin(end) * sr, 1);
+      ctx.beginPath();
+      ctx.arc(scx, scy, 3, 0, 6.3);
+      ctx.stroke();
+    }
+
+    // Prove: one thin path through every part
+    if (proveA > 0 && proveK > 0) {
+      const pts = SLICE.map(([c, i]) => at(c, i));
+      let total = 0;
+      const lens = pts.slice(1).map((q, i) => {
+        const l = Math.hypot(q.x - pts[i].x, q.y - pts[i].y);
+        total += l;
+        return l;
+      });
+      let left = total * proveK;
+      ctx.strokeStyle = `rgba(${GOLD},${proveA})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      let hx = pts[0].x;
+      let hy = pts[0].y;
+      for (let i = 0; i < lens.length && left > 0; i++) {
+        const k = Math.min(1, left / lens[i]);
+        hx = mix(pts[i].x, pts[i + 1].x, k);
+        hy = mix(pts[i].y, pts[i + 1].y, k);
+        ctx.lineTo(hx, hy);
+        left -= lens[i];
+      }
+      ctx.stroke();
+      if (proveK < 1) glyph(hx, hy, 3, CREAM, proveA);
+    }
+
+    // Run: traffic on every link, and one fault that gets caught and fixed
+    if (run > 0) {
+      LINKS.forEach(([c1, i1, c2, i2], n) => {
+        const a = at(c1, i1);
+        const b = at(c2, i2);
+        const u = (t * 0.34 + n * 0.37) % 1;
+        ctx.fillStyle = `rgba(${CREAM},${run * Math.sin(u * Math.PI)})`;
+        ctx.beginPath();
+        ctx.arc(mix(a.x, b.x, u), mix(a.y, b.y, u), 2.2, 0, 6.3);
+        ctx.fill();
+      });
+      CONS.forEach((con, c) => {
+        const [i, j] = con.edges[Math.floor(t * 0.5 + c) % con.edges.length];
+        const a = at(c, i);
+        const b = at(c, j);
+        const u = (t * 0.5 + c * 0.3) % 1;
+        ctx.fillStyle = `rgba(${CREAM},${run * Math.sin(u * Math.PI) * 0.9})`;
+        ctx.beginPath();
+        ctx.arc(mix(a.x, b.x, u), mix(a.y, b.y, u), 1.8, 0, 6.3);
+        ctx.fill();
+      });
+    }
+    const cyc = (t % 7) / 7;
+    const faultOn = run > 0.5 && cyc < 0.34;
+    const fixed = run > 0.5 && cyc >= 0.34 && cyc < 0.56;
+
+    // stars
+    const sliceIdx = new Map<number, number>(SLICE.map(([c, i], n) => [idx[c][i], n]));
+    cstars.forEach((s, n) => {
+      const k1 = ease(clamp((p - 0.07 - s.d * 0.09) / 0.2));
+      const tw = 0.7 + 0.3 * Math.sin(t * (1 + s.d * 2) + s.ph);
+      let a = mix(tw, 1, k1) * (1 - 0.68 * dim * (inScope(s) ? 0 : 1));
+      let rgb = CREAM;
+      const onSlice = sliceIdx.has(n) && proveA > 0 && proveK * (SLICE.length - 1) >= sliceIdx.get(n)! - 0.02;
+      if (gold(s.c) > 0.5 || onSlice) rgb = GOLD;
+      let r = s.r * mix(0.8, 1.15, k1);
+      const isFault = s.c === FAULT[0] && s.i === FAULT[1];
+      if (isFault && faultOn) {
+        rgb = OX;
+        r *= 1.5;
+        a = 1;
+        ctx.strokeStyle = `rgba(${OX},${0.9 * (0.5 + 0.5 * Math.sin(t * 9))})`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 12, 0, 6.3);
+        ctx.stroke();
+      }
+      if (isFault && fixed) {
+        const u = (cyc - 0.34) / 0.22;
+        ctx.strokeStyle = `rgba(${GOLD},${1 - u})`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 8 + u * 30, 0, 6.3);
+        ctx.stroke();
+      }
+      glyph(s.x, s.y, r, rgb, a);
+      if (s.i === 0 && k1 > 0.9) {
+        ctx.strokeStyle = `rgba(${rgb},${0.55 * a})`;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 9, 0, 6.3);
+        ctx.stroke();
+      }
+    });
+
+    // labels
+    const kLab = ease(clamp((p - 0.31) / 0.07));
+    if (kLab > 0) {
+      ctx.textBaseline = 'alphabetic';
+      CONS.forEach((con, c) => {
+        const x = B.x0 + con.lab[0] * bw;
+        const y = B.y0 + con.lab[1] * bh + (1 - kLab) * 8;
+        const g = gold(c) > 0.5;
+        (ctx as any).letterSpacing = '2.4px';
+        ctx.font = `500 ${B.narrow ? 10 : 12}px "IBM Plex Mono", monospace`;
+        ctx.fillStyle = `rgba(${g ? GOLD : CREAM},${kLab * (g ? 1 : 0.92)})`;
+        ctx.fillText(con.name.toUpperCase(), x, y);
+        if (!B.narrow) {
+          (ctx as any).letterSpacing = '0px';
+          ctx.font = 'italic 400 14px "Libre Caslon Text", serif';
+          ctx.fillStyle = `rgba(${CREAM},${kLab * 0.74})`;
+          ctx.fillText(con.sub, x, y + 19);
+        }
+      });
+      (ctx as any).letterSpacing = '0px';
+    }
+
+    if (!reduced && sceneOn) requestAnimationFrame(drawChart);
+  };
+
+  const onScroll = () => {
+    const vh = window.innerHeight;
+    const total = scene.offsetHeight - vh;
+    const r = scene.getBoundingClientRect();
+    p = total > 0 ? clamp(-r.top / total) : 0;
+    const narrow = window.innerWidth < 900;
+
+    const out = ease(clamp((p - 0.025) / 0.09));
+    lead.style.opacity = String(1 - out);
+    lead.style.transform = `translateX(-50%) translateY(${-out * 70}px)`;
+    lead.style.visibility = out >= 1 ? 'hidden' : '';
+    cue.style.opacity = p > 0.015 ? '0' : '1';
+
+    // artwork: the dome slides to the foot of the text column, the telescope rises behind the chart
+    const kB = ease(clamp((p - 0.05) / 0.2));
+    const dw = dome.offsetWidth;
+    const late = clamp((p - 0.4) / 0.6);
+    if (narrow) {
+      dome.style.transform = `translate(${(window.innerWidth - dw) / 2}px, ${kB * 70}px)`;
+      dome.style.opacity = String(1 - kB);
+    } else {
+      const sc = mix(1, 0.62, kB);
+      dome.style.transform = `translate(${mix((window.innerWidth - dw) / 2, window.innerWidth * 0.22 - (dw * sc) / 2, kB)}px, ${mix(0, 6, kB) + late * 26}px) scale(${sc})`;
+      dome.style.opacity = String(mix(1, 0.9, kB));
+    }
+    const kT = ease(clamp((p - 0.12) / 0.22));
+    tele.style.opacity = String(0.8 * kT);
+    tele.style.transform = `translateY(${(1 - kT) * 30 - late * 7}%) scaleX(-1) rotate(${(1 - kT) * -8}deg)`;
+
+    const noteA = ease(clamp((p - 0.14) / 0.07)) * (1 - ease(clamp((p - 0.385) / 0.03)));
+    note.style.opacity = String(noteA);
+    note.style.transform = `translateY(${(1 - ease(clamp((p - 0.14) / 0.07))) * 24 - ease(clamp((p - 0.385) / 0.03)) * 16}px)`;
+    const sp = (p - 0.42) / 0.145;
+    steps.forEach((el, i) => {
+      const a = clamp((sp - i) / 0.14) * (i < 3 ? clamp((i + 1 - sp) / 0.1) : 1);
+      el.style.opacity = String(a);
+      el.style.transform = `translateY(${sp < i + 0.5 ? (1 - a) * 22 : (a - 1) * 16}px)`;
+    });
+    const cur = p < 0.42 ? -1 : Math.min(3, Math.floor(sp));
+    rail.style.opacity = String(clamp((p - 0.4) / 0.03));
+    railLine.style.transform = `scaleX(${clamp(sp / 4)})`;
+    railNames.forEach((n, i) => n.classList.toggle('on', i === cur));
+
+    const was = sceneOn;
+    sceneOn = r.bottom > 0 && r.top < vh;
+    if (reduced) drawChart(0);
+    else if (sceneOn && !was) requestAnimationFrame(drawChart);
+  };
+
+  sizeChart();
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => {
+    sizeChart();
+    onScroll();
+  });
+  if (!reduced) requestAnimationFrame(drawChart);
+
+  // =====================================================================================
+  // The rest of the page: header, reveals, parallax, services index, house rules, form.
+  // =====================================================================================
+  const topBar = document.querySelector<HTMLElement>('[data-top]')!;
+  const pars = [...document.querySelectorAll<HTMLElement>('[data-par]')];
+  const spin = document.querySelector<HTMLElement>('[data-spin]');
+  const draws = [...document.querySelectorAll<SVGPathElement>('[data-draw]')];
+  const rules = [...document.querySelectorAll<HTMLElement>('[data-rules] li')];
+  const onPage = () => {
+    const vh = window.innerHeight;
+    topBar.classList.toggle('solid', window.scrollY > 30);
+    if (!reduced) {
+      for (const el of pars) {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) continue;
+        const off = (r.top + r.height / 2 - vh / 2) * Number(el.dataset.par);
+        el.style.translate = `0 ${off.toFixed(1)}px`;
+      }
+      if (spin) {
+        const r = spin.parentElement!.parentElement!.getBoundingClientRect();
+        spin.style.transform = `rotate(${(clamp((vh - r.top) / (r.height + vh)) - 0.5) * 150}deg)`;
+      }
+    }
+    for (const path of draws) {
+      const r = path.getBoundingClientRect();
+      path.style.strokeDashoffset = reduced ? '0' : String(1 - clamp((vh * 0.92 - r.top) / (vh * 0.5)));
+    }
+    let best = -1;
+    let bestD = 1e9;
+    rules.forEach((li, i) => {
+      const r = li.getBoundingClientRect();
+      const d = Math.abs(r.top + r.height / 2 - vh * 0.5);
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    });
+    rules.forEach((li, i) => li.classList.toggle('lit', i === best && bestD < vh * 0.45));
+  };
+  onPage();
+  window.addEventListener('scroll', onPage, { passive: true });
+  window.addEventListener('resize', onPage);
+
+  const rv = [...document.querySelectorAll<HTMLElement>('[data-rv]')];
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting || e.boundingClientRect.top < 0) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { rootMargin: '0px 0px -8% 0px' },
+  );
+  rv.forEach((el) => io.observe(el));
+
+  // services: an index on wide screens (hover or focus opens an entry), an accordion on a phone
+  const items = [...document.querySelectorAll<HTMLElement>('[data-svc] .svc-item')];
+  const wide = matchMedia('(min-width: 901px)');
+  const open = (item: HTMLElement | null) => {
+    items.forEach((it) => {
+      const on = it === item;
+      it.classList.toggle('on', on);
+      it.querySelector('.svc-tab')!.setAttribute('aria-expanded', String(on));
+    });
+  };
+  items.forEach((item) => {
+    const tab = item.querySelector<HTMLElement>('.svc-tab')!;
+    tab.addEventListener('click', () => open(!wide.matches && item.classList.contains('on') ? null : item));
+    tab.addEventListener('pointerenter', (e) => {
+      if (wide.matches && e.pointerType === 'mouse') open(item);
+    });
+    tab.addEventListener('focus', () => {
+      if (wide.matches) open(item);
+    });
+  });
+
+  // contact: build a mailto link, nothing is sent anywhere else
+  const form = document.querySelector<HTMLFormElement>('[data-form]')!;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const picked = d.getAll('topic').join(', ');
+    const body = [`Name: ${d.get('name')}`, `Email: ${d.get('email')}`, picked ? `About: ${picked}` : '', '', String(d.get('message') || '')]
+      .filter((l, i) => l !== '' || i === 3)
+      .join('\n');
+    window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(`Project enquiry from ${d.get('name')}`)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

@@ -1,0 +1,477 @@
+---
+// Variation 2, "Terrain": black, wide uppercase type, one vermilion accent, and a wireframe
+// valley you fly through. Small instrument-style readouts sit in the corners.
+import Variant from '../../layouts/Variant.astro';
+import VariantSections from '../../components/VariantSections.astro';
+import VariantLog from '../../components/VariantLog.astro';
+import { site } from '../../site';
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;500&display=swap';
+---
+
+<Variant n={2} fonts={fonts}>
+  <header class="top">
+    <a class="logo" href="/v/2">{site.name}</a>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#work">AI work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="cta" href="#contact">Start a project</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <canvas data-terrain aria-hidden="true"></canvas>
+      <div class="hud tl" aria-hidden="true">50.0755° N<br />14.4378° E</div>
+      <div class="hud tr" aria-hidden="true">
+        ALT <span data-alt>0412</span> M<br />
+        HDG 090°
+      </div>
+      <div class="content">
+        <p class="eyebrow"><i></i>{site.tagline} / {site.location}</p>
+        <h1>We build software that keeps working <em>after launch.</em></h1>
+        <div class="row">
+          <p>
+            A small studio of senior engineers and AI specialists, with more than ten years of production software
+            behind us.
+          </p>
+          <div class="actions">
+            <a class="cta" href="#contact">Start a project</a>
+            <a class="cta line" href="#services">See what we do</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="work" id="work">
+      <div class="copy">
+        <p class="v-label">AI work</p>
+        <h2>The demo is the easy part. We do the other 90%.</h2>
+        <p>
+          Getting a model to look clever in a meeting takes an afternoon. Getting it to be right on a Tuesday, when the
+          input is a crooked scan and the API is slow, is ordinary engineering.
+        </p>
+      </div>
+      <VariantLog />
+    </section>
+
+    <VariantSections />
+  </main>
+</Variant>
+
+<style is:global>
+  .v2 {
+    --bg: #050506;
+    --fg: #ecebe6;
+    --muted: #8a8983;
+    --line: rgba(236, 235, 230, 0.16);
+    --hot: #ff4d24;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .v2 h1,
+  .v2 h2,
+  .v2 h3 {
+    font-weight: 800;
+    font-stretch: 118%;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.94;
+    text-wrap: balance;
+  }
+  .v2 em {
+    font-style: normal;
+    color: var(--hot);
+  }
+  .v2 .top {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(18px, 3vw, 40px);
+    font: 500 12.5px/1 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    mix-blend-mode: difference;
+  }
+  .v2 .logo {
+    font: 800 17px/1 'Archivo', sans-serif;
+    font-stretch: 118%;
+    letter-spacing: 0;
+  }
+  .v2 .top nav {
+    display: flex;
+    gap: 30px;
+  }
+  .v2 .cta {
+    display: inline-flex;
+    padding: 12px 18px;
+    background: var(--fg);
+    color: var(--bg);
+    font: 500 12.5px/1 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--fg);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .v2 .cta:hover {
+    background: var(--hot);
+    border-color: var(--hot);
+    color: var(--bg);
+  }
+  .v2 .cta.line {
+    background: transparent;
+    color: var(--fg);
+    border-color: var(--line);
+  }
+  .v2 .hero {
+    position: relative;
+    height: 100svh;
+    min-height: 640px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    border-bottom: 1px solid var(--line);
+  }
+  .v2 .hero canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .v2 .hero::after {
+    content: '';
+    position: absolute;
+    inset: 40% 0 0;
+    background: linear-gradient(transparent, var(--bg) 92%);
+    pointer-events: none;
+  }
+  .v2 .hud {
+    position: absolute;
+    top: 84px;
+    font: 400 11.5px/1.6 'JetBrains Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .v2 .hud.tl {
+    left: clamp(18px, 3vw, 40px);
+  }
+  .v2 .hud.tr {
+    right: clamp(18px, 3vw, 40px);
+    text-align: right;
+  }
+  .v2 .content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 0 clamp(18px, 3vw, 40px) clamp(64px, 8vh, 90px);
+  }
+  .v2 .eyebrow,
+  .v2 .v-label {
+    font: 400 12px/1 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .v2 .eyebrow i {
+    width: 8px;
+    height: 8px;
+    background: var(--hot);
+  }
+  .v2 h1 {
+    font-size: clamp(34px, min(5.9vw, 12.5vh), 112px);
+    margin: 20px 0 clamp(20px, 3vh, 34px);
+    max-width: 19ch;
+  }
+  .v2 .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 22px 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .v2 .row p {
+    max-width: 46ch;
+    color: #c9c8c2;
+  }
+  .v2 .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .v2 .work {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 80px);
+    align-items: center;
+    padding: clamp(64px, 9vw, 130px) clamp(18px, 3vw, 40px);
+    border-bottom: 1px solid var(--line);
+  }
+  .v2 .work h2 {
+    font-size: clamp(30px, 4.2vw, 62px);
+    margin: 18px 0 22px;
+  }
+  .v2 .work .copy > p:last-child {
+    color: var(--muted);
+    max-width: 44ch;
+  }
+  .v2 .v-log {
+    border: 1px solid var(--line);
+    padding: 4px 18px 16px;
+    font: 400 13.5px/1.5 'JetBrains Mono', monospace;
+    position: relative;
+  }
+  .v2 .v-log::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 34px;
+    height: 3px;
+    background: var(--hot);
+  }
+  .v2 .v-log-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .v2 .v-line {
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    gap: 10px;
+    padding: 5px 0;
+  }
+  .v2 .v-k {
+    color: var(--muted);
+  }
+  .v2 .v-line em {
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .v2 .v-line.warn {
+    color: var(--hot);
+  }
+  .v2 .v-facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--line);
+  }
+  .v2 .v-facts div {
+    padding: 28px clamp(18px, 3vw, 40px) 34px;
+  }
+  .v2 .v-facts div + div {
+    border-left: 1px solid var(--line);
+  }
+  .v2 .v-facts b {
+    display: block;
+    font-weight: 800;
+    font-stretch: 118%;
+    text-transform: uppercase;
+    font-size: clamp(24px, 2.8vw, 40px);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .v2 .v-facts span {
+    font: 400 12.5px/1.5 'JetBrains Mono', monospace;
+    color: var(--muted);
+  }
+  .v2 .v-services header {
+    padding: clamp(64px, 9vw, 130px) clamp(18px, 3vw, 40px) clamp(30px, 4vw, 50px);
+  }
+  .v2 .v-services h2 {
+    font-size: clamp(32px, 5.2vw, 84px);
+    margin-top: 18px;
+    max-width: 16ch;
+  }
+  .v2 .v-services ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .v2 .v-services li {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: baseline;
+    padding: 22px clamp(18px, 3vw, 40px);
+    border-bottom: 1px solid var(--line);
+    transition: background 0.2s, color 0.2s;
+  }
+  .v2 .v-services li:hover {
+    background: var(--hot);
+    color: var(--bg);
+  }
+  .v2 .v-num {
+    font: 400 12px/1 'JetBrains Mono', monospace;
+    color: var(--hot);
+  }
+  .v2 .v-services li:hover .v-num,
+  .v2 .v-services li:hover p {
+    color: var(--bg);
+  }
+  .v2 .v-services h3 {
+    font-size: clamp(22px, 2.6vw, 36px);
+  }
+  .v2 .v-services li p {
+    color: var(--muted);
+    max-width: 48ch;
+  }
+  .v2 .v-cta {
+    padding: clamp(80px, 11vw, 160px) clamp(18px, 3vw, 40px) clamp(110px, 13vw, 190px);
+  }
+  .v2 .v-cta h2 {
+    font-size: clamp(38px, 7.6vw, 130px);
+    max-width: 11ch;
+    margin-bottom: 36px;
+  }
+  .v2 .v-btn {
+    display: inline-flex;
+    padding: 18px 26px;
+    background: var(--hot);
+    color: var(--bg);
+    font: 500 15px/1 'JetBrains Mono', monospace;
+  }
+  @media (max-width: 860px) {
+    .v2 .top nav {
+      display: none;
+    }
+    .v2 .work {
+      grid-template-columns: 1fr;
+    }
+    .v2 .v-facts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .v2 .v-facts div:nth-child(3) {
+      border-left: 0;
+    }
+    .v2 .v-facts div:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+    .v2 .v-services li {
+      grid-template-columns: 40px 1fr;
+    }
+    .v2 .v-services li p {
+      grid-column: 2;
+    }
+  }
+</style>
+
+<script>
+  // A grid of points over a valley-shaped height field, projected in perspective and drawn as
+  // lines. The noise scrolls toward the camera, so it reads as flying up the valley.
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-terrain]')!;
+  const ctx = canvas.getContext('2d')!;
+  const alt = document.querySelector('[data-alt]')!;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let w = 0;
+  let h = 0;
+  let steer = 0;
+  let steerTarget = 0;
+  const COLS = 56;
+  const ROWS = 44;
+
+  const hash = (x: number, y: number) => {
+    const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+    return s - Math.floor(s);
+  };
+  const noise = (x: number, y: number) => {
+    const xi = Math.floor(x);
+    const yi = Math.floor(y);
+    const xf = x - xi;
+    const yf = y - yi;
+    const u = xf * xf * (3 - 2 * xf);
+    const v = yf * yf * (3 - 2 * yf);
+    const a = hash(xi, yi);
+    const b = hash(xi + 1, yi);
+    const c = hash(xi, yi + 1);
+    const d = hash(xi + 1, yi + 1);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  };
+
+  const resize = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.clientWidth;
+    h = canvas.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  const draw = (now: number) => {
+    const t = reduced ? 3 : now / 1000;
+    steer += (steerTarget - steer) * 0.04;
+    ctx.clearRect(0, 0, w, h);
+    const scroll = t * 1.6;
+    const whole = Math.floor(scroll);
+    const frac = scroll - whole;
+    const horizon = h * 0.36;
+    const focal = h * 0.9;
+
+    const point = (c: number, r: number): [number, number, number] => {
+      const xn = c / (COLS - 1) - 0.5; // -0.5..0.5 across the valley
+      const z = r - frac + 1.2; // distance from the camera, in rows
+      const valley = Math.pow(Math.abs(xn + steer * 0.06) * 2, 1.7);
+      const height = valley * 5.2 + noise(c * 0.22, (r + whole) * 0.22) * 2.4 * (0.25 + valley);
+      const scale = focal / (z * 26);
+      return [w / 2 + (xn * 150 - steer * 6) * scale, horizon + (7.5 - height) * scale * 4.2, z];
+    };
+
+    ctx.lineWidth = 1;
+    for (let r = ROWS - 1; r >= 0; r--) {
+      const depth = 1 - r / ROWS;
+      ctx.beginPath();
+      for (let c = 0; c < COLS; c++) {
+        const [x, y] = point(c, r);
+        if (c === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(236,235,230,${0.08 + depth * depth * 0.72})`;
+      ctx.stroke();
+    }
+    for (let c = 0; c < COLS; c += 2) {
+      ctx.beginPath();
+      for (let r = 0; r < ROWS; r++) {
+        const [x, y] = point(c, r);
+        if (r === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      // the valley floor is picked out in the accent colour, like a river on a map
+      const mid = Math.abs(c - COLS / 2) < 2;
+      ctx.strokeStyle = mid ? 'rgba(255,77,36,0.8)' : 'rgba(236,235,230,0.09)';
+      ctx.stroke();
+    }
+
+    alt.textContent = String(412 + Math.round(noise(t * 0.3, 1) * 60)).padStart(4, '0');
+    if (!reduced) requestAnimationFrame(draw);
+  };
+
+  resize();
+  window.addEventListener('resize', () => {
+    resize();
+    if (reduced) draw(0);
+  });
+  window.addEventListener('pointermove', (e) => {
+    steerTarget = (e.clientX / window.innerWidth) * 2 - 1;
+  });
+  requestAnimationFrame(draw);
+</script>

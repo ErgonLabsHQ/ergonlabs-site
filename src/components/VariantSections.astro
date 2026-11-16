@@ -1,0 +1,41 @@
+---
+// Sample sections shared by the design variations. Markup only: each variation styles these classes itself.
+import { site, services } from '../site';
+
+const facts = [
+  { k: '10+ years', v: 'of production software and AI' },
+  { k: 'Weekly', v: 'demos, on a link you can open' },
+  { k: 'Fixed price', v: 'for sprints and audits, quoted first' },
+  { k: 'Yours', v: 'code, cloud and keys from the first commit' },
+];
+---
+
+<section class="v-facts">
+  {facts.map((f) => (
+    <div>
+      <b>{f.k}</b>
+      <span>{f.v}</span>
+    </div>
+  ))}
+</section>
+
+<section class="v-services" id="services">
+  <header>
+    <p class="v-label">Services</p>
+    <h2>If it runs on a computer, we have probably built one.</h2>
+  </header>
+  <ul>
+    {services.slice(0, 9).map((s) => (
+      <li>
+        <span class="v-num" aria-hidden="true"></span>
+        <h3>{s.title}</h3>
+        <p>{s.blurb}</p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<section class="v-cta" id="contact">
+  <h2>Tell us what is broken, missing or late.</h2>
+  <a class="v-btn" href={`mailto:${site.email}`}>{site.email}</a>
+</section>

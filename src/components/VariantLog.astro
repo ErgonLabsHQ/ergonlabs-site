@@ -1,0 +1,49 @@
+---
+// The example agent run, shared by the design variations. Styled by each variation.
+const run = [
+  { k: 'task', t: 'Process inbox: 14 supplier invoices' },
+  { k: 'read', t: 'invoice_0412.pdf, 3 pages, 22 line items' },
+  { k: 'tool', t: 'erp.lookup_po("PO-88213")', ok: 'matched' },
+  { k: 'check', t: 'totals against purchase order', ok: 'within tolerance' },
+  { k: 'tool', t: 'erp.create_bill(draft)', ok: 'bill #5531' },
+  { k: 'flag', t: 'invoice_0415.pdf: VAT ID does not match. Sent to a person.', warn: true },
+  { k: 'done', t: '13 of 14 handled, 1 escalated. Every step logged.' },
+];
+---
+
+<div class="v-log" data-vlog>
+  <p class="v-log-head"><span>agent / accounts-payable</span><span>example</span></p>
+  {run.map((l, i) => (
+    <p class:list={['v-line', { warn: l.warn }]} style={`--i:${i}`}>
+      <span class="v-k">{l.k}</span>
+      <span>
+        {l.t}
+        {l.ok && <em> ✓ {l.ok}</em>}
+      </span>
+    </p>
+  ))}
+</div>
+
+<style is:global>
+  .v-line {
+    opacity: 0;
+    animation: v-line-in 0.4s ease forwards;
+    animation-delay: calc(var(--i) * 0.7s + 0.8s);
+  }
+  @keyframes v-line-in {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v-line {
+      opacity: 1;
+      animation: none;
+    }
+  }
+</style>

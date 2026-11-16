@@ -1,0 +1,226 @@
+---
+import { site } from '../site';
+const needs = ['AI or agents', 'Web app', 'Mobile app', 'Game', 'Automation', 'Rescue or audit', 'More engineers', 'Not sure yet'];
+---
+
+<section class="contact" id="contact">
+  <div class="wrap layout">
+    <div class="pitch">
+      <p class="tag">Start here</p>
+      <h2 data-reveal>Tell us what is broken, missing or late.</h2>
+      <p class="say" data-reveal>
+        Three lines will do. An engineer reads it, not a sales rep, and you will hear back within one working day with
+        questions and a first opinion.
+      </p>
+      <div class="direct" data-reveal>
+        <a href={`mailto:${site.email}`} class="mail">{site.email}</a>
+        {site.bookingUrl && (
+          <a class="btn quiet" href={site.bookingUrl}>
+            Book 30 minutes
+          </a>
+        )}
+      </div>
+    </div>
+
+    <form class="form panel" data-contact data-email={site.email} data-reveal>
+      <div class="two">
+        <label>
+          <span>Name</span>
+          <input name="name" type="text" autocomplete="name" required />
+        </label>
+        <label>
+          <span>Work email</span>
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+      </div>
+      <fieldset>
+        <legend>What is it about?</legend>
+        <div class="chips">
+          {needs.map((n) => (
+            <label class="chip">
+              <input type="checkbox" name="need" value={n} />
+              <span>{n}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <label>
+        <span>The short version</span>
+        <textarea name="message" rows="4" required placeholder="What you need, by when, and what is in the way."></textarea>
+      </label>
+      <div class="send">
+        <button class="btn" type="submit">Write the email</button>
+        <p class="fine">Opens your mail app with the message filled in. This site stores nothing.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact {
+    background: var(--blue);
+    color: #fff;
+    padding: clamp(72px, 9vw, 136px) 0;
+    border-block: 2px solid var(--ink);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(36px, 6vw, 90px);
+    align-items: center;
+  }
+  .pitch {
+    display: grid;
+    gap: 24px;
+  }
+  .tag::before {
+    background: var(--sun);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  h2 {
+    font-size: clamp(42px, 5.6vw, 88px);
+  }
+  .say {
+    font-size: clamp(18px, 1.5vw, 21px);
+    max-width: 44ch;
+    opacity: 0.92;
+  }
+  .direct {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+  }
+  .mail {
+    font-family: var(--display);
+    font-size: clamp(21px, 2.1vw, 30px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: underline;
+    text-decoration-color: var(--sun);
+    text-decoration-thickness: 4px;
+    text-underline-offset: 6px;
+  }
+  .mail:hover {
+    color: var(--sun);
+  }
+  .form {
+    color: var(--ink);
+    display: grid;
+    gap: 20px;
+    padding: clamp(20px, 2.6vw, 32px);
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  label > span,
+  legend {
+    display: block;
+    font-family: var(--pixel);
+    font-size: 11px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  input[type='text'],
+  input[type='email'],
+  textarea {
+    width: 100%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    padding: 11px 13px;
+    color: var(--ink);
+    font: inherit;
+    resize: vertical;
+    transition: box-shadow 0.15s, background 0.15s;
+  }
+  textarea::placeholder {
+    color: var(--muted);
+  }
+  input:focus,
+  textarea:focus {
+    outline: none;
+    background: #fff;
+    box-shadow: 3px 3px 0 var(--blue);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .chip span {
+    display: inline-block;
+    margin: 0;
+    padding: 6px 12px 7px;
+    border: 2px solid var(--ink);
+    border-radius: 9px;
+    font-family: var(--body);
+    font-size: 14.5px;
+    font-weight: 600;
+    text-transform: none;
+    background: var(--paper);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+  .chip span:hover {
+    background: #fff;
+  }
+  .chip input:checked + span {
+    background: var(--sun);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .chip input:focus-visible + span {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+  }
+  .send {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+  }
+  .fine {
+    font-size: 13.5px;
+    color: var(--muted);
+    max-width: 32ch;
+  }
+  @media (max-width: 920px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .two {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const needs = data.getAll('need').join(', ') || 'Not specified';
+    const subject = `Project enquiry from ${data.get('name')}`;
+    const body = `Name: ${data.get('name')}\nEmail: ${data.get('email')}\nAbout: ${needs}\n\n${data.get('message')}`;
+    window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

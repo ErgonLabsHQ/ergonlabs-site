@@ -1,0 +1,26 @@
+---
+// One two-colour print, delivered as its coral plate and its blue plate so the page can move them apart.
+// `amount` is how far out of register the plates start before scroll brings them together.
+interface Props {
+  name: string;
+  w: number;
+  h: number;
+  alt: string;
+  eager?: boolean;
+  amount?: number;
+  class?: string;
+  marks?: boolean;
+}
+const { name, w, h, alt, eager = false, amount = 0.3, class: cls = '', marks = true } = Astro.props;
+---
+
+<div class:list={['reg', cls]} data-reg={amount} style={`aspect-ratio:${w}/${h}`}>
+  <div class="ly c">
+    <img src={`/art/v8/${name}-c.webp`} width={w} height={h} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    {marks && <i class="mk"></i>}
+  </div>
+  <div class="ly b">
+    <img src={`/art/v8/${name}-b.webp`} width={w} height={h} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    {marks && <i class="mk"></i>}
+  </div>
+</div>

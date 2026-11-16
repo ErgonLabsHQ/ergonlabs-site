@@ -1,0 +1,783 @@
+---
+// Variation 5, "Flight": one continuous scroll-driven scene. Particles orbit the headline, then
+// collapse into rings around a core and pour into a demo card as you scroll. Paper planes glide
+// in the margins for the whole page and get thrown around by fast scrolling.
+import Variant from '../../layouts/Variant.astro';
+import VariantSections from '../../components/VariantSections.astro';
+import VariantLog from '../../components/VariantLog.astro';
+import { site } from '../../site';
+const fonts = 'https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap';
+const chips = ['AI agents', 'Web apps', 'Mobile', 'Games', 'Backend', 'Cloud'];
+---
+
+<Variant n={5} fonts={fonts}>
+  <canvas class="planes" data-planes aria-hidden="true"></canvas>
+
+  <header class="top">
+    <a class="logo" href="/v/5"><i></i>{site.name}</a>
+    <nav>
+      <a href="#work">AI work</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="pill" href="#contact">Start a project</a>
+  </header>
+
+  <main class="frame">
+    <section class="scene" data-scene id="work">
+      <div class="pin">
+        <canvas data-swarm aria-hidden="true"></canvas>
+
+        {chips.map((c) => (
+          <span class="chip" data-chip aria-hidden="true">
+            {c}
+          </span>
+        ))}
+        <div class="core" data-core aria-hidden="true"><i></i></div>
+
+        <div class="lead" data-lead>
+          <p class="eyebrow">{site.tagline} · {site.location}</p>
+          <h1>We build software that keeps working after launch.</h1>
+          <p class="sub">
+            A small studio of senior engineers and AI specialists, with more than ten years of production software
+            behind us.
+          </p>
+          <div class="actions">
+            <a class="pill" href="#contact">Start a project</a>
+            <a class="pill ghost" href="#services">See what we do</a>
+          </div>
+        </div>
+
+        <div class="second" data-second>
+          <h2>Everything we know goes into one working product.</h2>
+          <div data-card>
+            <VariantLog />
+          </div>
+        </div>
+
+        <p class="cue" data-cue aria-hidden="true">Scroll</p>
+      </div>
+    </section>
+
+    <section class="quote">
+      <p class="v-label">AI work</p>
+      <h2>The demo is the easy part. We do the other 90%.</h2>
+      <p>
+        Getting a model to look clever in a meeting takes an afternoon. Getting it to be right on a Tuesday, when the
+        input is a crooked scan and the API is slow, is ordinary engineering.
+      </p>
+    </section>
+
+    <VariantSections />
+  </main>
+</Variant>
+
+<style is:global>
+  .v5 {
+    --bg: #09090a;
+    --fg: #f4f4f5;
+    --muted: #8d8d96;
+    --line: rgba(255, 255, 255, 0.09);
+    --hot: #ffb347;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Geist', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .v5 h1,
+  .v5 h2,
+  .v5 h3 {
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+  .v5 .planes {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 15;
+    pointer-events: none;
+  }
+  .v5 .top {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 max(20px, calc((100vw - 1240px) / 2 + 24px));
+    background: rgba(9, 9, 10, 0.7);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .v5 .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .v5 .logo i,
+  .v5 .core i {
+    display: block;
+    width: 18px;
+    height: 18px;
+    background: var(--fg);
+    clip-path: polygon(0 20%, 100% 50%, 0 80%, 22% 50%);
+  }
+  .v5 .top nav {
+    display: flex;
+    gap: 28px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .v5 .top nav a:hover {
+    color: var(--fg);
+  }
+  .v5 .pill {
+    display: inline-flex;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 500;
+    font-size: 15px;
+    border: 1px solid var(--fg);
+    transition: opacity 0.2s;
+  }
+  .v5 .pill:hover {
+    opacity: 0.85;
+  }
+  .v5 .pill.ghost {
+    background: rgba(9, 9, 10, 0.6);
+    color: var(--fg);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+  .v5 .frame {
+    max-width: 1240px;
+    margin: 0 auto;
+    border-inline: 1px solid var(--line);
+  }
+  .v5 .frame > section {
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* the pinned scene */
+  .v5 .scene {
+    height: 420vh;
+  }
+  .v5 .pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+  .v5 .pin canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .v5 .lead {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(780px, 100% - 40px);
+    transform: translate(-50%, -46%);
+    text-align: center;
+    will-change: opacity, transform;
+  }
+  .v5 .eyebrow,
+  .v5 .v-label {
+    font: 400 12.5px/1 'Geist Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .v5 h1 {
+    font-size: clamp(38px, min(6vw, 10.5vh), 82px);
+    margin: 22px 0;
+  }
+  .v5 .sub {
+    color: var(--muted);
+    max-width: 46ch;
+    margin: 0 auto 28px;
+    font-size: clamp(16.5px, 1.4vw, 19px);
+  }
+  .v5 .actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .v5 .chip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 8px 13px;
+    border-radius: 12px;
+    background: #121214;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    will-change: transform;
+    transition: border-color 0.3s, box-shadow 0.3s, color 0.3s;
+  }
+  .v5 .chip.hot {
+    border-color: var(--hot);
+    color: var(--hot);
+    box-shadow: 0 0 0 4px rgba(255, 179, 71, 0.16), 0 0 28px rgba(255, 179, 71, 0.35);
+  }
+  .v5 .core {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 96px;
+    height: 96px;
+    margin: -48px 0 0 -48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--fg);
+    box-shadow: 0 0 80px rgba(255, 255, 255, 0.28);
+    will-change: transform, opacity;
+  }
+  .v5 .core i {
+    width: 40px;
+    height: 40px;
+    background: var(--bg);
+  }
+  .v5 .second {
+    position: absolute;
+    right: clamp(20px, 4vw, 56px);
+    top: 50%;
+    width: min(500px, 44%);
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+  .v5 .second h2 {
+    font-size: clamp(28px, 3.3vw, 46px);
+    margin-bottom: 26px;
+  }
+  .v5 .cue {
+    position: absolute;
+    left: 50%;
+    bottom: 60px;
+    transform: translateX(-50%);
+    font: 400 11.5px/1 'Geist Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: opacity 0.3s;
+  }
+  .v5 .cue::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 26px;
+    margin: 10px auto 0;
+    background: linear-gradient(var(--muted), transparent);
+    animation: v5-cue 1.6s ease-in-out infinite;
+    transform-origin: top;
+  }
+  @keyframes v5-cue {
+    0% {
+      transform: scaleY(0);
+    }
+    60% {
+      transform: scaleY(1);
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+
+  /* in this variation the scroll position reveals the log lines, not a timer */
+  .v5 .v-log {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    background: rgba(18, 18, 20, 0.86);
+    backdrop-filter: blur(8px);
+    padding: 6px 20px 18px;
+    font: 400 13.5px/1.5 'Geist Mono', monospace;
+  }
+  .v5 .v-log-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .v5 .v-line {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 10px;
+    padding: 5px 0;
+    animation: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.35s, transform 0.35s;
+  }
+  .v5 .v-line.on {
+    opacity: 1;
+    transform: none;
+  }
+  .v5 .v-k {
+    color: var(--muted);
+  }
+  .v5 .v-line em {
+    font-style: normal;
+    color: #9be7b0;
+  }
+  .v5 .v-line.warn {
+    color: var(--hot);
+  }
+
+  .v5 .quote {
+    text-align: center;
+    padding: clamp(80px, 10vw, 150px) 24px;
+  }
+  .v5 .quote h2 {
+    font-size: clamp(34px, 5vw, 70px);
+    max-width: 15ch;
+    margin: 20px auto 24px;
+  }
+  .v5 .quote > p:last-child {
+    color: var(--muted);
+    max-width: 50ch;
+    margin: 0 auto;
+  }
+  .v5 .v-facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .v5 .v-facts div {
+    padding: 34px clamp(18px, 2.4vw, 32px) 38px;
+  }
+  .v5 .v-facts div + div {
+    border-left: 1px solid var(--line);
+  }
+  .v5 .v-facts b {
+    display: block;
+    font-weight: 500;
+    font-size: clamp(30px, 3.4vw, 46px);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .v5 .v-facts span {
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .v5 .v-services header {
+    padding: clamp(60px, 8vw, 110px) clamp(20px, 4vw, 56px) clamp(32px, 4vw, 56px);
+  }
+  .v5 .v-services h2 {
+    font-size: clamp(32px, 4.4vw, 60px);
+    margin-top: 18px;
+    max-width: 18ch;
+  }
+  .v5 .v-services ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--line);
+  }
+  .v5 .v-services li {
+    padding: 26px clamp(18px, 2.4vw, 32px) 34px;
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    transition: background 0.25s;
+  }
+  .v5 .v-services li:nth-child(3n) {
+    border-right: 0;
+  }
+  .v5 .v-services li:nth-last-child(-n + 3) {
+    border-bottom: 0;
+  }
+  .v5 .v-services li:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .v5 .v-num {
+    font: 400 12px/1 'Geist Mono', monospace;
+    color: var(--hot);
+  }
+  .v5 .v-services h3 {
+    font-size: 23px;
+    letter-spacing: -0.03em;
+    margin: 26px 0 8px;
+  }
+  .v5 .v-services li p {
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+  .v5 .v-cta {
+    text-align: center;
+    padding: clamp(80px, 11vw, 170px) 24px clamp(110px, 13vw, 190px);
+  }
+  .v5 .v-cta h2 {
+    font-size: clamp(36px, 5.4vw, 76px);
+    max-width: 14ch;
+    margin: 0 auto 32px;
+  }
+  .v5 .v-btn {
+    display: inline-flex;
+    padding: 14px 26px;
+    border-radius: 999px;
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 500;
+  }
+  @media (max-width: 860px) {
+    .v5 .top nav {
+      display: none;
+    }
+    /* on a phone the core sits at the top and the panel is pinned to the bottom */
+    .v5 .second {
+      left: 20px;
+      right: 20px;
+      width: auto;
+      top: auto;
+      bottom: 66px;
+    }
+    .v5 .second h2 {
+      font-size: 25px;
+      margin-bottom: 14px;
+    }
+    .v5 .v-log {
+      font-size: 11.5px;
+      padding: 2px 14px 12px;
+    }
+    .v5 .chip {
+      font-size: 12px;
+      padding: 6px 9px;
+    }
+    .v5 .core {
+      width: 64px;
+      height: 64px;
+      margin: -32px 0 0 -32px;
+    }
+    .v5 .core i {
+      width: 28px;
+      height: 28px;
+    }
+    .v5 .v-facts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .v5 .v-facts div:nth-child(3) {
+      border-left: 0;
+    }
+    .v5 .v-facts div:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+    .v5 .v-services ul {
+      grid-template-columns: 1fr;
+    }
+    .v5 .v-services li,
+    .v5 .v-services li:nth-last-child(-n + 3) {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+</style>
+
+<script>
+  const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ease = (v: number) => v * v * (3 - 2 * v);
+  const mix = (a: number, b: number, k: number) => a + (b - a) * k;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // =====================================================================================
+  // The swarm. Every particle knows where it belongs in three formations:
+  //   A  two tilted orbits around the headline
+  //   B  three rings around the core
+  //   C  the inner rings stay, the outer ring becomes a stream flowing into the card
+  // Scroll position blends between them, each particle slightly out of step with the rest,
+  // and the swarm scatters in the middle of each change.
+  // =====================================================================================
+  const scene = document.querySelector<HTMLElement>('[data-scene]')!;
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-swarm]')!;
+  const ctx = canvas.getContext('2d')!;
+  const lead = document.querySelector<HTMLElement>('[data-lead]')!;
+  const second = document.querySelector<HTMLElement>('[data-second]')!;
+  const card = document.querySelector<HTMLElement>('[data-card]')!;
+  const core = document.querySelector<HTMLElement>('[data-core]')!;
+  const cue = document.querySelector<HTMLElement>('[data-cue]')!;
+  const chips = [...document.querySelectorAll<HTMLElement>('[data-chip]')];
+  const lines = [...document.querySelectorAll<HTMLElement>('.v5 .v-line')];
+
+  type P = { a: number; orbit: number; ring: number; j: number; d: number; side: number; u: number; s: number; ph: number };
+  let ps: P[] = [];
+  let w = 0;
+  let h = 0;
+  let p = 0; // scroll progress through the pinned scene
+  const mouse = { x: -9999, y: -9999 };
+
+  const resize = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.clientWidth;
+    h = canvas.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = w < 800 ? 900 : 2400;
+    ps = Array.from({ length: n }, (_, i) => ({
+      a: Math.random() * Math.PI * 2,
+      orbit: i % 2,
+      ring: i % 3,
+      j: (Math.random() + Math.random() + Math.random()) / 1.5 - 1, // bunched toward 0
+      d: Math.random(),
+      side: Math.random() < 0.5 ? -1 : 1,
+      u: Math.random(),
+      s: 0.7 + Math.random() * 1.3,
+      ph: Math.random() * Math.PI * 2,
+    }));
+  };
+
+  // geometry shared by particles and chips
+  const layout = () => {
+    const narrow = w < 860;
+    const cx = narrow ? w / 2 : w * 0.25;
+    const cy = narrow ? h * 0.21 : h * 0.54;
+    const r0 = narrow ? Math.min(w * 0.26, h * 0.1) : Math.min(w * 0.165, h * 0.3);
+    const rect = card.getBoundingClientRect();
+    const pin = canvas.getBoundingClientRect();
+    const tx = narrow ? rect.left + rect.width / 2 - pin.left : rect.left - pin.left + 6;
+    const ty = narrow ? rect.top - pin.top + 4 : rect.top + rect.height / 2 - pin.top;
+    return { narrow, cx, cy, r0, tx, ty, rx: Math.min(w * 0.47, 700), ry: Math.min(h * 0.4, narrow ? 330 : 300) };
+  };
+
+  const orbitPoint = (a: number, orbit: number, t: number, L: ReturnType<typeof layout>, scale = 1): [number, number] => {
+    const ang = a + t * 0.05 * (orbit ? 1 : -1);
+    const tilt = (orbit ? 1 : -1) * (L.narrow ? 1.05 : 0.3);
+    const ex = L.rx * scale * Math.cos(ang);
+    const ey = L.ry * scale * Math.sin(ang);
+    return [w / 2 + ex * Math.cos(tilt) - ey * Math.sin(tilt), h * 0.51 + ex * Math.sin(tilt) + ey * Math.cos(tilt)];
+  };
+  const ringPoint = (a: number, ring: number, t: number, L: ReturnType<typeof layout>, scale = 1): [number, number] => {
+    const ang = a + t * 0.09 * (ring % 2 ? -1 : 1);
+    const r = [0.52, 0.8, 1.08][ring] * L.r0 * scale;
+    return [L.cx + Math.cos(ang) * r, L.cy + Math.sin(ang) * r];
+  };
+
+  const draw = (now: number) => {
+    const t = reduced ? 8 : now / 1000;
+    const L = layout();
+    ctx.clearRect(0, 0, w, h);
+
+    // unit vectors along and across the stream
+    const sx = L.tx - L.cx;
+    const sy = L.ty - L.cy;
+    const sl = Math.hypot(sx, sy) || 1;
+    const nx = -sy / sl;
+    const ny = sx / sl;
+
+    for (const q of ps) {
+      const k1 = ease(clamp((p - 0.1 - q.d * 0.14) / 0.28));
+      const k2 = ease(clamp((p - 0.56 - q.d * 0.12) / 0.24));
+
+      const [ax, ay] = orbitPoint(q.a, q.orbit, t, L, 1 + q.j * 0.045);
+      let [bx, by] = ringPoint(q.a, q.ring, t, L, 1 + q.j * 0.06);
+      let alpha = 0.3 + (1 - Math.abs(q.j)) * 0.55;
+
+      if (q.ring === 2 && k2 > 0) {
+        const u = (q.u + t * 0.07) % 1;
+        const along = Math.pow(u, 0.85);
+        const spread = L.r0 * 1.08 * Math.pow(1 - u, 1.6) * q.side * (0.2 + 0.8 * Math.abs(q.j));
+        const cxs = L.cx + sx * along + nx * spread;
+        const cys = L.cy + sy * along + ny * spread;
+        bx = mix(bx, cxs, k2);
+        by = mix(by, cys, k2);
+        alpha *= mix(1, Math.min(1, u * 8) * Math.min(1, (1 - u) * 5), k2);
+      }
+
+      // scatter during each change, then settle
+      const burst = Math.sin(Math.PI * k1) * 110 + Math.sin(Math.PI * k2) * 46;
+      let x = mix(ax, bx, k1) + Math.cos(q.ph + t * 0.6) * burst * (0.3 + q.d);
+      let y = mix(ay, by, k1) + Math.sin(q.ph * 1.7 + t * 0.5) * burst * (0.3 + q.d);
+
+      const dx = x - mouse.x;
+      const dy = y - mouse.y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < 12000) {
+        const f = (1 - d2 / 12000) * 26;
+        const d = Math.sqrt(d2) || 1;
+        x += (dx / d) * f;
+        y += (dy / d) * f;
+      }
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fillRect(x, y, q.s, q.s);
+    }
+
+    // chips ride the orbits, then settle on the rings around the core
+    const kc = ease(clamp((p - 0.12) / 0.3));
+    const hot = p > 0.6 ? Math.floor(((p - 0.6) / 0.4) * chips.length * 1.5) % chips.length : -1;
+    chips.forEach((chip, i) => {
+      const a = (i / chips.length) * Math.PI * 2;
+      const [ax, ay] = orbitPoint(a, i % 2, t, L);
+      const [bx, by] = ringPoint(a + 0.5, 1 + (i % 2), t, L);
+      chip.style.transform = `translate(${mix(ax, bx, kc)}px, ${mix(ay, by, kc)}px) translate(-50%, -50%)`;
+      chip.classList.toggle('hot', i === hot);
+    });
+
+    const ko = ease(clamp((p - 0.2) / 0.22));
+    core.style.transform = `translate(${L.cx}px, ${L.cy}px) scale(${0.4 + ko * 0.6})`;
+    core.style.opacity = String(ko);
+
+    if (!reduced) requestAnimationFrame(draw);
+  };
+
+  const onScroll = () => {
+    const total = scene.offsetHeight - window.innerHeight;
+    p = total > 0 ? clamp(-scene.getBoundingClientRect().top / total) : 0;
+
+    const out = ease(clamp((p - 0.03) / 0.13));
+    lead.style.opacity = String(1 - out);
+    lead.style.transform = `translate(-50%, -46%) scale(${1 - out * 0.08})`;
+    lead.style.pointerEvents = out > 0.5 ? 'none' : '';
+    cue.style.opacity = p > 0.02 ? '0' : '1';
+
+    const inn = ease(clamp((p - 0.3) / 0.18));
+    second.style.opacity = String(inn);
+    second.style.transform =
+      window.innerWidth < 860 ? `translateY(${(1 - inn) * 40}px)` : `translate(${(1 - inn) * 50}px, -50%)`;
+    lines.forEach((line, i) => line.classList.toggle('on', p > 0.55 + i * 0.055));
+    if (reduced) draw(0);
+  };
+
+  resize();
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => {
+    resize();
+    onScroll();
+  });
+  canvas.parentElement!.addEventListener('pointermove', (e) => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  });
+  canvas.parentElement!.addEventListener('pointerleave', () => {
+    mouse.x = mouse.y = -9999;
+  });
+  requestAnimationFrame(draw);
+
+  // =====================================================================================
+  // Paper planes. Each one chases a point that wanders up and down its side margin, with a
+  // limited turn rate, so it swoops rather than slides. Scrolling shoves them off course.
+  // =====================================================================================
+  const sky = document.querySelector<HTMLCanvasElement>('[data-planes]')!;
+  const sctx = sky.getContext('2d')!;
+  let sw = 0;
+  let sh = 0;
+  const sizeSky = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    sw = window.innerWidth;
+    sh = window.innerHeight;
+    sky.width = sw * dpr;
+    sky.height = sh * dpr;
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  sizeSky();
+  window.addEventListener('resize', sizeSky);
+
+  const planes = [0, 1, 2, 3].map((i) => ({
+    x: i % 2 ? sw + 40 : -40,
+    y: sh * (0.2 + 0.2 * i),
+    heading: i % 2 ? Math.PI : 0,
+    speed: 1.5 + i * 0.25,
+    side: i % 2,
+    phase: i * 1.9,
+    size: 20 + (i % 3) * 5,
+  }));
+
+  // one wing or fold, filled with parallel pencil strokes
+  const hatch = (pts: [number, number][], angle: number, gap: number, alpha: number) => {
+    sctx.save();
+    sctx.beginPath();
+    pts.forEach(([x, y], i) => (i ? sctx.lineTo(x, y) : sctx.moveTo(x, y)));
+    sctx.closePath();
+    sctx.clip();
+    sctx.rotate(angle);
+    sctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+    sctx.lineWidth = 1;
+    sctx.beginPath();
+    for (let v = -80; v < 80; v += gap) {
+      sctx.moveTo(-80, v);
+      sctx.lineTo(80, v);
+    }
+    sctx.stroke();
+    sctx.restore();
+  };
+
+  let lastY = window.scrollY;
+  let shove = 0;
+  const fly = (now: number) => {
+    const t = now / 1000;
+    const sv = window.scrollY - lastY;
+    lastY = window.scrollY;
+    shove += (clamp(sv, -90, 90) - shove) * 0.2;
+
+    sctx.clearRect(0, 0, sw, sh);
+    // with no side margins to fly in, the planes pass over the content, so they are drawn faint
+    sctx.globalAlpha = sw < 1100 ? 0.3 : 1;
+    const margin = Math.max(46, (sw - 1240) / 2);
+    for (const pl of planes) {
+      const homeX = pl.side ? sw - margin / 2 : margin / 2;
+      const tx = homeX + Math.sin(t * 0.7 + pl.phase) * Math.min(60, margin * 0.6);
+      const ty = sh * (0.5 + 0.42 * Math.sin(t * 0.33 + pl.phase * 2.1));
+      let want = Math.atan2(ty - pl.y, tx - pl.x);
+      let diff = want - pl.heading;
+      while (diff > Math.PI) diff -= Math.PI * 2;
+      while (diff < -Math.PI) diff += Math.PI * 2;
+      // fast scrolling spins them and throws them against the scroll direction
+      pl.heading += clamp(diff, -0.035, 0.035) + shove * 0.004 * (pl.side ? 1 : -1);
+      const v = pl.speed + Math.abs(shove) * 0.05;
+      pl.x += Math.cos(pl.heading) * v;
+      pl.y += Math.sin(pl.heading) * v - shove * 0.45;
+      if (pl.y < -80) pl.y = sh + 60;
+      if (pl.y > sh + 80) pl.y = -60;
+
+      const s = pl.size;
+      const bank = Math.sin(t * 2 + pl.phase) * 0.12; // slight wobble, like paper in air
+      sctx.save();
+      sctx.translate(pl.x, pl.y);
+      sctx.rotate(pl.heading);
+      sctx.scale(1, 1 + bank);
+      hatch(
+        [
+          [-s, -0.46 * s],
+          [s, 0],
+          [-0.55 * s, 0.04 * s],
+        ],
+        1.05,
+        3,
+        0.85,
+      );
+      hatch(
+        [
+          [-0.55 * s, 0.04 * s],
+          [s, 0],
+          [-0.8 * s, 0.52 * s],
+        ],
+        -0.5,
+        2,
+        0.5,
+      );
+      sctx.restore();
+    }
+    if (!reduced) requestAnimationFrame(fly);
+  };
+  requestAnimationFrame(fly);
+</script>

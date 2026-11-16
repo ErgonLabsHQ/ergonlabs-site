@@ -1,0 +1,517 @@
+---
+// Variation 4, "Stack": light and quiet. The picture is an exploded view of a software system,
+// five floating layers built with CSS 3D transforms, that open up when you point at them.
+import Variant from '../../layouts/Variant.astro';
+import VariantSections from '../../components/VariantSections.astro';
+import VariantLog from '../../components/VariantLog.astro';
+import { site } from '../../site';
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=DM+Mono:wght@400;500&display=swap';
+
+// top of the stack first
+const layers = [
+  { id: 'ui', name: 'Interface', what: 'Web apps, mobile apps, games' },
+  { id: 'ai', name: 'AI', what: 'Agents, custom models, evals' },
+  { id: 'api', name: 'Backend', what: 'APIs, payments, permissions' },
+  { id: 'data', name: 'Data', what: 'Pipelines, search, reporting' },
+  { id: 'cloud', name: 'Cloud', what: 'Infrastructure, deploys, on-call' },
+];
+---
+
+<Variant n={4} fonts={fonts}>
+  <header class="top">
+    <a class="logo" href="/v/4"><i></i>{site.name}</a>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#work">AI work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="cta" href="#contact">Start a project</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="words">
+        <p class="eyebrow">{site.tagline} · {site.location}</p>
+        <h1>We build software that keeps working after launch.</h1>
+        <p class="sub">
+          A small studio of senior engineers and AI specialists, with more than ten years of production software behind
+          us. One team for every layer.
+        </p>
+        <div class="actions">
+          <a class="cta" href="#contact">Start a project</a>
+          <a class="cta line" href="#services">See what we do</a>
+        </div>
+      </div>
+
+      <div class="figure" data-figure>
+        <div class="iso">
+          <div class="stack">
+            {layers.map((l, i) => (
+              <div class={`plate ${l.id}`} style={`--i:${layers.length - 1 - i}`} data-plate={l.id}>
+                <span></span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <ol class="legend">
+          {layers.map((l, i) => (
+            <li data-layer={l.id}>
+              <span class="n" aria-hidden="true">{i === -1 ? '' : '·'}</span>
+              <b>{l.name}</b>
+              <span class="what">{l.what}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="work" id="work">
+      <div class="copy">
+        <p class="v-label">AI work</p>
+        <h2>The demo is the easy part. We do the other 90%.</h2>
+        <p>
+          Getting a model to look clever in a meeting takes an afternoon. Getting it to be right on a Tuesday, when the
+          input is a crooked scan and the API is slow, is ordinary engineering.
+        </p>
+      </div>
+      <VariantLog />
+    </section>
+
+    <VariantSections />
+  </main>
+</Variant>
+
+<style is:global>
+  .v4 {
+    --bg: #f3f1ec;
+    --fg: #15151a;
+    --muted: #6a6a72;
+    --line: rgba(21, 21, 26, 0.13);
+    --blue: #2747ff;
+    --peach: #ffd6bf;
+    --sage: #cfe3d8;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .v4 h1,
+  .v4 h2,
+  .v4 h3 {
+    font-weight: 600;
+    font-stretch: 88%;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  .v4 .top {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(20px, 4vw, 56px);
+    background: rgba(243, 241, 236, 0.86);
+    backdrop-filter: blur(12px);
+  }
+  .v4 .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-size: 18px;
+  }
+  .v4 .logo i {
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: var(--blue);
+    box-shadow: 4px 4px 0 var(--fg);
+  }
+  .v4 .top nav {
+    display: flex;
+    gap: 30px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  .v4 .top nav a:hover {
+    color: var(--fg);
+  }
+  .v4 .cta {
+    display: inline-flex;
+    padding: 11px 18px;
+    border-radius: 10px;
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 600;
+    font-size: 15px;
+    border: 1.5px solid var(--fg);
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .v4 .cta:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+  .v4 .cta.line {
+    background: transparent;
+    color: var(--fg);
+  }
+  .v4 .hero {
+    min-height: 100svh;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(20px, 3vw, 48px);
+    align-items: center;
+    padding: 96px clamp(20px, 4vw, 56px) 70px;
+    overflow: hidden;
+  }
+  .v4 .eyebrow,
+  .v4 .v-label {
+    font: 400 12.5px/1 'DM Mono', monospace;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .v4 h1 {
+    font-size: clamp(42px, 6vw, 96px);
+    margin: 24px 0 26px;
+  }
+  .v4 .sub {
+    color: var(--muted);
+    max-width: 44ch;
+    font-size: clamp(17px, 1.4vw, 20px);
+    margin-bottom: 30px;
+  }
+  .v4 .actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* the exploded stack */
+  .v4 .figure {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(8px, 2vw, 30px);
+  }
+  .v4 .iso {
+    height: min(66vh, 560px);
+    min-height: 420px;
+    display: grid;
+    place-items: center;
+    animation: v4-bob 6s ease-in-out infinite alternate;
+  }
+  @keyframes v4-bob {
+    to {
+      transform: translateY(-12px);
+    }
+  }
+  .v4 .stack {
+    --gap: 62px;
+    position: relative;
+    width: clamp(210px, 20vw, 300px);
+    aspect-ratio: 1;
+    transform: translateY(26%) rotateX(57deg) rotateZ(-41deg);
+    transform-style: preserve-3d;
+    transition: --gap 0.5s;
+  }
+  .v4 .figure:hover .stack {
+    --gap: 84px;
+  }
+  .v4 .plate {
+    position: absolute;
+    inset: 0;
+    border-radius: 15%;
+    border: 1.5px solid var(--fg);
+    transform: translateZ(calc(var(--i) * var(--gap)));
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.3s;
+    box-shadow: -14px 14px 0 rgba(21, 21, 26, 0.07);
+    overflow: hidden;
+  }
+  .v4 .plate.lift {
+    transform: translateZ(calc(var(--i) * var(--gap) + 34px));
+  }
+  .v4 .figure.focus .plate:not(.lift) {
+    filter: saturate(0.4) opacity(0.55);
+  }
+  .v4 .plate span {
+    position: absolute;
+    inset: 0;
+  }
+  .v4 .plate.cloud {
+    background: var(--fg);
+  }
+  .v4 .plate.cloud span {
+    background: repeating-radial-gradient(circle at 50% 50%, transparent 0 13px, rgba(243, 241, 236, 0.28) 13px 14px);
+  }
+  .v4 .plate.data {
+    background: var(--sage);
+  }
+  .v4 .plate.data span {
+    background: radial-gradient(circle, var(--fg) 1.6px, transparent 2px) 0 0 / 18px 18px;
+    opacity: 0.55;
+  }
+  .v4 .plate.api {
+    background: var(--peach);
+  }
+  .v4 .plate.api span {
+    background: repeating-linear-gradient(90deg, transparent 0 15px, rgba(21, 21, 26, 0.45) 15px 16.5px);
+    inset: 16%;
+  }
+  .v4 .plate.ai {
+    background: var(--blue);
+  }
+  .v4 .plate.ai span {
+    inset: 22%;
+    border-radius: 50%;
+    border: 1.5px solid #fff;
+    background: radial-gradient(circle, #fff 0 9%, transparent 10% 100%);
+    box-shadow: 0 0 0 22px rgba(255, 255, 255, 0.14);
+  }
+  .v4 .plate.ui {
+    background: #fff;
+  }
+  .v4 .plate.ui span {
+    inset: 12%;
+    border-radius: 10%;
+    border: 1.5px solid var(--fg);
+    background:
+      linear-gradient(var(--fg), var(--fg)) 0 0 / 100% 16% no-repeat,
+      linear-gradient(var(--blue), var(--blue)) 12% 40% / 46% 9% no-repeat,
+      linear-gradient(var(--line), var(--line)) 12% 60% / 70% 6% no-repeat,
+      linear-gradient(var(--line), var(--line)) 12% 76% / 56% 6% no-repeat;
+  }
+  .v4 .legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+    min-width: 200px;
+  }
+  .v4 .legend li {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    padding: 11px 12px;
+    border-radius: 10px;
+    cursor: default;
+    transition: background 0.2s;
+  }
+  .v4 .legend li:hover,
+  .v4 .legend li.on {
+    background: #fff;
+    box-shadow: 0 0 0 1.5px var(--fg);
+  }
+  .v4 .legend .n {
+    font: 400 11.5px/1.8 'DM Mono', monospace;
+    color: var(--muted);
+    grid-row: span 2;
+  }
+  .v4 .legend b {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .v4 .legend .what {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .v4 .work {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 80px);
+    align-items: center;
+    padding: clamp(64px, 9vw, 130px) clamp(20px, 4vw, 56px);
+    border-top: 1px solid var(--line);
+  }
+  .v4 .work h2 {
+    font-size: clamp(32px, 4.2vw, 60px);
+    margin: 18px 0 20px;
+  }
+  .v4 .work .copy > p:last-child {
+    color: var(--muted);
+    max-width: 44ch;
+  }
+  .v4 .v-log {
+    background: #fff;
+    border: 1.5px solid var(--fg);
+    border-radius: 16px;
+    padding: 4px 20px 16px;
+    font: 400 13.5px/1.5 'DM Mono', monospace;
+    box-shadow: 8px 8px 0 var(--blue);
+  }
+  .v4 .v-log-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+  .v4 .v-line {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 10px;
+    padding: 5px 0;
+  }
+  .v4 .v-k {
+    color: var(--muted);
+  }
+  .v4 .v-line em {
+    font-style: normal;
+    color: #17874b;
+  }
+  .v4 .v-line.warn {
+    color: #c2410c;
+  }
+  .v4 .v-facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-block: 1px solid var(--line);
+  }
+  .v4 .v-facts div {
+    padding: 30px clamp(20px, 4vw, 56px) 34px;
+  }
+  .v4 .v-facts div + div {
+    border-left: 1px solid var(--line);
+    padding-left: clamp(18px, 2.4vw, 32px);
+  }
+  .v4 .v-facts b {
+    display: block;
+    font-weight: 600;
+    font-stretch: 88%;
+    font-size: clamp(30px, 3.4vw, 48px);
+    letter-spacing: -0.035em;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .v4 .v-facts span {
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+  .v4 .v-services {
+    padding: clamp(64px, 9vw, 130px) clamp(20px, 4vw, 56px) 0;
+  }
+  .v4 .v-services h2 {
+    font-size: clamp(34px, 4.8vw, 72px);
+    margin: 18px 0 clamp(32px, 4vw, 56px);
+    max-width: 17ch;
+  }
+  .v4 .v-services ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .v4 .v-services li {
+    padding: 22px 22px 26px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .v4 .v-services li:hover {
+    border-color: var(--fg);
+    transform: translateY(-3px);
+  }
+  .v4 .v-num {
+    font: 400 12px/1 'DM Mono', monospace;
+    color: var(--blue);
+  }
+  .v4 .v-services h3 {
+    font-size: 24px;
+    letter-spacing: -0.03em;
+    margin: 28px 0 8px;
+  }
+  .v4 .v-services li p {
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+  .v4 .v-cta {
+    text-align: center;
+    padding: clamp(90px, 12vw, 170px) 24px clamp(120px, 14vw, 200px);
+  }
+  .v4 .v-cta h2 {
+    font-size: clamp(40px, 6.4vw, 100px);
+    max-width: 13ch;
+    margin: 0 auto 36px;
+  }
+  .v4 .v-btn {
+    display: inline-flex;
+    padding: 16px 28px;
+    border-radius: 12px;
+    background: var(--blue);
+    color: #fff;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  @property --gap {
+    syntax: '<length>';
+    inherits: true;
+    initial-value: 62px;
+  }
+  @media (max-width: 980px) {
+    .v4 .top nav {
+      display: none;
+    }
+    .v4 .hero,
+    .v4 .work {
+      grid-template-columns: 1fr;
+    }
+    .v4 .v-facts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .v4 .v-facts div:nth-child(3) {
+      border-left: 0;
+      padding-left: clamp(20px, 4vw, 56px);
+    }
+    .v4 .v-facts div:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+    .v4 .v-services ul {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 620px) {
+    .v4 .figure {
+      grid-template-columns: 1fr;
+    }
+    .v4 .iso {
+      height: 400px;
+      min-height: 0;
+    }
+    .v4 .stack {
+      --gap: 48px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v4 .iso {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Pointing at a layer, on the drawing or in the list, lifts it and dims the others.
+  const figure = document.querySelector<HTMLElement>('[data-figure]')!;
+  const plates = [...figure.querySelectorAll<HTMLElement>('[data-plate]')];
+  const items = [...figure.querySelectorAll<HTMLElement>('[data-layer]')];
+  const focus = (id: string | null) => {
+    figure.classList.toggle('focus', id !== null);
+    plates.forEach((p) => p.classList.toggle('lift', p.dataset.plate === id));
+    items.forEach((li) => li.classList.toggle('on', li.dataset.layer === id));
+  };
+  plates.forEach((p) => p.addEventListener('pointerenter', () => focus(p.dataset.plate!)));
+  items.forEach((li) => li.addEventListener('pointerenter', () => focus(li.dataset.layer!)));
+  figure.addEventListener('pointerleave', () => focus(null));
+</script>

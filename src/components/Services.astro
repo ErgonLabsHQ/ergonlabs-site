@@ -1,0 +1,154 @@
+---
+import { services } from '../site';
+const colours = ['var(--blue)', 'var(--coral)', 'var(--mint)', 'var(--sun)'];
+---
+
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="tag">Services</p>
+      <h2 class="h-xl" data-reveal>If it runs on a computer, we have probably built one.</h2>
+      <p class="lede" data-reveal>
+        One team for the whole job, so nothing falls into the gap between your designer, your backend contractor and
+        whoever set up the servers.
+      </p>
+    </div>
+
+    <div class="grid">
+      {services.map((s, i) => (
+        <details class="row" id={`svc-${s.id}`} open={i === 0} style={`--c:${colours[i % colours.length]}`} data-reveal>
+          <summary>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="name">
+              <h3>{s.title}</h3>
+              {s.note && <span class="note">{s.note}</span>}
+            </span>
+            <i aria-hidden="true"></i>
+          </summary>
+          <div class="body">
+            <p>{s.blurb}</p>
+            <ul>
+              {s.items.map((it) => (
+                <li>{it}</li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <p class="after" data-reveal>
+      Not on the list? <a class="link" href="#contact">Ask anyway.</a> The answer is usually yes, and when it is no we
+      will tell you who to call instead.
+    </p>
+  </div>
+</section>
+
+<style>
+  .grid {
+    columns: 2;
+    column-gap: 22px;
+  }
+  .row {
+    break-inside: avoid;
+    margin-bottom: 14px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    transition: box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .row:hover,
+  .row[open] {
+    box-shadow: 5px 5px 0 var(--ink);
+    transform: translate(-2px, -2px);
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 20px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .num {
+    font-family: var(--pixel);
+    font-size: 12px;
+    padding: 5px 7px 6px;
+    background: var(--c);
+    border: 2px solid var(--ink);
+    border-radius: 7px;
+  }
+  h3 {
+    font-size: clamp(21px, 1.9vw, 27px);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  .note {
+    display: block;
+    margin-top: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue);
+  }
+  summary i {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    transition: transform 0.25s var(--ease);
+  }
+  summary i::before,
+  summary i::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--ink);
+    transform: translateY(-50%);
+  }
+  summary i::after {
+    transform: translateY(-50%) rotate(90deg);
+  }
+  .row[open] summary i {
+    transform: rotate(45deg);
+  }
+  .body {
+    padding: 0 20px 20px;
+  }
+  .body p {
+    color: var(--muted);
+    margin-bottom: 14px;
+    max-width: 52ch;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  li {
+    font-size: 14.5px;
+    font-weight: 500;
+    padding: 4px 10px 5px;
+    border: 1.5px solid var(--ink);
+    border-radius: 8px;
+    background: var(--paper);
+  }
+  .after {
+    margin-top: 30px;
+    font-size: clamp(18px, 1.6vw, 22px);
+    max-width: 48ch;
+  }
+  @media (max-width: 860px) {
+    .grid {
+      columns: 1;
+    }
+  }
+</style>

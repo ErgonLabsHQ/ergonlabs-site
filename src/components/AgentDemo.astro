@@ -1,0 +1,518 @@
+---
+import { aiPoints } from '../site';
+
+// Three worked examples shown as animated interface panels. All of the content is illustrative.
+const demos = [
+  {
+    id: 'agent',
+    tab: 'An agent doing a job',
+    blurb: 'It reads, checks, acts, and stops when something does not add up.',
+    window: 'agent / accounts-payable',
+  },
+  {
+    id: 'bug',
+    tab: 'A bug, from report to fix',
+    blurb: 'Found from the error, traced to the cause, fixed with a test that would have caught it.',
+    window: 'incident / checkout',
+  },
+  {
+    id: 'weeks',
+    tab: 'A project, week by week',
+    blurb: 'Something you can click at the end of every week, starting with the second one.',
+    window: 'project / weekly demos',
+  },
+];
+
+const run = [
+  { k: 'task', t: 'Process inbox: 14 supplier invoices' },
+  { k: 'read', t: 'invoice_0412.pdf, 3 pages, 22 line items' },
+  { k: 'tool', t: 'erp.lookup_po("PO-88213")', ok: 'matched' },
+  { k: 'check', t: 'totals against purchase order', ok: 'within tolerance' },
+  { k: 'tool', t: 'erp.create_bill(draft)', ok: 'bill #5531' },
+  { k: 'flag', t: 'invoice_0415.pdf: VAT ID does not match. Sent to a person.', warn: true },
+  { k: 'done', t: '13 of 14 handled, 1 escalated. Every step logged.' },
+];
+
+const weeks = [
+  { w: 'Week 1', t: 'Scope, price and date on two pages', s: 'Signed' },
+  { w: 'Week 2', t: 'Thin slice on real infrastructure', s: 'Demo' },
+  { w: 'Week 3', t: 'Accounts, billing, first real users', s: 'Demo' },
+  { w: 'Week 4', t: 'The AI feature, with its test set', s: 'Demo' },
+  { w: 'Week 5', t: 'Load test, security review, fixes', s: 'Demo' },
+  { w: 'Week 6', t: 'Launch, monitoring, on-call', s: 'Live' },
+];
+---
+
+<section class="section ai" id="ai">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="tag">AI work, and the rest</p>
+      <h2 class="h-xl" data-reveal>The demo is the easy part. We do the other 90%.</h2>
+      <p class="lede" data-reveal>
+        Getting a model to look clever in a meeting takes an afternoon. Getting it to be right on a Tuesday, when the
+        input is a crooked scan and the API is slow, is ordinary engineering. Here is what that looks like.
+      </p>
+    </div>
+
+    <div class="stage" data-demos>
+      <div class="tabs" role="tablist" aria-label="Examples">
+        {demos.map((d, i) => (
+          <button class="tab" role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} data-tab={d.id}>
+            <span class="n">{String(i + 1).padStart(2, '0')}</span>
+            <span class="what">
+              <b>{d.tab}</b>
+              <span>{d.blurb}</span>
+            </span>
+            <span class="meter"><i></i></span>
+          </button>
+        ))}
+      </div>
+
+      <div class="window panel">
+        <div class="chrome">
+          <span class="dots"><i></i><i></i><i></i></span>
+          {demos.map((d, i) => (
+            <span class:list={['title', { on: i === 0 }]} data-title={d.id}>{d.window}</span>
+          ))}
+          <span class="eg">Example</span>
+        </div>
+
+        <div class="views">
+          <div class="view on" data-view="agent">
+            {run.map((l, i) => (
+              <p class:list={['line', 'seq', { warn: l.warn }]} style={`--i:${i}`}>
+                <span class="k">{l.k}</span>
+                <span>
+                  {l.t}
+                  {l.ok && <em> ✓ {l.ok}</em>}
+                </span>
+              </p>
+            ))}
+          </div>
+
+          <div class="view" data-view="bug">
+            <div class="alert seq" style="--i:0">
+              <b>500</b>
+              <span>POST /api/orders failed for 17 shoppers in the last 10 minutes</span>
+            </div>
+            <p class="cause seq" style="--i:1">
+              <span class="k">cause</span> Stock is checked before payment and reserved after it. Two buyers can take
+              the last item.
+            </p>
+            <pre class="diff seq" style="--i:2"><span class="del">- const ok = await stock.check(item)</span>
+<span class="del">- await payments.capture(order)</span>
+<span class="add">+ await db.transaction(async (tx) =&gt; &#123;</span>
+<span class="add">+   await stock.reserve(item, tx)</span>
+<span class="add">+   await payments.capture(order, tx)</span>
+<span class="add">+ &#125;)</span></pre>
+            <ul class="checks">
+              <li class="seq" style="--i:3">New test reproduces the race</li>
+              <li class="seq" style="--i:4">Reviewed by a second engineer</li>
+              <li class="seq" style="--i:5">Deployed, error rate back to zero</li>
+              <li class="seq" style="--i:6">The 17 shoppers get a link to finish</li>
+            </ul>
+          </div>
+
+          <div class="view" data-view="weeks">
+            {weeks.map((w, i) => (
+              <div class="week seq" style={`--i:${i}`}>
+                <span class="k">{w.w}</span>
+                <span class="what">{w.t}</span>
+                <span class:list={['state', { live: w.s === 'Live' }]}>{w.s}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="points">
+      {aiPoints.map((p, i) => (
+        <li data-reveal style={`--i:${i}`}>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .ai {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .ai .lede {
+    color: rgba(246, 241, 230, 0.72);
+  }
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(24px, 4vw, 60px);
+    align-items: start;
+  }
+  .tabs {
+    display: grid;
+    gap: 10px;
+  }
+  .tab {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    text-align: left;
+    padding: 18px 18px 22px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    border: 2px solid rgba(246, 241, 230, 0.22);
+    border-radius: 14px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .tab:hover {
+    border-color: rgba(246, 241, 230, 0.6);
+  }
+  .tab[aria-selected='true'] {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+  }
+  .n {
+    font-family: var(--pixel);
+    font-size: 12px;
+    padding-top: 4px;
+    color: var(--sun);
+  }
+  .tab[aria-selected='true'] .n {
+    color: var(--blue);
+  }
+  .what b {
+    display: block;
+    font-family: var(--display);
+    font-size: clamp(21px, 1.9vw, 26px);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 5px;
+  }
+  .what span {
+    font-size: 15.5px;
+    opacity: 0.75;
+  }
+  .meter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 6px;
+  }
+  .meter i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--blue);
+  }
+  .tab[aria-selected='true'] .meter i {
+    animation: fill var(--dur, 9s) linear forwards;
+  }
+  .stage.paused .meter i {
+    animation-play-state: paused;
+  }
+  @keyframes fill {
+    to {
+      width: 100%;
+    }
+  }
+
+  .window {
+    color: var(--ink);
+    box-shadow: 8px 8px 0 var(--blue);
+    overflow: hidden;
+  }
+  .chrome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-bottom: 2px solid var(--ink);
+    font-family: var(--pixel);
+    font-size: 11px;
+    text-transform: uppercase;
+    background: var(--paper);
+  }
+  .dots {
+    display: inline-flex;
+    gap: 4px;
+  }
+  .dots i {
+    width: 9px;
+    height: 9px;
+    background: var(--coral);
+  }
+  .dots i:nth-child(2) {
+    background: var(--sun);
+  }
+  .dots i:nth-child(3) {
+    background: var(--mint);
+  }
+  .title {
+    display: none;
+  }
+  .title.on {
+    display: inline;
+  }
+  .eg {
+    margin-left: auto;
+    color: var(--muted);
+  }
+  .views {
+    display: grid;
+  }
+  .view {
+    grid-area: 1 / 1;
+    padding: 20px 20px 24px;
+    min-height: 372px;
+    visibility: hidden;
+    font-family: var(--mono);
+    font-size: clamp(12.5px, 1vw, 14px);
+    line-height: 1.5;
+  }
+  .view.on {
+    visibility: visible;
+  }
+  /* each element of a view appears in turn when the view becomes active */
+  :global(.js) .view .seq {
+    opacity: 0;
+  }
+  :global(.js) .view.on .seq {
+    animation: appear 0.35s var(--ease) forwards;
+    animation-delay: calc(var(--i) * 0.75s + 0.25s);
+  }
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .k {
+    display: inline-block;
+    font-family: var(--pixel);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .line {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .line em {
+    font-style: normal;
+    font-weight: 700;
+    color: #17874b;
+    white-space: nowrap;
+  }
+  .line.warn {
+    background: #ffe9a3;
+    margin: 0 -8px;
+    padding: 6px 8px;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+  }
+  .line.warn .k {
+    color: var(--ink);
+  }
+  .alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--coral);
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .alert b {
+    font-family: var(--pixel);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2px 7px 3px;
+    border-radius: 5px;
+  }
+  .cause {
+    margin: 14px 0;
+    font-family: var(--body);
+    font-size: 15.5px;
+  }
+  .cause .k {
+    margin-right: 8px;
+  }
+  .diff {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: inherit;
+    overflow-x: auto;
+  }
+  .del {
+    color: #ff9a85;
+  }
+  .add {
+    color: #a8ecc9;
+  }
+  .checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 14px;
+    font-family: var(--body);
+    font-size: 14.5px;
+    font-weight: 500;
+  }
+  .checks li::before {
+    content: '✓';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    line-height: 16px;
+    text-align: center;
+    margin-right: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--mint);
+    border: 1.5px solid var(--ink);
+    border-radius: 5px;
+  }
+  .week {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px dashed var(--line);
+    font-family: var(--body);
+    font-size: 15.5px;
+    font-weight: 500;
+  }
+  .state {
+    font-family: var(--pixel);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    padding: 3px 8px 4px;
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    background: var(--sun);
+  }
+  .state.live {
+    background: var(--mint);
+  }
+
+  .points {
+    list-style: none;
+    margin: clamp(48px, 6vw, 90px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(20px, 3vw, 40px);
+  }
+  .points li {
+    padding-top: 18px;
+    border-top: 2px solid var(--paper);
+  }
+  .points h3 {
+    font-size: clamp(21px, 1.8vw, 25px);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .points p {
+    font-size: 15.5px;
+    color: rgba(246, 241, 230, 0.72);
+  }
+  @media (max-width: 960px) {
+    .stage {
+      grid-template-columns: 1fr;
+    }
+    .points {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .points,
+    .checks {
+      grid-template-columns: 1fr;
+    }
+    .view {
+      min-height: 0;
+      padding: 16px 14px 18px;
+    }
+    .what span {
+      display: none;
+    }
+    .tab {
+      padding: 14px 14px 18px;
+    }
+  }
+</style>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('[data-demos]');
+  if (stage) {
+    const tabs = [...stage.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const views = [...stage.querySelectorAll<HTMLElement>('[data-view]')];
+    const titles = [...stage.querySelectorAll<HTMLElement>('[data-title]')];
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+
+    const show = (i: number) => {
+      current = i;
+      const id = tabs[i].dataset.tab;
+      tabs.forEach((t, n) => {
+        t.setAttribute('aria-selected', 'false');
+        if (n === i) {
+          void t.offsetWidth; // restart the progress bar
+          t.setAttribute('aria-selected', 'true');
+        }
+      });
+      views.forEach((v) => {
+        v.classList.remove('on');
+        if (v.dataset.view === id) {
+          void v.offsetWidth; // replay the sequence
+          v.classList.add('on');
+        }
+      });
+      titles.forEach((t) => t.classList.toggle('on', t.dataset.title === id));
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => show(i));
+      // when a tab's bar fills, move to the next example
+      t.querySelector('.meter i')?.addEventListener('animationend', () => {
+        if (!reduced) show((current + 1) % tabs.length);
+      });
+    });
+
+    // only run while on screen, and hold still while the pointer is over the window
+    stage.classList.add('paused');
+    new IntersectionObserver(([e]) => stage.classList.toggle('paused', !e.isIntersecting), { threshold: 0.3 }).observe(
+      stage,
+    );
+    const win = stage.querySelector('.window');
+    win?.addEventListener('pointerenter', () => stage.classList.add('paused'));
+    win?.addEventListener('pointerleave', () => stage.classList.remove('paused'));
+  }
+</script>
