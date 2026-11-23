@@ -1,16 +1,16 @@
 ---
 // Variation 1, "Assemble": near-black, one sans typeface, hairline grid, and a particle field
 // that keeps rearranging itself from a loose cloud into ordered structures around the headline.
-import Variant from '../../layouts/Variant.astro';
-import VariantSections from '../../components/VariantSections.astro';
-import VariantLog from '../../components/VariantLog.astro';
-import { site } from '../../site';
+import Variant from '../../../layouts/Variant.astro';
+import VariantSections from '../../../components/VariantSections.astro';
+import VariantLog from '../../../components/VariantLog.astro';
+import { site } from '../../../site';
 const fonts = 'https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap';
 ---
 
 <Variant n={1} fonts={fonts}>
   <header class="top">
-    <a class="logo" href="/v/1"><i></i>{site.name}</a>
+    <a class="logo" href="/archive/v/1"><i></i>{site.name}</a>
     <nav>
       <a href="#services">Services</a>
       <a href="#work">How we work</a>

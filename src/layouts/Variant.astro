@@ -5,8 +5,10 @@ import { site } from '../site';
 interface Props {
   n: number;
   fonts: string;
+  title?: string;
+  icon?: string;
 }
-const { n, fonts } = Astro.props;
+const { n, fonts, title = `${site.name} · variation ${n}`, icon = '/favicon.svg' } = Astro.props;
 const variants = [
   { n: 1, name: 'Assemble' },
   { n: 2, name: 'Terrain' },
@@ -17,6 +19,12 @@ const variants = [
   { n: 7, name: 'Garden' },
   { n: 8, name: 'Print shop' },
   { n: 9, name: 'Deep sea' },
+  { n: 10, name: 'Nuvareth Classic' },
+  { n: 11, name: 'Nuvareth Midnight' },
+  { n: 12, name: 'Nuvareth Ivory' },
+  { n: 13, name: 'Nuvareth Sage' },
+  { n: 14, name: 'Nuvareth Blueprint' },
+  { n: 15, name: 'Nuvareth Aurora' },
 ];
 ---
 
@@ -25,8 +33,8 @@ const variants = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{site.name} · variation {n}</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href={icon} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href={fonts} rel="stylesheet" />
@@ -36,11 +44,11 @@ const variants = [
     <nav class="switch" aria-label="Design variations">
       <span>Variation</span>
       {variants.map((v) => (
-        <a href={`/v/${v.n}`} class:list={{ on: v.n === n }}>
+        <a href={`/archive/v/${v.n}`} class:list={{ on: v.n === n }}>
           {v.n} {v.name}
         </a>
       ))}
-      <a href="/">Current</a>
+      <a href="/archive">Archive</a><a href="/">Live site</a>
     </nav>
   </body>
 </html>

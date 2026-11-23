@@ -37,6 +37,23 @@ form in `src/components/Contact.astro` at a form service or your own endpoint.
 
 The previous look is kept in `../agency-site-previous-look/` in case you want anything back from it.
 
+## Live site: Nuvareth
+
+The homepage (`src/pages/index.astro`) is the Blueprint layout in the Sage colour scheme, with Sage's process
+timeline and engagements. `/founders` (`src/pages/founders.astro`) introduces the founders and the company values.
+
+- Content: `src/nuvareth.ts` (headline, services, process, commitments, FAQ, founders, values).
+- Layout and styles: `src/layouts/Site.astro`, `src/styles/nv.css` (shared structure) and `src/styles/site.css`
+  (colours, type and the founders page).
+- Page sections: `src/components/nv/` (page shell, nav, footer) and `src/components/site/` (hero, statement,
+  architecture demo, timeline).
+- Founder photos: `public/founders/`.
+
+## Archive
+
+Earlier designs live under `/archive` (index at `src/pages/archive/index.astro`): the original Destiny Valley
+homepage, variations 1 to 9, and the Nuvareth directions 10 to 15 (Classic, Midnight, Ivory, Sage, Blueprint, Aurora).
+
 ## Deploy
 
 `dist/` is plain static files. Cloudflare Pages, Netlify, Vercel or any static host will serve it; the build command

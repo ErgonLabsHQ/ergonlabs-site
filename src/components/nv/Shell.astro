@@ -1,0 +1,219 @@
+---
+// The Nuvareth page body shared by versions 10+. Markup only, styled through tokens in nv.css plus each
+// version's own overrides. Slots: "hero" (required), "demo" (the AI section's visual), "process" (optional
+// replacement for the default process list), "after-services" (optional extra section).
+import { brand, services, facts, process, engagements, principles, faqs, aiPoints } from '../../nuvareth';
+import Nav from './Nav.astro';
+import Footer from './Footer.astro';
+import Icon from '../site/Icon.astro';
+import '../../styles/nv.css';
+
+interface Props {
+  v?: number;
+  home?: string;
+  extra?: { label: string; href: string }[];
+  icons?: boolean;
+}
+const { v, home = v ? `/archive/v/${v}` : '/', extra = [], icons = false } = Astro.props;
+const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 'Data platform', 'Audit or advice', 'Not sure yet'];
+---
+
+<Nav home={home} extra={extra} />
+
+<main>
+  <slot name="hero" />
+
+  <section class="nv-facts nv-wrap" aria-label="At a glance">
+    {facts.map((f, i) => (
+      <div data-nv-reveal style={`--i:${i}`}>
+        <b>{f.k}</b>
+        <span>{f.v}</span>
+      </div>
+    ))}
+  </section>
+
+  <section class="nv-section" id="services">
+    <div class="nv-wrap">
+      <div class="nv-head">
+        <p class="nv-label">Services</p>
+        <h2 data-nv-reveal>End-to-end engineering, with AI at the core.</h2>
+        <p class="nv-lede" data-nv-reveal>
+          One senior team across strategy, models, software and infrastructure, so nothing falls into the gap
+          between separate vendors.
+        </p>
+      </div>
+      <ul class="nv-services">
+        {services.map((s, i) => (
+          <li data-nv-reveal style={`--i:${i % 3}`}>
+            {icons ? (
+              <p class="nv-svc-top">
+                <span class="nv-ico"><Icon name={s.id} size={26} /></span>
+              </p>
+            ) : (
+              <span class="nv-num">{String(i + 1).padStart(2, '0')}</span>
+            )}
+            <h3>{s.title}</h3>
+            <p>{s.blurb}</p>
+            <ul class="nv-chips">
+              {s.items.slice(0, 5).map((it) => (
+                <li>{it}</li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <slot name="after-services" />
+
+  <section class="nv-section nv-ai" id="ai">
+    <div class="nv-wrap">
+      <div class="nv-head">
+        <p class="nv-label">AI in production</p>
+        <h2 data-nv-reveal>A demo takes an afternoon. Production takes engineering.</h2>
+        <p class="nv-lede" data-nv-reveal>
+          Getting a model to look clever in a meeting is easy. Getting it to be right every day, on messy input and
+          slow APIs, is engineering. This is what that looks like.
+        </p>
+      </div>
+      <slot name="demo" />
+      <ul class="nv-points">
+        {aiPoints.map((p, i) => (
+          <li data-nv-reveal style={`--i:${i}`}>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {
+    Astro.slots.has('process') ? (
+      <slot name="process" />
+    ) : (
+      <section class="nv-section" id="process">
+        <div class="nv-wrap">
+          <div class="nv-head">
+            <p class="nv-label">Process</p>
+            <h2 data-nv-reveal>Four stages, from first call to production.</h2>
+          </div>
+          <ol class="nv-steps">
+            {process.map((p, i) => (
+              <li data-nv-reveal style={`--i:${i}`}>
+                <p class="nv-step-top">
+                  <span>{String(i + 1).padStart(2, '0')}</span>
+                  <span>{p.time}</span>
+                </p>
+                <h3>{p.title}</h3>
+                <p>{p.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="nv-section" id="engagements">
+    <div class="nv-wrap">
+      <div class="nv-head">
+        <p class="nv-label">Engagements</p>
+        <h2 data-nv-reveal>Four ways to work with us.</h2>
+        <p class="nv-lede" data-nv-reveal>
+          Each starts with a free call and a written quote. You know the cost before you commit to anything.
+        </p>
+      </div>
+      <ul class="nv-plans">
+        {engagements.map((e, i) => (
+          <li data-nv-reveal style={`--i:${i}`} class:list={{ featured: e.featured }}>
+            {e.featured && <span class="nv-badge">Most common</span>}
+            <h3>{e.name}</h3>
+            <p class="nv-for">{e.for}</p>
+            <p>{e.text}</p>
+            <ul>
+              {e.points.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+            <a class="nv-more" href="#contact">Discuss this <span aria-hidden="true">→</span></a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="nv-rules">
+        <div>
+          <p class="nv-label">Principles</p>
+          <h2 data-nv-reveal>Five commitments on every project.</h2>
+        </div>
+        <ol>
+          {principles.map((p, i) => (
+            <li data-nv-reveal>
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{p.title}</h3>
+                <p>{p.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="nv-section" id="faq">
+    <div class="nv-wrap nv-faq">
+      <div>
+        <p class="nv-label">FAQ</p>
+        <h2 data-nv-reveal>Questions clients ask first.</h2>
+      </div>
+      <div>
+        {faqs.map((f) => (
+          <details>
+            <summary>
+              {f.q}
+              <i aria-hidden="true"></i>
+            </summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="nv-contact" id="contact">
+    <div class="nv-wrap nv-contact-in">
+      <div>
+        <p class="nv-label">Start a project</p>
+        <h2 data-nv-reveal>Tell us what you are building.</h2>
+        <p class="nv-lede">
+          A few lines is enough. An engineer reads it and replies within one working day with questions and a first
+          opinion.
+        </p>
+        <a class="nv-mail" href={`mailto:${brand.email}`}>{brand.email}</a>
+      </div>
+      <form class="nv-form" data-nv-form data-email={brand.email}>
+        <div class="nv-two">
+          <label><span>Name</span><input name="name" autocomplete="name" required /></label>
+          <label><span>Work email</span><input name="email" type="email" autocomplete="email" required /></label>
+        </div>
+        <fieldset>
+          <legend>What is it about?</legend>
+          <div class="nv-chips nv-pick">
+            {needs.map((n) => (
+              <label><input type="checkbox" name="need" value={n} /><span>{n}</span></label>
+            ))}
+          </div>
+        </fieldset>
+        <label>
+          <span>The short version</span>
+          <textarea name="message" rows="4" required placeholder="What you need, by when, and what is in the way."></textarea>
+        </label>
+        <button class="nv-btn" type="submit">Write the email</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<Footer extra={extra} />

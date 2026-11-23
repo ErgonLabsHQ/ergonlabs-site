@@ -1,17 +1,17 @@
 ---
 // Variation 2, "Terrain": black, wide uppercase type, one vermilion accent, and a wireframe
 // valley you fly through. Small instrument-style readouts sit in the corners.
-import Variant from '../../layouts/Variant.astro';
-import VariantSections from '../../components/VariantSections.astro';
-import VariantLog from '../../components/VariantLog.astro';
-import { site } from '../../site';
+import Variant from '../../../layouts/Variant.astro';
+import VariantSections from '../../../components/VariantSections.astro';
+import VariantLog from '../../../components/VariantLog.astro';
+import { site } from '../../../site';
 const fonts =
   'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;500&display=swap';
 ---
 
 <Variant n={2} fonts={fonts}>
   <header class="top">
-    <a class="logo" href="/v/2">{site.name}</a>
+    <a class="logo" href="/archive/v/2">{site.name}</a>
     <nav>
       <a href="#services">Services</a>
       <a href="#work">AI work</a>

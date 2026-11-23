@@ -1,0 +1,62 @@
+---
+import { brand, nvNav } from '../../nuvareth';
+
+interface Props {
+  base?: string;
+  extra?: { label: string; href: string }[];
+}
+const { base = '', extra = [] } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="nv-foot">
+  <div class="nv-wrap nv-foot-in">
+    <div>
+      <p class="nv-foot-name">{brand.name}</p>
+      <p>{brand.headline}.</p>
+    </div>
+    <nav aria-label="Footer">
+      {nvNav.map((n) => <a href={`${base}${n.href}`}>{n.label}</a>)}
+      {extra.map((n) => <a href={n.href}>{n.label}</a>)}
+    </nav>
+    <nav aria-label="Elsewhere">
+      {brand.socials.map((s) => <a href={s.href}>{s.label}</a>)}
+      <a href={`mailto:${brand.email}`}>Email</a>
+    </nav>
+  </div>
+  <div class="nv-wrap nv-foot-base">
+    <span>© {year} {brand.name}</span>
+    <span>{brand.location}, and wherever the client is.</span>
+  </div>
+</footer>
+
+<script>
+  // shared behaviour: nav state, scroll reveal, contact form to mail app
+  document.documentElement.classList.add('nv-js');
+  const nav = document.querySelector('[data-nv-nav]');
+  const onScroll = () => nav?.classList.toggle('scrolled', window.scrollY > 24);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -6% 0px' },
+  );
+  document.querySelectorAll('[data-nv-reveal]').forEach((el) => io.observe(el));
+
+  const form = document.querySelector<HTMLFormElement>('[data-nv-form]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const needs = d.getAll('need').join(', ') || 'Not specified';
+    const body = `Name: ${d.get('name')}\nEmail: ${d.get('email')}\nAbout: ${needs}\n\n${d.get('message')}`;
+    window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(`Project enquiry from ${d.get('name')}`)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

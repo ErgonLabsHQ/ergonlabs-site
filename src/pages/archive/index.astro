@@ -1,0 +1,78 @@
+---
+// Index of earlier designs. Kept for reference; the live site is the homepage.
+import Site from '../../layouts/Site.astro';
+import Nav from '../../components/nv/Nav.astro';
+
+const items = [
+  { href: '/archive/destiny-valley', name: 'Destiny Valley', note: 'Original homepage, pixel-art valley hero' },
+  { href: '/archive/v/1', name: '1 · Assemble', note: 'Destiny Valley variation' },
+  { href: '/archive/v/2', name: '2 · Terrain', note: 'Destiny Valley variation' },
+  { href: '/archive/v/3', name: '3 · Gallery', note: 'Destiny Valley variation' },
+  { href: '/archive/v/4', name: '4 · Stack', note: 'Destiny Valley variation' },
+  { href: '/archive/v/5', name: '5 · Flight', note: 'Destiny Valley variation' },
+  { href: '/archive/v/6', name: '6 · Observatory', note: 'Destiny Valley variation' },
+  { href: '/archive/v/7', name: '7 · Garden', note: 'Destiny Valley variation' },
+  { href: '/archive/v/8', name: '8 · Print shop', note: 'Destiny Valley variation' },
+  { href: '/archive/v/9', name: '9 · Deep sea', note: 'Destiny Valley variation' },
+  { href: '/archive/v/10', name: '10 · Nuvareth Classic', note: 'Original palette, system diagram hero' },
+  { href: '/archive/v/11', name: '11 · Nuvareth Midnight', note: 'Dark, terminal demo, sideways process' },
+  { href: '/archive/v/12', name: '12 · Nuvareth Ivory', note: 'Editorial serif, scorecard demo' },
+  { href: '/archive/v/13', name: '13 · Nuvareth Sage', note: 'Source of the live colour scheme and timeline' },
+  { href: '/archive/v/14', name: '14 · Nuvareth Blueprint', note: 'Source of the live layout' },
+  { href: '/archive/v/15', name: '15 · Nuvareth Aurora', note: 'Gradient, tilting dashboard' },
+];
+---
+
+<Site title="Archive — Nuvareth">
+  <Nav home="/" base="/" extra={[{ label: 'Founders', href: '/founders' }]} />
+  <main class="nv-section">
+    <div class="nv-wrap">
+      <div class="nv-head" style="margin-top:60px">
+        <p class="nv-label">Archive</p>
+        <h2>Earlier designs</h2>
+        <p class="nv-lede">Previous directions, kept for reference. The live site is the <a class="u" href="/">homepage</a>.</p>
+      </div>
+      <ul class="arc">
+        {items.map((i) => (
+          <li>
+            <a href={i.href}><b>{i.name}</b><span>{i.note}</span><i aria-hidden="true">→</i></a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </main>
+</Site>
+
+<style>
+  .arc {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--fg);
+  }
+  .arc a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    gap: 16px;
+    align-items: baseline;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .arc a:hover b {
+    color: var(--accent);
+  }
+  .arc span {
+    color: var(--muted);
+  }
+  .u {
+    text-decoration: underline;
+  }
+  @media (max-width: 600px) {
+    .arc a {
+      grid-template-columns: 1fr auto;
+    }
+    .arc span {
+      grid-column: 1;
+    }
+  }
+</style>

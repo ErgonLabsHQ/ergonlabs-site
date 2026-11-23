@@ -2,9 +2,9 @@
 // Variation 6, "Observatory": an engraved star atlas. The pinned opening starts on scattered stars,
 // which drift into five constellations that read as a software system, and the four process steps
 // are then drawn onto that chart. A moth, an owl, a comet and shooting stars cross the whole page.
-import Variant from '../../layouts/Variant.astro';
-import Demos from '../../components/v6/Demos.astro';
-import { site, nav, services, process, engagements, principles, faqs } from '../../site';
+import Variant from '../../../layouts/Variant.astro';
+import Demos from '../../../components/v6/Demos.astro';
+import { site, nav, services, process, engagements, principles, faqs } from '../../../site';
 
 const fonts =
   'https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;1,400&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap';
@@ -36,7 +36,7 @@ const charts = services.map((s, i) => {
   </div>
 
   <header class="top" data-top>
-    <a class="logo" href="/v/6">
+    <a class="logo" href="/archive/v/6">
       <svg viewBox="0 0 12 12" aria-hidden="true"><path d={star}></path></svg>
       {site.name}
     </a>

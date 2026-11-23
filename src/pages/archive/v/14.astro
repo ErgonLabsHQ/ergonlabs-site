@@ -1,0 +1,531 @@
+---
+// Version 14, "Nuvareth Blueprint": slate, charcoal and amber, styled like an engineering drawing. The hero
+// schematic draws itself in on load. The demo is an architecture view with requests moving through it and live
+// metrics. A short statement lights up word by word as it scrolls past.
+import Variant from '../../../layouts/Variant.astro';
+import Shell from '../../../components/nv/Shell.astro';
+import { brand } from '../../../nuvareth';
+const fonts =
+  'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap';
+
+const manifesto =
+  'Most AI projects fail after the demo, not before it. They fail on messy data, slow APIs, rising costs and answers nobody can check. We engineer for those days first: tested against your real cases, measured in production, and built so your own team can run it.';
+
+// architecture demo nodes: [id, x, y, w, label, sub]
+const nodes: [string, number, number, number, string, string][] = [
+  ['client', 20, 150, 120, 'Your app', 'web · mobile · API'],
+  ['gw', 190, 150, 130, 'Gateway', 'auth · limits'],
+  ['orch', 370, 150, 150, 'Orchestrator', 'agent loop'],
+  ['ret', 570, 40, 150, 'Retrieval', 'vector + keyword'],
+  ['router', 570, 150, 150, 'Model router', 'cost · latency'],
+  ['tools', 570, 260, 150, 'Tools', 'CRM · ERP · email'],
+  ['eval', 370, 300, 150, 'Evals + traces', 'every request'],
+];
+const links = [
+  'M140 175H190',
+  'M320 175H370',
+  'M520 165C545 165 545 65 570 65',
+  'M520 175H570',
+  'M520 185C545 185 545 285 570 285',
+  'M445 200V300',
+];
+---
+
+<Variant n={14} fonts={fonts} title={`${brand.name} — ${brand.headline}`} icon="/nv-favicon.svg">
+  <Shell v={14}>
+    <section slot="hero" class="hero">
+      <div class="nv-wrap grid">
+        <div class="copy">
+          <p class="nv-label">Nuvareth / AI engineering firm</p>
+          <h1>Engineering the Next Era of Intelligence.</h1>
+          <p class="sub">{brand.intro}</p>
+          <div class="actions">
+            <a class="nv-btn" href="#contact">Start a project</a>
+            <a class="nv-btn ghost" href="#ai">View the architecture</a>
+          </div>
+        </div>
+        <figure class="bp" aria-hidden="true">
+          <svg viewBox="0 0 520 460">
+            <g class="draw">
+              <rect x="40" y="40" width="440" height="380" rx="2" class="frame" pathLength="1"></rect>
+              <rect x="80" y="80" width="150" height="70" class="b" pathLength="1"></rect>
+              <rect x="290" y="80" width="150" height="70" class="b" pathLength="1"></rect>
+              <rect x="185" y="200" width="150" height="80" class="b hi" pathLength="1"></rect>
+              <rect x="80" y="330" width="150" height="60" class="b" pathLength="1"></rect>
+              <rect x="290" y="330" width="150" height="60" class="b" pathLength="1"></rect>
+              <path d="M155 150V175H260V200" class="w" pathLength="1"></path>
+              <path d="M365 150V175H260" class="w" pathLength="1"></path>
+              <path d="M260 280V305H155V330" class="w" pathLength="1"></path>
+              <path d="M260 305H365V330" class="w" pathLength="1"></path>
+              <path d="M40 440H480M40 434V446M480 434V446" class="dim" pathLength="1"></path>
+              <path d="M500 40V420M494 40H506M494 420H506" class="dim" pathLength="1"></path>
+            </g>
+            <g class="labels">
+              <text x="155" y="120">DATA</text>
+              <text x="155" y="136" class="s">your sources</text>
+              <text x="365" y="120">MODELS</text>
+              <text x="365" y="136" class="s">open + hosted</text>
+              <text x="260" y="236" class="hl">AGENT</text>
+              <text x="260" y="254" class="s">tools · limits</text>
+              <text x="155" y="364">EVALS</text>
+              <text x="365" y="364">MONITORING</text>
+              <text x="260" y="456" class="s">PRODUCTION SYSTEM · REV 14</text>
+            </g>
+          </svg>
+        </figure>
+      </div>
+    </section>
+
+    <section slot="after-services" class="manifesto" data-mf>
+      <div class="nv-wrap">
+        <p class="nv-label">Our view</p>
+        <p class="mf-text">
+          {manifesto.split(' ').map((w) => <span>{w} </span>)}
+        </p>
+      </div>
+    </section>
+
+    <div slot="demo" class="arch" data-arch>
+      <div class="arch-map">
+        <div class="arch-bar">
+          <span>architecture / support-agent · production</span>
+          <span class="ok">● all systems normal</span>
+        </div>
+        <svg viewBox="0 0 740 360" role="img" aria-label="Requests flow from your app through a gateway to an orchestrator, which calls retrieval, a model router and tools, with every request traced and evaluated.">
+          {links.map((d) => <path d={d} class="ln" />)}
+          {links.slice(0, 5).map((d, i) => (
+            <circle r="4" class="pk">
+              <animateMotion dur={`${1.6 + i * 0.25}s`} repeatCount="indefinite" path={d} begin={`${i * 0.3}s`} />
+            </circle>
+          ))}
+          {nodes.map(([id, x, y, w, label, sub]) => (
+            <g class:list={['nd', { core: id === 'orch' }]}>
+              <rect x={x} y={y} width={w} height="50" rx="6"></rect>
+              <text x={x + 12} y={y + 22} class="t">{label}</text>
+              <text x={x + 12} y={y + 39} class="s">{sub}</text>
+            </g>
+          ))}
+        </svg>
+      </div>
+      <div class="arch-side">
+        <div class="m"><span>p95 latency</span><b data-m="lat">1.42s</b><i><em data-bar="lat"></em></i></div>
+        <div class="m"><span>Cost per task</span><b data-m="cost">$0.0061</b><i><em data-bar="cost"></em></i></div>
+        <div class="m"><span>Cache hit rate</span><b data-m="cache">38%</b><i><em data-bar="cache"></em></i></div>
+        <div class="m"><span>Escalated to a person</span><b data-m="esc">3.1%</b><i><em data-bar="esc"></em></i></div>
+        <ul class="log" data-log></ul>
+      </div>
+    </div>
+  </Shell>
+</Variant>
+
+<style is:global>
+  .v14 {
+    --bg: #eceef1;
+    --surface: #f8f9fa;
+    --fg: #1b222c;
+    --muted: #5b6573;
+    --line: rgba(27, 34, 44, 0.14);
+    --accent: #b85f00;
+    --accent-fg: #1b222c;
+    --accent-soft: rgba(245, 165, 36, 0.16);
+    --amber: #f5a524;
+    --inv-bg: #161c25;
+    --inv-fg: #e9ecf0;
+    --inv-muted: rgba(233, 236, 240, 0.6);
+    --inv-line: rgba(233, 236, 240, 0.13);
+    --display: 'IBM Plex Sans', system-ui, sans-serif;
+    --body: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --h-weight: 600;
+    --h-track: -0.025em;
+    --radius: 6px;
+    --shadow: none;
+    background-image: linear-gradient(rgba(27, 34, 44, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27, 34, 44, 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .v14 .nv-btn {
+    background: var(--amber);
+    color: var(--fg);
+    border-radius: 4px;
+  }
+  .v14 .nv-btn.ghost {
+    background: transparent;
+    border-color: var(--fg);
+  }
+  .v14 .nv-ai .nv-btn.ghost,
+  .v14 .nv-contact .nv-btn.ghost {
+    border-color: var(--inv-fg);
+  }
+  .v14 .nv-ai .nv-label,
+  .v14 .nv-contact .nv-label {
+    color: var(--amber);
+  }
+  .v14 .nv-mark {
+    border-radius: 4px;
+    background: var(--amber);
+  }
+  .v14 .nv-mark svg {
+    stroke: var(--fg);
+  }
+  .v14 .nv-services > li {
+    border-color: var(--line);
+    position: relative;
+  }
+  .v14 .nv-services > li::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 14px;
+    height: 14px;
+    border-top: 2px solid var(--amber);
+    border-left: 2px solid var(--amber);
+  }
+  .v14 .nv-num {
+    color: var(--muted);
+  }
+  .v14 .nv-plans > li.featured {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 1px var(--amber);
+  }
+  .v14 .nv-badge {
+    background: var(--amber);
+    color: var(--fg);
+  }
+  .v14 .nv-steps > li::before {
+    background: var(--amber);
+    height: 3px;
+  }
+  .v14 .nv-ai,
+  .v14 .nv-contact {
+    background-image: linear-gradient(rgba(233, 236, 240, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(233, 236, 240, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-color: var(--inv-bg);
+  }
+
+  /* hero */
+  .v14 .hero {
+    padding: clamp(120px, 16vh, 170px) 0 clamp(60px, 9vh, 100px);
+    border-bottom: 1px solid var(--fg);
+  }
+  .v14 .hero .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(30px, 5vw, 70px);
+    align-items: center;
+  }
+  .v14 .hero .copy {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .v14 .hero h1 {
+    font-size: clamp(42px, 5.6vw, 84px);
+    line-height: 1.02;
+  }
+  .v14 .sub {
+    font-size: clamp(17px, 1.35vw, 19px);
+    color: var(--muted);
+    max-width: 52ch;
+  }
+  .v14 .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .v14 .bp {
+    margin: 0;
+    background: #1d2a3a;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 30px 60px -30px rgba(27, 34, 44, 0.6);
+    background-image: linear-gradient(rgba(160, 190, 230, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(160, 190, 230, 0.08) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .v14 .bp svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .v14 .bp .draw * {
+    fill: none;
+    stroke: #c8d7ec;
+    stroke-width: 1.5;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: v14-draw 1.4s var(--ease) forwards;
+  }
+  .v14 .bp .frame {
+    stroke-dasharray: 0.004 0.006 !important;
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+    opacity: 0.4;
+  }
+  .v14 .bp .b:nth-of-type(2) {
+    animation-delay: 0.15s;
+  }
+  .v14 .bp .b:nth-of-type(3) {
+    animation-delay: 0.3s;
+  }
+  .v14 .bp .b:nth-of-type(4) {
+    animation-delay: 0.45s;
+  }
+  .v14 .bp .b:nth-of-type(5) {
+    animation-delay: 0.6s;
+  }
+  .v14 .bp .w {
+    animation-delay: 0.8s !important;
+    stroke: var(--amber) !important;
+  }
+  .v14 .bp .hi {
+    stroke: var(--amber) !important;
+    stroke-width: 2 !important;
+  }
+  .v14 .bp .dim {
+    animation-delay: 1.1s !important;
+    opacity: 0.6;
+  }
+  @keyframes v14-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .v14 .bp .labels text {
+    fill: #e9eef6;
+    font: 500 13px var(--mono);
+    letter-spacing: 0.1em;
+    text-anchor: middle;
+    opacity: 0;
+    animation: v14-fade 0.6s ease forwards 1.2s;
+  }
+  .v14 .bp .labels .s {
+    fill: #8fa3bf;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+  }
+  .v14 .bp .labels .hl {
+    fill: var(--amber);
+  }
+  @keyframes v14-fade {
+    to {
+      opacity: 1;
+    }
+  }
+  @media (max-width: 980px) {
+    .v14 .hero .grid {
+      grid-template-columns: 1fr;
+    }
+    .v14 .bp {
+      max-width: 560px;
+    }
+  }
+
+  /* manifesto */
+  .v14 .manifesto {
+    padding: clamp(80px, 12vw, 160px) 0;
+    border-top: 1px solid var(--line);
+  }
+  .v14 .mf-text {
+    margin-top: 24px;
+    font: 500 clamp(26px, 3.4vw, 48px) / 1.25 var(--display);
+    letter-spacing: -0.02em;
+    max-width: 30ch;
+  }
+  .v14 .mf-text span {
+    color: rgba(27, 34, 44, 0.18);
+    transition: color 0.3s;
+  }
+  .v14 .mf-text span.on {
+    color: var(--fg);
+  }
+
+  /* architecture demo */
+  .v14 .arch {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.55fr);
+    gap: 16px;
+  }
+  .v14 .arch-map {
+    border: 1px solid var(--inv-line);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .v14 .arch-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--inv-line);
+    font: 12px/1.3 var(--mono);
+    color: var(--inv-muted);
+  }
+  .v14 .arch-bar .ok {
+    color: #6fdc9b;
+  }
+  .v14 .arch svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 16px;
+  }
+  .v14 .ln {
+    fill: none;
+    stroke: rgba(233, 236, 240, 0.25);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 4;
+  }
+  .v14 .pk {
+    fill: var(--amber);
+  }
+  .v14 .nd rect {
+    fill: #1f2733;
+    stroke: rgba(233, 236, 240, 0.3);
+  }
+  .v14 .nd.core rect {
+    stroke: var(--amber);
+    stroke-width: 1.5;
+  }
+  .v14 .nd .t {
+    fill: #eef1f5;
+    font: 600 14px var(--body);
+  }
+  .v14 .nd .s {
+    fill: #8a95a6;
+    font: 11px var(--mono);
+  }
+  .v14 .arch-side {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .v14 .m {
+    padding: 14px 16px;
+    border: 1px solid var(--inv-line);
+    border-radius: 6px;
+  }
+  .v14 .m span {
+    display: block;
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--inv-muted);
+    margin-bottom: 8px;
+  }
+  .v14 .m b {
+    font: 600 24px/1 var(--display);
+    font-variant-numeric: tabular-nums;
+  }
+  .v14 .m i {
+    display: block;
+    height: 3px;
+    margin-top: 12px;
+    background: var(--inv-line);
+  }
+  .v14 .m em {
+    display: block;
+    height: 100%;
+    width: var(--w, 40%);
+    background: var(--amber);
+    transition: width 0.8s var(--ease);
+  }
+  .v14 .log {
+    list-style: none;
+    margin: 0;
+    padding: 12px 14px;
+    height: 132px;
+    overflow: hidden;
+    border: 1px solid var(--inv-line);
+    border-radius: 6px;
+    font: 11.5px/1.7 var(--mono);
+    color: var(--inv-muted);
+  }
+  .v14 .log li b {
+    color: #6fdc9b;
+    font-weight: 500;
+  }
+  .v14 .log li b.h {
+    color: var(--amber);
+  }
+  @media (max-width: 960px) {
+    .v14 .arch {
+      grid-template-columns: 1fr;
+    }
+    .v14 .arch-side {
+      grid-template-columns: 1fr 1fr;
+    }
+    .v14 .log {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v14 .bp .draw * {
+      stroke-dashoffset: 0;
+    }
+    .v14 .bp .labels text {
+      opacity: 1;
+    }
+    .v14 .pk {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // manifesto: words light up as the paragraph passes the middle of the screen
+  const words = [...document.querySelectorAll<HTMLElement>('[data-mf] .mf-text span')];
+  const text = document.querySelector<HTMLElement>('[data-mf] .mf-text')!;
+  const light = () => {
+    if (reduced) {
+      words.forEach((w) => w.classList.add('on'));
+      return;
+    }
+    const r = text.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (innerHeight * 0.75 - r.top) / (r.height + innerHeight * 0.25)));
+    const n = Math.round(p * words.length);
+    words.forEach((w, i) => w.classList.toggle('on', i < n));
+  };
+  addEventListener('scroll', light, { passive: true });
+  light();
+
+  // architecture metrics: drift within believable ranges, with a request log
+  const arch = document.querySelector<HTMLElement>('[data-arch]')!;
+  const m = (k: string) => arch.querySelector<HTMLElement>(`[data-m="${k}"]`)!;
+  const bar = (k: string) => arch.querySelector<HTMLElement>(`[data-bar="${k}"]`)!;
+  const log = arch.querySelector<HTMLElement>('[data-log]')!;
+  const intents = ['refund request', 'order status', 'address change', 'invoice copy', 'cancel plan', 'warranty claim'];
+  let reqId = 48210;
+  const rand = (a: number, b: number) => a + Math.random() * (b - a);
+  const tick = () => {
+    const lat = rand(1.2, 1.7);
+    const cost = rand(0.0052, 0.0071);
+    const cache = rand(33, 44);
+    const esc = rand(2.6, 3.6);
+    m('lat').textContent = `${lat.toFixed(2)}s`;
+    m('cost').textContent = `$${cost.toFixed(4)}`;
+    m('cache').textContent = `${cache.toFixed(0)}%`;
+    m('esc').textContent = `${esc.toFixed(1)}%`;
+    bar('lat').style.setProperty('--w', `${(lat / 2) * 100}%`);
+    bar('cost').style.setProperty('--w', `${(cost / 0.01) * 100}%`);
+    bar('cache').style.setProperty('--w', `${cache}%`);
+    bar('esc').style.setProperty('--w', `${esc * 10}%`);
+    const human = Math.random() < 0.15;
+    const li = document.createElement('li');
+    li.innerHTML = `#${++reqId} ${intents[reqId % intents.length]} · ${lat.toFixed(1)}s · ${human ? '<b class="h">to person</b>' : '<b>resolved</b>'}`;
+    log.prepend(li);
+    while (log.children.length > 7) log.lastElementChild?.remove();
+  };
+  for (let i = 0; i < 6; i++) tick();
+  if (!reduced) {
+    let t = 0;
+    new IntersectionObserver(([e]) => {
+      clearInterval(t);
+      if (e.isIntersecting) t = window.setInterval(tick, 1400);
+    }).observe(arch);
+  }
+</script>

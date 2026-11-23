@@ -1,0 +1,378 @@
+---
+// Three worked examples as interface panels that advance on a timer. Content is illustrative.
+const demos = [
+  { id: 'agent', tab: 'An agent doing a job', blurb: 'It reads, checks, acts, and stops when something does not add up.', window: 'agent / accounts-payable' },
+  { id: 'bug', tab: 'An incident, from alert to fix', blurb: 'Traced to the cause and fixed with a test that would have caught it.', window: 'incident / checkout' },
+  { id: 'weeks', tab: 'A project, week by week', blurb: 'Something you can click at the end of every week.', window: 'project / weekly demos' },
+];
+const run = [
+  { k: 'task', t: 'Process inbox: 14 supplier invoices' },
+  { k: 'read', t: 'invoice_0412.pdf, 3 pages, 22 line items' },
+  { k: 'tool', t: 'erp.lookup_po("PO-88213")', ok: 'matched' },
+  { k: 'check', t: 'totals against purchase order', ok: 'within tolerance' },
+  { k: 'tool', t: 'erp.create_bill(draft)', ok: 'bill #5531' },
+  { k: 'flag', t: 'invoice_0415.pdf: VAT ID does not match. Sent to a person.', warn: true },
+  { k: 'done', t: '13 of 14 handled, 1 escalated. Every step logged.' },
+];
+const weeks = [
+  { w: 'Week 1', t: 'Scope, price and date on two pages', s: 'Signed' },
+  { w: 'Week 2', t: 'Thin slice on real infrastructure', s: 'Demo' },
+  { w: 'Week 3', t: 'Accounts, billing, first real users', s: 'Demo' },
+  { w: 'Week 4', t: 'The AI feature, with its test set', s: 'Demo' },
+  { w: 'Week 5', t: 'Load test, security review, fixes', s: 'Demo' },
+  { w: 'Week 6', t: 'Launch, monitoring, on-call', s: 'Live' },
+];
+---
+
+<div class="dt" data-dt>
+  <div class="dt-tabs" role="tablist" aria-label="Examples">
+    {demos.map((d, i) => (
+      <button class="dt-tab" role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} data-tab={d.id}>
+        <span class="dt-n">{String(i + 1).padStart(2, '0')}</span>
+        <span>
+          <b>{d.tab}</b>
+          <span class="dt-blurb">{d.blurb}</span>
+        </span>
+        <span class="dt-meter"><i></i></span>
+      </button>
+    ))}
+  </div>
+
+  <div class="dt-win">
+    <div class="dt-chrome">
+      <span class="dt-dots"><i></i><i></i><i></i></span>
+      {demos.map((d, i) => <span class:list={['dt-title', { on: i === 0 }]} data-title={d.id}>{d.window}</span>)}
+      <span class="dt-eg">Example</span>
+    </div>
+    <div class="dt-views">
+      <div class="dt-view on" data-view="agent">
+        {run.map((l, i) => (
+          <p class:list={['dt-line', 'seq', { warn: l.warn }]} style={`--i:${i}`}>
+            <span class="dt-k">{l.k}</span>
+            <span>{l.t}{l.ok && <em> ✓ {l.ok}</em>}</span>
+          </p>
+        ))}
+      </div>
+      <div class="dt-view" data-view="bug">
+        <div class="dt-alert seq" style="--i:0"><b>500</b><span>POST /api/orders failed for 17 customers in 10 minutes</span></div>
+        <p class="dt-cause seq" style="--i:1"><span class="dt-k">cause</span> Stock is checked before payment and reserved after it. Two buyers can take the last item.</p>
+        <pre class="dt-diff seq" style="--i:2"><span class="del">- const ok = await stock.check(item)</span>
+<span class="del">- await payments.capture(order)</span>
+<span class="add">+ await db.transaction(async (tx) =&gt; &#123;</span>
+<span class="add">+   await stock.reserve(item, tx)</span>
+<span class="add">+   await payments.capture(order, tx)</span>
+<span class="add">+ &#125;)</span></pre>
+        <ul class="dt-checks">
+          <li class="seq" style="--i:3">New test reproduces the race</li>
+          <li class="seq" style="--i:4">Reviewed by a second engineer</li>
+          <li class="seq" style="--i:5">Deployed, error rate back to zero</li>
+          <li class="seq" style="--i:6">Affected customers notified</li>
+        </ul>
+      </div>
+      <div class="dt-view" data-view="weeks">
+        {weeks.map((w, i) => (
+          <div class="dt-week seq" style={`--i:${i}`}>
+            <span class="dt-k">{w.w}</span>
+            <span>{w.t}</span>
+            <span class:list={['dt-state', { live: w.s === 'Live' }]}>{w.s}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .dt {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: start;
+  }
+  .dt-tabs {
+    display: grid;
+    gap: 10px;
+  }
+  .dt-tab {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    text-align: left;
+    padding: 18px 18px 22px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    border: 1px solid var(--inv-line);
+    border-radius: var(--radius);
+    cursor: pointer;
+    overflow: hidden;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .dt-tab[aria-selected='true'] {
+    background: color-mix(in srgb, var(--inv-fg) 7%, transparent);
+    border-color: color-mix(in srgb, var(--inv-fg) 35%, transparent);
+  }
+  .dt-n {
+    font: 500 12px/1.8 var(--mono);
+    color: var(--inv-muted);
+  }
+  .dt-tab b {
+    display: block;
+    font: var(--h-weight) clamp(18px, 1.5vw, 21px) / 1.2 var(--display);
+    letter-spacing: -0.015em;
+    margin-bottom: 5px;
+  }
+  .dt-blurb {
+    font-size: 14.5px;
+    color: var(--inv-muted);
+  }
+  .dt-meter {
+    position: absolute;
+    inset: auto 0 0;
+    height: 2px;
+  }
+  .dt-meter i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+  }
+  .dt-tab[aria-selected='true'] .dt-meter i {
+    animation: dt-fill 9s linear forwards;
+  }
+  .dt.paused .dt-meter i {
+    animation-play-state: paused;
+  }
+  @keyframes dt-fill {
+    to {
+      width: 100%;
+    }
+  }
+  .dt-win {
+    background: var(--surface);
+    color: var(--fg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.55);
+  }
+  .dt-chrome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    font: 12px/1 var(--mono);
+    color: var(--muted);
+  }
+  .dt-dots {
+    display: inline-flex;
+    gap: 6px;
+  }
+  .dt-dots i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--fg) 16%, transparent);
+  }
+  .dt-title {
+    display: none;
+  }
+  .dt-title.on {
+    display: inline;
+  }
+  .dt-eg {
+    margin-left: auto;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .dt-views {
+    display: grid;
+  }
+  .dt-view {
+    grid-area: 1 / 1;
+    padding: 20px 22px 24px;
+    min-height: 360px;
+    visibility: hidden;
+    font: clamp(12.5px, 1vw, 13.5px) / 1.6 var(--mono);
+  }
+  .dt-view.on {
+    visibility: visible;
+  }
+  .nv-js .dt-view .seq {
+    opacity: 0;
+  }
+  .nv-js .dt-view.on .seq {
+    animation: dt-in 0.4s var(--ease) forwards;
+    animation-delay: calc(var(--i) * 0.7s + 0.2s);
+  }
+  @keyframes dt-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .dt-k {
+    font: 500 11px/1.6 var(--mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dt-line {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .dt-line em {
+    font-style: normal;
+    font-weight: 500;
+    color: #0f8a5f;
+    white-space: nowrap;
+  }
+  .dt-line.warn {
+    margin: 0 -10px;
+    padding: 7px 10px;
+    background: #fff6e0;
+    border: 1px solid #efd6a0;
+    border-radius: 8px;
+    color: #4a3500;
+  }
+  .dt-alert {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+    background: #fff0ee;
+    border: 1px solid #f2c4bd;
+    border-radius: 10px;
+    font: 500 14.5px/1.4 var(--body);
+    color: #7a1d14;
+  }
+  .dt-alert b {
+    font: 500 12px/1 var(--mono);
+    background: #d43c2c;
+    color: #fff;
+    padding: 4px 7px;
+    border-radius: 5px;
+  }
+  .dt-cause {
+    margin: 14px 0;
+    font: 15px/1.5 var(--body);
+  }
+  .dt-diff {
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    background: #12141c;
+    color: #e8eaf0;
+    border-radius: 10px;
+    font: inherit;
+    overflow-x: auto;
+  }
+  .dt-diff .del {
+    color: #ff9a8f;
+  }
+  .dt-diff .add {
+    color: #7fe3c0;
+  }
+  .dt-checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    font: 500 14px/1.4 var(--body);
+  }
+  .dt-checks li::before {
+    content: '✓';
+    color: #0f8a5f;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .dt-week {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font: 500 15px/1.4 var(--body);
+  }
+  .dt-state {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .dt-state.live {
+    background: #e2f6ee;
+    color: #0f8a5f;
+  }
+  @media (max-width: 960px) {
+    .dt {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .dt-blurb {
+      display: none;
+    }
+    .dt-view {
+      min-height: 0;
+      padding: 16px 14px;
+    }
+    .dt-checks {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-dt]').forEach((stage) => {
+    const tabs = [...stage.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const views = [...stage.querySelectorAll<HTMLElement>('[data-view]')];
+    const titles = [...stage.querySelectorAll<HTMLElement>('[data-title]')];
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    const show = (i: number) => {
+      current = i;
+      const id = tabs[i].dataset.tab;
+      tabs.forEach((t, n) => {
+        t.setAttribute('aria-selected', 'false');
+        if (n === i) {
+          void t.offsetWidth;
+          t.setAttribute('aria-selected', 'true');
+        }
+      });
+      views.forEach((v) => {
+        v.classList.remove('on');
+        if (v.dataset.view === id) {
+          void v.offsetWidth;
+          v.classList.add('on');
+        }
+      });
+      titles.forEach((t) => t.classList.toggle('on', t.dataset.title === id));
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => show(i));
+      t.querySelector('.dt-meter i')?.addEventListener('animationend', () => {
+        if (!reduced) show((current + 1) % tabs.length);
+      });
+    });
+    stage.classList.add('paused');
+    new IntersectionObserver(([e]) => stage.classList.toggle('paused', !e.isIntersecting), { threshold: 0.3 }).observe(stage);
+  });
+</script>

@@ -1,17 +1,17 @@
 ---
 // Variation 3, "Gallery": warm black, a large serif headline, and interface cards floating over
 // a slow-moving painted panel (generated in a shader, so there is no image to load).
-import Variant from '../../layouts/Variant.astro';
-import VariantSections from '../../components/VariantSections.astro';
-import VariantLog from '../../components/VariantLog.astro';
-import { site } from '../../site';
+import Variant from '../../../layouts/Variant.astro';
+import VariantSections from '../../../components/VariantSections.astro';
+import VariantLog from '../../../components/VariantLog.astro';
+import { site } from '../../../site';
 const fonts =
   'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=DM+Sans:opsz,wght@9..40,400..600&family=DM+Mono&display=swap';
 ---
 
 <Variant n={3} fonts={fonts}>
   <header class="top">
-    <a class="logo" href="/v/3">{site.name}</a>
+    <a class="logo" href="/archive/v/3">{site.name}</a>
     <nav>
       <a href="#services">Services</a>
       <a href="#work">AI work</a>

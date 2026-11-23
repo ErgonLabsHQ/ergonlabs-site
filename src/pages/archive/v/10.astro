@@ -1,0 +1,300 @@
+---
+// Version 10, "Nuvareth Classic": the original palette and type (cream paper, ink, blue, sun, mint, coral) with
+// the playful pixel parts removed. Hero shows a production AI system as a diagram with data flowing through it.
+import Variant from '../../../layouts/Variant.astro';
+import Shell from '../../../components/nv/Shell.astro';
+import DemoTabs from '../../../components/nv/DemoTabs.astro';
+import { brand } from '../../../nuvareth';
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..700&family=JetBrains+Mono:wght@500&display=swap';
+
+const W = 190;
+const H = 72;
+const boxes: [number, number, string, string, string, string][] = [
+  [20, 20, '#8fdcb8', '#171a2e', 'Your data', 'docs, CRM, tickets'],
+  [270, 20, '#fffdf7', '#171a2e', 'Retrieval', 'permissions + citations'],
+  [270, 164, '#2d5bff', '#ffffff', 'Model', 'routed, cached, budgeted'],
+  [20, 164, '#ffcf3a', '#171a2e', 'Agent', 'tools and actions'],
+  [20, 308, '#fffdf7', '#171a2e', 'Evals + guardrails', 'tested on every change'],
+  [270, 308, '#ff6b4a', '#171a2e', 'Your product', 'live, monitored'],
+];
+const edges = ['M210 56H262', 'M365 92V156', 'M270 200H218', 'M115 236V300', 'M210 344H262'];
+---
+
+<Variant n={10} fonts={fonts} title={`${brand.name} — ${brand.headline}`} icon="/nv-favicon.svg">
+  <Shell v={10}>
+    <section slot="hero" class="hero">
+      <div class="nv-wrap grid">
+        <div class="copy">
+          <p class="nv-label">AI engineering firm</p>
+          <h1>Engineering the Next Era of <span class="mark">Intelligence</span>.</h1>
+          <p class="sub">{brand.intro}</p>
+          <div class="actions">
+            <a class="nv-btn" href="#contact">Start a project</a>
+            <a class="nv-btn ghost" href="#services">See what we do</a>
+          </div>
+        </div>
+        <figure class="diagram">
+          <figcaption><span class="dots"><i></i><i></i><i></i></span>system / production</figcaption>
+          <svg viewBox="0 0 480 400" role="img" aria-label="Your data feeds retrieval and a model; an agent acts on it, checked by evals and guardrails, inside your product.">
+            <defs>
+              <marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0L10 5L0 10z" fill="#171a2e"></path>
+              </marker>
+            </defs>
+            {edges.map((d, i) => (
+              <g>
+                <path d={d} class="edge" marker-end="url(#arr)"></path>
+                <path d={d} class="flow" style={`--i:${i}`}></path>
+              </g>
+            ))}
+            {boxes.map(([x, y, fill, ink, title, note], i) => (
+              <g class="box" style={`--i:${i}`}>
+                <rect x={x + 5} y={y + 5} width={W} height={H} rx="12" fill="#171a2e"></rect>
+                <rect x={x} y={y} width={W} height={H} rx="12" fill={fill} stroke="#171a2e" stroke-width="2"></rect>
+                <text x={x + 16} y={y + 31} class="t" fill={ink}>{title}</text>
+                <text x={x + 16} y={y + 53} class="n" fill={ink}>{note}</text>
+              </g>
+            ))}
+          </svg>
+        </figure>
+      </div>
+    </section>
+
+    <DemoTabs slot="demo" />
+  </Shell>
+</Variant>
+
+<style is:global>
+  .v10 {
+    --bg: #f6f1e6;
+    --surface: #fffdf7;
+    --fg: #171a2e;
+    --muted: #5a5e77;
+    --line: rgba(23, 26, 46, 0.16);
+    --accent: #2d5bff;
+    --accent-fg: #fff;
+    --accent-soft: rgba(45, 91, 255, 0.1);
+    --inv-bg: #171a2e;
+    --inv-fg: #f6f1e6;
+    --inv-muted: rgba(246, 241, 230, 0.7);
+    --inv-line: rgba(246, 241, 230, 0.2);
+    --display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --body: 'Figtree', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --h-weight: 800;
+    --h-track: -0.035em;
+    --radius: 14px;
+    --bw: 2px;
+    --shadow: 5px 5px 0 #171a2e;
+  }
+  /* the hard ink outline and offset shadow of the original look */
+  .v10 .nv-services > li,
+  .v10 .nv-plans > li,
+  .v10 .nv-form,
+  .v10 .dt-win {
+    border: 2px solid var(--fg);
+  }
+  .v10 .nv-services > li {
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .v10 .nv-services > li:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 var(--fg);
+  }
+  .v10 .nv-plans > li.featured {
+    background: #ffcf3a;
+    box-shadow: var(--shadow);
+  }
+  .v10 .nv-plans > li.featured p,
+  .v10 .nv-plans > li.featured .nv-for {
+    color: var(--fg);
+  }
+  .v10 .nv-badge {
+    background: var(--fg);
+  }
+  .v10 .nv-btn {
+    border: 2px solid var(--fg);
+    box-shadow: 4px 4px 0 var(--fg);
+  }
+  .v10 .nv-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--fg);
+    filter: none;
+  }
+  .v10 .nv-btn.ghost {
+    background: var(--surface);
+    color: var(--fg);
+    border-color: var(--fg);
+  }
+  .v10 .nv-mark {
+    border: 2px solid var(--fg);
+  }
+  .v10 .nv-chips li,
+  .v10 .nv-pick span {
+    border-color: var(--fg);
+    background: var(--bg);
+  }
+  .v10 .dt-win {
+    box-shadow: 8px 8px 0 var(--accent);
+  }
+  .v10 .nv-contact {
+    background: var(--accent);
+    color: #fff;
+  }
+  .v10 .nv-contact .nv-label {
+    color: #ffcf3a;
+  }
+  .v10 .nv-contact .nv-lede {
+    color: rgba(255, 255, 255, 0.88);
+  }
+  .v10 .nv-form {
+    box-shadow: 8px 8px 0 var(--fg);
+  }
+  .v10 .nv-ai .nv-label {
+    color: #ffcf3a;
+  }
+  .v10 .nv-facts {
+    border-bottom: 2px solid var(--fg);
+  }
+
+  .v10 .hero {
+    padding: clamp(120px, 16vh, 168px) 0 clamp(64px, 9vh, 104px);
+    border-bottom: 2px solid var(--fg);
+    background-color: var(--bg);
+    background-image: radial-gradient(rgba(23, 26, 46, 0.11) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+  .v10 .hero .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(36px, 5vw, 80px);
+    align-items: center;
+  }
+  .v10 .hero .copy {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .v10 .hero h1 {
+    font-size: clamp(44px, 6vw, 92px);
+    line-height: 0.98;
+  }
+  .v10 .hero .mark {
+    background: linear-gradient(transparent 60%, #ffcf3a 60% 92%, transparent 92%);
+  }
+  .v10 .hero .sub {
+    font-size: clamp(17px, 1.35vw, 19.5px);
+    color: var(--muted);
+    max-width: 52ch;
+    font-weight: 500;
+  }
+  .v10 .hero .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .v10 .diagram {
+    margin: 0;
+    background: var(--surface);
+    border: 2px solid var(--fg);
+    border-radius: 16px;
+    box-shadow: 6px 6px 0 var(--fg);
+    overflow: hidden;
+  }
+  .v10 .diagram figcaption {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-bottom: 2px solid var(--fg);
+    background: var(--bg);
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .v10 .dots {
+    display: inline-flex;
+    gap: 5px;
+  }
+  .v10 .dots i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff6b4a;
+  }
+  .v10 .dots i:nth-child(2) {
+    background: #ffcf3a;
+  }
+  .v10 .dots i:nth-child(3) {
+    background: #8fdcb8;
+  }
+  .v10 .diagram svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: clamp(12px, 2vw, 24px);
+  }
+  .v10 .diagram .t {
+    font: 800 20px var(--display);
+    letter-spacing: -0.02em;
+  }
+  .v10 .diagram .n {
+    font: 500 13px var(--body);
+    opacity: 0.75;
+  }
+  .v10 .edge {
+    fill: none;
+    stroke: #171a2e;
+    stroke-width: 2;
+  }
+  .v10 .flow {
+    fill: none;
+    stroke: #2d5bff;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 10 200;
+    stroke-dashoffset: 10;
+    opacity: 0;
+    animation: v10-travel 5s linear infinite;
+    animation-delay: calc(var(--i) * 1s);
+  }
+  @keyframes v10-travel {
+    0% {
+      stroke-dashoffset: 10;
+      opacity: 1;
+    }
+    16% {
+      stroke-dashoffset: -64;
+      opacity: 1;
+    }
+    17%,
+    100% {
+      opacity: 0;
+    }
+  }
+  /* boxes assemble one by one on load */
+  .nv-js .v10 .box {
+    opacity: 0;
+    animation: v10-box 0.5s var(--ease) forwards;
+    animation-delay: calc(var(--i) * 0.12s + 0.3s);
+  }
+  @keyframes v10-box {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (max-width: 980px) {
+    .v10 .hero .grid {
+      grid-template-columns: 1fr;
+    }
+    .v10 .diagram {
+      max-width: 560px;
+    }
+  }
+</style>

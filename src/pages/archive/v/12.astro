@@ -1,0 +1,509 @@
+---
+// Version 12, "Nuvareth Ivory": editorial. Ivory paper, black ink, oxblood accent, a serif display face.
+// Hero headline reveals line by line under a mask. The demo is an evaluation scorecard grading an AI system
+// against real cases. Process cards stack on top of each other as you scroll.
+import Variant from '../../../layouts/Variant.astro';
+import Shell from '../../../components/nv/Shell.astro';
+import { brand, process } from '../../../nuvareth';
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap';
+
+const cases = [
+  { id: 'C-014', q: 'Contract renewal date, scanned PDF with stamp over the date', r: 'pass', s: 1.0 },
+  { id: 'C-027', q: 'Invoice total with two currencies on one page', r: 'pass', s: 1.0 },
+  { id: 'C-031', q: 'Policy question with no answer in the documents', r: 'pass', s: 1.0, note: 'said "not in the documents"' },
+  { id: 'C-046', q: 'Supplier name spelled three different ways', r: 'pass', s: 0.9 },
+  { id: 'C-058', q: 'Handwritten amendment on page 7', r: 'review', s: 0.5, note: 'low confidence, sent to a person' },
+  { id: 'C-063', q: 'Request to ignore instructions hidden in an email', r: 'pass', s: 1.0, note: 'refused' },
+  { id: 'C-071', q: 'Date in US format on a European contract', r: 'fail', s: 0, note: 'fixed in v15, now passing' },
+];
+---
+
+<Variant n={12} fonts={fonts} title={`${brand.name} — ${brand.headline}`} icon="/nv-favicon.svg">
+  <Shell v={12}>
+    <section slot="hero" class="hero">
+      <div class="nv-wrap">
+        <div class="masthead" data-rise style="--d:0">
+          <span>{brand.name}</span>
+          <span>AI engineering</span>
+          <span>{brand.location} · Worldwide</span>
+        </div>
+        <h1 aria-label={`${brand.headline}.`}>
+          <span class="ln"><span style="--d:1">Engineering</span></span>
+          <span class="ln"><span style="--d:2">the Next Era of</span></span>
+          <span class="ln"><span style="--d:3"><em>Intelligence.</em></span></span>
+        </h1>
+        <div class="below">
+          <p class="sub" data-rise style="--d:4">{brand.intro}</p>
+          <div class="actions" data-rise style="--d:5">
+            <a class="nv-btn" href="#contact">Start a project</a>
+            <a class="txt" href="#services">Our practice <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div slot="demo" class="score" data-score>
+      <div class="score-head">
+        <div>
+          <p class="sh-k">Evaluation report · document assistant</p>
+          <p class="sh-t">Every change is graded against cases from your own data.</p>
+        </div>
+        <div class="total">
+          <b data-total>0%</b>
+          <span>pass rate, 212 cases</span>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Case</th><th>What it tests</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+          {cases.map((c, i) => (
+            <tr style={`--i:${i}`}>
+              <td class="id">{c.id}</td>
+              <td>
+                {c.q}
+                {c.note && <small>{c.note}</small>}
+              </td>
+              <td><span class={`res ${c.r}`}>{c.r}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="foot">Example report. Showing 7 of 212 cases.</p>
+    </div>
+
+    <section slot="process" class="nv-section stack" id="process">
+      <div class="nv-wrap stack-in">
+        <div class="stack-head">
+          <p class="nv-label">Process</p>
+          <h2>Four stages, from first call to production.</h2>
+          <p class="nv-lede">The same path on every engagement, so you always know what comes next.</p>
+        </div>
+        <ol class="cards">
+          {process.map((p, i) => (
+            <li style={`--i:${i}`} data-stack>
+              <p class="c-n"><span>{['I', 'II', 'III', 'IV'][i]}</span><span>{p.time}</span></p>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  </Shell>
+</Variant>
+
+<style is:global>
+  .v12 {
+    --bg: #f6f2ea;
+    --surface: #fbf9f4;
+    --fg: #141414;
+    --muted: #5f5a52;
+    --line: rgba(20, 20, 20, 0.14);
+    --accent: #7d1f1f;
+    --accent-fg: #fbf9f4;
+    --accent-soft: rgba(125, 31, 31, 0.08);
+    --inv-bg: #141414;
+    --inv-fg: #f6f2ea;
+    --inv-muted: rgba(246, 242, 234, 0.62);
+    --inv-line: rgba(246, 242, 234, 0.16);
+    --display: 'Instrument Serif', Georgia, serif;
+    --body: 'Inter', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --h-weight: 400;
+    --h-track: -0.015em;
+    --radius: 4px;
+    --shadow: none;
+  }
+  .v12 .nv-head h2,
+  .v12 .nv-rules h2,
+  .v12 .nv-faq h2,
+  .v12 .nv-contact h2 {
+    font-size: clamp(40px, 5.4vw, 76px);
+    line-height: 1;
+  }
+  .v12 .nv-services {
+    gap: 0;
+    border-top: 1px solid var(--fg);
+  }
+  .v12 .nv-services > li {
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
+    padding: 28px 28px 28px 0;
+  }
+  .v12 .nv-services > li:not(:nth-child(3n + 1)) {
+    padding-left: 28px;
+    border-left: 1px solid var(--line);
+  }
+  .v12 .nv-services h3 {
+    font-size: clamp(26px, 2.2vw, 32px);
+  }
+  .v12 .nv-chips li {
+    border-radius: 0;
+    border: 0;
+    padding: 0 10px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .v12 .nv-chips li:not(:last-child)::after {
+    content: ' ·';
+  }
+  .v12 .nv-plans > li {
+    border-color: var(--fg);
+  }
+  .v12 .nv-plans > li.featured {
+    box-shadow: none;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .v12 .nv-plans > li.featured p {
+    color: rgba(246, 242, 234, 0.7);
+  }
+  .v12 .nv-plans > li.featured .nv-for,
+  .v12 .nv-plans > li.featured li::before {
+    color: #e7a3a3;
+  }
+  .v12 .nv-plans > li.featured ul {
+    border-color: rgba(246, 242, 234, 0.2);
+  }
+  .v12 .nv-faq summary {
+    font: 400 clamp(22px, 2vw, 28px) / 1.2 var(--display);
+  }
+  .v12 .nv-facts b {
+    font-size: clamp(30px, 2.8vw, 40px);
+  }
+  .v12 .nv-mark {
+    border-radius: 50%;
+    background: var(--fg);
+  }
+  .v12 .nv-mark svg {
+    stroke: var(--bg);
+  }
+  .v12 .nv-logo {
+    font-size: 26px;
+  }
+  .v12 .nv-btn {
+    border-radius: 999px;
+  }
+
+  /* hero */
+  .v12 .hero {
+    padding: clamp(110px, 15vh, 150px) 0 clamp(60px, 9vh, 100px);
+    border-bottom: 1px solid var(--fg);
+  }
+  .v12 .masthead {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    border-block: 1px solid var(--fg);
+    font: 500 12px/1.2 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: clamp(30px, 6vh, 64px);
+  }
+  .v12 .hero h1 {
+    font-size: clamp(54px, min(9.5vw, 16vh), 156px);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    margin-bottom: clamp(30px, 5vh, 56px);
+  }
+  .v12 .ln {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+  .v12 .ln > span {
+    display: inline-block;
+  }
+  .nv-js .v12 .ln > span {
+    transform: translateY(105%);
+    animation: v12-up 1.1s var(--ease) forwards;
+    animation-delay: calc(var(--d) * 140ms);
+  }
+  @keyframes v12-up {
+    to {
+      transform: none;
+    }
+  }
+  .v12 .hero em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .v12 .below {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 32px;
+    align-items: end;
+  }
+  .v12 .sub {
+    font-size: clamp(17px, 1.4vw, 20px);
+    max-width: 52ch;
+    color: var(--muted);
+  }
+  .v12 .actions {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .v12 .txt {
+    font-weight: 600;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+  }
+  .nv-js .v12 [data-rise] {
+    opacity: 0;
+    animation: v12-fade 1s var(--ease) forwards;
+    animation-delay: calc(var(--d) * 140ms);
+  }
+  @keyframes v12-fade {
+    to {
+      opacity: 1;
+    }
+  }
+  @media (max-width: 760px) {
+    .v12 .below {
+      grid-template-columns: 1fr;
+    }
+    .v12 .actions {
+      justify-content: flex-start;
+    }
+  }
+
+  /* scorecard demo */
+  .v12 .score {
+    background: var(--surface);
+    color: var(--fg);
+    padding: clamp(20px, 3vw, 40px);
+  }
+  .v12 .score-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    padding-bottom: 22px;
+    border-bottom: 2px solid var(--fg);
+    flex-wrap: wrap;
+  }
+  .v12 .sh-k {
+    font: 500 12px/1.4 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .v12 .sh-t {
+    font: 400 clamp(24px, 2.4vw, 34px) / 1.1 var(--display);
+    max-width: 24ch;
+  }
+  .v12 .total {
+    text-align: right;
+  }
+  .v12 .total b {
+    display: block;
+    font: 400 clamp(56px, 6vw, 88px) / 0.9 var(--display);
+    font-variant-numeric: tabular-nums;
+  }
+  .v12 .total span {
+    font: 500 12px/1 var(--mono);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .v12 .score table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .v12 .score th {
+    text-align: left;
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 12px 10px 0;
+  }
+  .v12 .score td {
+    padding: 13px 12px 13px 0;
+    border-top: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .v12 .score td small {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  .v12 .id {
+    font: 500 13px/1.6 var(--mono);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .v12 .res {
+    display: inline-block;
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 8px;
+    border: 1px solid currentColor;
+  }
+  .v12 .res.pass {
+    color: #1f6b3a;
+  }
+  .v12 .res.review {
+    color: #8a5a00;
+  }
+  .v12 .res.fail {
+    color: var(--accent);
+  }
+  .nv-js .v12 .score tbody tr {
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+    transition-delay: calc(var(--i) * 0.28s);
+  }
+  .nv-js .v12 .score.in tbody tr {
+    opacity: 1;
+    transform: none;
+  }
+  .v12 .score .foot {
+    margin-top: 16px;
+    font: 12px/1.4 var(--mono);
+    color: var(--muted);
+  }
+
+  /* stacking process cards */
+  .v12 .stack-in {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: start;
+  }
+  .v12 .stack-head {
+    display: grid;
+    gap: 18px;
+    position: sticky;
+    top: 110px;
+  }
+  .v12 .stack-head h2 {
+    font-size: clamp(40px, 5vw, 70px);
+    line-height: 1;
+  }
+  .v12 .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 22px;
+  }
+  .v12 .cards li {
+    position: sticky;
+    top: calc(110px + var(--i) * 22px);
+    min-height: 300px;
+    padding: 30px 32px 36px;
+    background: var(--surface);
+    border: 1px solid var(--fg);
+    box-shadow: 0 -10px 30px -20px rgba(0, 0, 0, 0.25);
+    transform-origin: 50% 0;
+    transition: transform 0.2s linear;
+  }
+  .v12 .cards li:nth-child(2) {
+    background: #efe8dc;
+  }
+  .v12 .cards li:nth-child(3) {
+    background: #e7ddcd;
+  }
+  .v12 .cards li:nth-child(4) {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .v12 .cards li:nth-child(4) p {
+    color: rgba(246, 242, 234, 0.7);
+  }
+  .v12 .c-n {
+    display: flex;
+    justify-content: space-between;
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .v12 .c-n span:first-child {
+    font: italic 400 34px/1 var(--display);
+    letter-spacing: 0;
+    color: var(--accent);
+  }
+  .v12 .cards li:nth-child(4) .c-n span:first-child {
+    color: #e7a3a3;
+  }
+  .v12 .cards h3 {
+    font-size: clamp(44px, 4.4vw, 64px);
+    margin-bottom: 12px;
+  }
+  .v12 .cards p:last-child {
+    color: var(--muted);
+    max-width: 46ch;
+    font-size: 17px;
+  }
+  @media (max-width: 860px) {
+    .v12 .stack-in {
+      grid-template-columns: 1fr;
+    }
+    .v12 .stack-head {
+      position: static;
+    }
+    .v12 .cards li {
+      top: calc(80px + var(--i) * 16px);
+    }
+  }
+</style>
+
+<script>
+  // scorecard: rows grade in, then the total counts up
+  const score = document.querySelector<HTMLElement>('[data-score]')!;
+  const total = score.querySelector<HTMLElement>('[data-total]')!;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TARGET = 96.2;
+  new IntersectionObserver(
+    ([e], obs) => {
+      if (!e.isIntersecting) return;
+      obs.disconnect();
+      score.classList.add('in');
+      if (reduced) {
+        total.textContent = `${TARGET}%`;
+        return;
+      }
+      const start = performance.now() + 600;
+      const step = (now: number) => {
+        const p = Math.min(1, Math.max(0, (now - start) / 2200));
+        total.textContent = `${(TARGET * (1 - Math.pow(1 - p, 3))).toFixed(1)}%`;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    },
+    { threshold: 0.3 },
+  ).observe(score);
+
+  // stacked cards: each card shrinks slightly as the next one slides over it
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-stack]')];
+  const onScroll = () => {
+    if (reduced) return;
+    cards.forEach((c, i) => {
+      const next = cards[i + 1];
+      if (!next) return;
+      const a = c.getBoundingClientRect();
+      const b = next.getBoundingClientRect();
+      const overlap = Math.min(1, Math.max(0, (a.bottom - b.top) / a.height));
+      c.style.transform = `scale(${1 - overlap * 0.05})`;
+    });
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>

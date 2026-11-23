@@ -1,0 +1,218 @@
+---
+// Architecture view of a production AI system: requests move through it while metrics and a request log update.
+// All values are illustrative.
+const nodes: [string, number, number, number, string, string][] = [
+  ['client', 20, 150, 120, 'Your app', 'web · mobile · API'],
+  ['gw', 190, 150, 130, 'Gateway', 'auth · limits'],
+  ['orch', 370, 150, 150, 'Orchestrator', 'agent loop'],
+  ['ret', 570, 40, 150, 'Retrieval', 'vector + keyword'],
+  ['router', 570, 150, 150, 'Model router', 'cost · latency'],
+  ['tools', 570, 260, 150, 'Tools', 'CRM · ERP · email'],
+  ['eval', 370, 300, 150, 'Evals + traces', 'every request'],
+];
+const links = [
+  'M140 175H190',
+  'M320 175H370',
+  'M520 165C545 165 545 65 570 65',
+  'M520 175H570',
+  'M520 185C545 185 545 285 570 285',
+  'M445 200V300',
+];
+---
+
+<div class="arch" data-arch>
+  <div class="map">
+    <div class="bar">
+      <span>architecture / support-agent · example</span>
+      <span class="ok">● all systems normal</span>
+    </div>
+    <svg viewBox="0 0 740 360" role="img" aria-label="Requests flow from your app through a gateway to an orchestrator, which calls retrieval, a model router and tools, with every request traced and evaluated.">
+      {links.map((d) => <path d={d} class="ln" />)}
+      {links.slice(0, 5).map((d, i) => (
+        <circle r="4" class="pk">
+          <animateMotion dur={`${1.6 + i * 0.25}s`} repeatCount="indefinite" path={d} begin={`${i * 0.3}s`} />
+        </circle>
+      ))}
+      {nodes.map(([id, x, y, w, label, sub]) => (
+        <g class:list={['nd', { core: id === 'orch' }]}>
+          <rect x={x} y={y} width={w} height="50" rx="6"></rect>
+          <text x={x + 12} y={y + 22} class="t">{label}</text>
+          <text x={x + 12} y={y + 39} class="s">{sub}</text>
+        </g>
+      ))}
+    </svg>
+  </div>
+  <div class="side">
+    <div class="m"><span>p95 latency</span><b data-m="lat">1.42s</b><i><em data-bar="lat"></em></i></div>
+    <div class="m"><span>Cost per task</span><b data-m="cost">$0.0061</b><i><em data-bar="cost"></em></i></div>
+    <div class="m"><span>Cache hit rate</span><b data-m="cache">38%</b><i><em data-bar="cache"></em></i></div>
+    <div class="m"><span>Reviewed by a person</span><b data-m="esc">3.1%</b><i><em data-bar="esc"></em></i></div>
+    <ul class="log" data-log></ul>
+  </div>
+</div>
+
+<style>
+  .arch {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.55fr);
+    gap: 16px;
+  }
+  .map {
+    border: 1px solid var(--inv-line);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--inv-line);
+    font: 12px/1.3 var(--mono);
+    color: var(--inv-muted);
+  }
+  .ok {
+    color: var(--mint);
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 16px;
+  }
+  .ln {
+    fill: none;
+    stroke: rgba(238, 241, 232, 0.25);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 4;
+  }
+  .pk {
+    fill: var(--mint);
+  }
+  .nd rect {
+    fill: #17352a;
+    stroke: rgba(238, 241, 232, 0.28);
+  }
+  .nd.core rect {
+    stroke: var(--mint);
+    stroke-width: 1.5;
+  }
+  .nd .t {
+    fill: #eef1e8;
+    font: 600 14px var(--body);
+  }
+  .nd .s {
+    fill: #8fa79a;
+    font: 11px var(--mono);
+  }
+  .side {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .m {
+    padding: 14px 16px;
+    border: 1px solid var(--inv-line);
+    border-radius: 6px;
+  }
+  .m span {
+    display: block;
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--inv-muted);
+    margin-bottom: 8px;
+  }
+  .m b {
+    font: 600 24px/1 var(--display);
+    font-variant-numeric: tabular-nums;
+  }
+  .m i {
+    display: block;
+    height: 3px;
+    margin-top: 12px;
+    background: var(--inv-line);
+  }
+  .m em {
+    display: block;
+    height: 100%;
+    width: var(--w, 40%);
+    background: var(--mint);
+    transition: width 0.8s var(--ease);
+  }
+  .log {
+    list-style: none;
+    margin: 0;
+    padding: 12px 14px;
+    height: 132px;
+    overflow: hidden;
+    border: 1px solid var(--inv-line);
+    border-radius: 6px;
+    font: 11.5px/1.7 var(--mono);
+    color: var(--inv-muted);
+  }
+  .log :global(b) {
+    color: var(--mint);
+    font-weight: 500;
+  }
+  .log :global(b.h) {
+    color: var(--clay);
+  }
+  @media (max-width: 960px) {
+    .arch {
+      grid-template-columns: 1fr;
+    }
+    .side {
+      grid-template-columns: 1fr 1fr;
+    }
+    .log {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pk {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const arch = document.querySelector<HTMLElement>('[data-arch]');
+  if (arch) {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const m = (k: string) => arch.querySelector<HTMLElement>(`[data-m="${k}"]`)!;
+    const bar = (k: string) => arch.querySelector<HTMLElement>(`[data-bar="${k}"]`)!;
+    const log = arch.querySelector<HTMLElement>('[data-log]')!;
+    const intents = ['refund request', 'order status', 'address change', 'invoice copy', 'plan change', 'warranty claim'];
+    let reqId = 48210;
+    const rand = (a: number, b: number) => a + Math.random() * (b - a);
+    const tick = () => {
+      const lat = rand(1.2, 1.7);
+      const cost = rand(0.0052, 0.0071);
+      const cache = rand(33, 44);
+      const esc = rand(2.6, 3.6);
+      m('lat').textContent = `${lat.toFixed(2)}s`;
+      m('cost').textContent = `$${cost.toFixed(4)}`;
+      m('cache').textContent = `${cache.toFixed(0)}%`;
+      m('esc').textContent = `${esc.toFixed(1)}%`;
+      bar('lat').style.setProperty('--w', `${(lat / 2) * 100}%`);
+      bar('cost').style.setProperty('--w', `${(cost / 0.01) * 100}%`);
+      bar('cache').style.setProperty('--w', `${cache}%`);
+      bar('esc').style.setProperty('--w', `${esc * 10}%`);
+      const human = Math.random() < 0.15;
+      const li = document.createElement('li');
+      li.innerHTML = `#${++reqId} ${intents[reqId % intents.length]} · ${lat.toFixed(1)}s · ${human ? '<b class="h">to a person</b>' : '<b>resolved</b>'}`;
+      log.prepend(li);
+      while (log.children.length > 7) log.lastElementChild?.remove();
+    };
+    for (let i = 0; i < 6; i++) tick();
+    if (!reduced) {
+      let t = 0;
+      new IntersectionObserver(([e]) => {
+        clearInterval(t);
+        if (e.isIntersecting) t = window.setInterval(tick, 1400);
+      }).observe(arch);
+    }
+  }
+</script>

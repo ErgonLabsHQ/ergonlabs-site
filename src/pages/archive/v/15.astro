@@ -1,0 +1,691 @@
+---
+// Version 15, "Nuvareth Aurora": bright white, violet-to-cyan gradient, product-company polish. Centered hero over
+// a slow aurora; below it an agent operations console tilts back in 3D and flattens as you scroll. The AI demo is
+// an automated workflow whose steps light up in order while the record it is working on updates.
+import Variant from '../../../layouts/Variant.astro';
+import Shell from '../../../components/nv/Shell.astro';
+import { brand } from '../../../nuvareth';
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@400;500&display=swap';
+
+const runs = [
+  { t: 'Invoice #INV-2291 matched to PO', s: 'done', d: '0.9s' },
+  { t: 'Refund request routed to finance', s: 'person', d: '1.4s' },
+  { t: 'Contract renewal summary drafted', s: 'done', d: '2.1s' },
+  { t: 'Lead enriched and assigned', s: 'done', d: '0.7s' },
+  { t: 'Shipping delay reply sent', s: 'done', d: '1.1s' },
+];
+const bars = [42, 58, 51, 66, 72, 61, 80, 77, 88, 84, 92, 96];
+
+const flow = [
+  { k: 'Trigger', d: 'New email in ap@ inbox' },
+  { k: 'Extract', d: 'Supplier, total, VAT, PO' },
+  { k: 'Validate', d: 'Against PO and contract' },
+  { k: 'Decide', d: 'Auto-approve or escalate' },
+  { k: 'Act', d: 'Draft bill in the ERP' },
+  { k: 'Log', d: 'Full trace, eval sampled' },
+];
+const record = [
+  ['Status', ['Received', 'Reading', 'Checking', 'Deciding', 'Posting', 'Complete']],
+  ['Supplier', ['—', 'Northwind Parts s.r.o.', 'Northwind Parts s.r.o.', 'Northwind Parts s.r.o.', 'Northwind Parts s.r.o.', 'Northwind Parts s.r.o.']],
+  ['Total', ['—', '€12,480.00', '€12,480.00 ✓ matches PO', '€12,480.00 ✓ matches PO', '€12,480.00 ✓ matches PO', '€12,480.00 ✓ matches PO']],
+  ['Decision', ['—', '—', '—', 'Auto-approve (under €25k)', 'Auto-approve (under €25k)', 'Auto-approve (under €25k)']],
+  ['ERP', ['—', '—', '—', '—', 'Bill #5531 drafted', 'Bill #5531 drafted']],
+];
+---
+
+<Variant n={15} fonts={fonts} title={`${brand.name} — ${brand.headline}`} icon="/nv-favicon.svg">
+  <Shell v={15}>
+    <section slot="hero" class="hero" data-hero>
+      <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="nv-wrap center">
+        <p class="badge" data-rise style="--d:0"><span>New</span> Agent operations, built and run for you</p>
+        <h1 data-rise style="--d:1">Engineering the Next Era of <span class="grad">Intelligence</span></h1>
+        <p class="sub" data-rise style="--d:2">{brand.intro}</p>
+        <div class="actions" data-rise style="--d:3">
+          <a class="nv-btn" href="#contact">Start a project</a>
+          <a class="nv-btn ghost" href="#services">Explore services</a>
+        </div>
+      </div>
+
+      <div class="nv-wrap stage" data-tilt-stage>
+        <div class="console" data-tilt aria-label="Example agent operations dashboard" role="img">
+          <aside class="c-side" aria-hidden="true">
+            <p class="c-brand"><span class="nv-mark"><svg viewBox="0 0 32 32"><path d="M10.5 22V10l11 12V10"></path></svg></span> Ops</p>
+            <p class="on">Overview</p><p>Agents</p><p>Runs</p><p>Evals</p><p>Costs</p><p>Settings</p>
+          </aside>
+          <div class="c-main" aria-hidden="true">
+            <div class="c-top">
+              <b>Overview</b>
+              <span>Last 24 hours · example data</span>
+            </div>
+            <div class="kpis">
+              <div><span>Tasks handled</span><b data-count="1284">0</b><em>+12%</em></div>
+              <div><span>Resolved without a person</span><b data-count="91" data-suffix="%">0</b><em>+3 pts</em></div>
+              <div><span>Avg. time per task</span><b>1.3s</b><em>−0.4s</em></div>
+              <div><span>Cost per task</span><b>$0.006</b><em>on budget</em></div>
+            </div>
+            <div class="c-row">
+              <div class="chart">
+                <p>Tasks per hour</p>
+                <div class="bars">{bars.map((h, i) => <i style={`--h:${h}%;--i:${i}`}></i>)}</div>
+              </div>
+              <div class="runs">
+                <p>Recent runs</p>
+                <ul>
+                  {runs.map((r) => (
+                    <li>
+                      <span class:list={['st', r.s]}></span>
+                      <span class="rt">{r.t}</span>
+                      <span class="rd">{r.d}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div slot="demo" class="wf" data-wf>
+      <ol class="wf-steps">
+        {flow.map((f, i) => (
+          <li data-step={i}>
+            <span class="wf-dot">{i + 1}</span>
+            <b>{f.k}</b>
+            <small>{f.d}</small>
+          </li>
+        ))}
+      </ol>
+      <div class="wf-card">
+        <div class="wf-head">
+          <span>invoice_0412.pdf</span>
+          <span class="wf-eg">Example</span>
+        </div>
+        <dl>
+          {record.map(([label, vals]) => (
+            <div>
+              <dt>{label}</dt>
+              <dd data-vals={JSON.stringify(vals)}>{(vals as string[])[0]}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </Shell>
+</Variant>
+
+<style is:global>
+  .v15 {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --fg: #0f1222;
+    --muted: #5d6280;
+    --line: rgba(15, 18, 34, 0.09);
+    --accent: #6d4aff;
+    --accent-fg: #fff;
+    --accent-soft: rgba(109, 74, 255, 0.09);
+    --inv-bg: #0d0f1f;
+    --inv-fg: #eef0ff;
+    --inv-muted: rgba(238, 240, 255, 0.62);
+    --inv-line: rgba(238, 240, 255, 0.12);
+    --display: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --body: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --h-weight: 700;
+    --h-track: -0.04em;
+    --radius: 18px;
+    --shadow: 0 1px 2px rgba(15, 18, 34, 0.04), 0 12px 32px -16px rgba(40, 30, 120, 0.18);
+    --grad: linear-gradient(100deg, #6d4aff 0%, #8b5cf6 35%, #22b8e6 100%);
+  }
+  .v15 .nv-btn {
+    background: var(--grad);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px -10px rgba(109, 74, 255, 0.6);
+  }
+  .v15 .nv-btn.ghost {
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--fg);
+    border-color: var(--line);
+    box-shadow: var(--shadow);
+  }
+  .v15 .nv-mark {
+    background: var(--grad);
+  }
+  .v15 .nv-services > li {
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .v15 .nv-services > li:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1px 2px rgba(15, 18, 34, 0.04), 0 24px 50px -20px rgba(40, 30, 120, 0.3);
+  }
+  .v15 .nv-num {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+  }
+  .v15 .nv-plans > li.featured {
+    border: 1px solid transparent;
+    background: linear-gradient(#fff, #fff) padding-box, var(--grad) border-box;
+    box-shadow: 0 24px 50px -24px rgba(109, 74, 255, 0.45);
+  }
+  .v15 .nv-badge {
+    background: var(--grad);
+  }
+  .v15 .nv-steps > li::before {
+    background: var(--grad);
+    width: 64px;
+  }
+  .v15 .nv-ai {
+    background: radial-gradient(60% 50% at 20% 0%, rgba(109, 74, 255, 0.22), transparent 70%),
+      radial-gradient(50% 50% at 100% 100%, rgba(34, 184, 230, 0.14), transparent 70%), var(--inv-bg);
+  }
+  .v15 .nv-ai .nv-label,
+  .v15 .nv-contact .nv-label {
+    color: #b7a6ff;
+  }
+  .v15 .nv-contact {
+    background: radial-gradient(60% 80% at 90% 10%, rgba(109, 74, 255, 0.3), transparent 70%), var(--inv-bg);
+  }
+
+  /* hero */
+  .v15 .hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(130px, 18vh, 190px) 0 0;
+  }
+  .v15 .aurora {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .v15 .aurora i {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    animation: v15-float 16s ease-in-out infinite alternate;
+  }
+  .v15 .aurora i:nth-child(1) {
+    width: 620px;
+    height: 420px;
+    left: 8%;
+    top: -120px;
+    background: #b9a6ff;
+  }
+  .v15 .aurora i:nth-child(2) {
+    width: 560px;
+    height: 400px;
+    right: 4%;
+    top: -60px;
+    background: #9fe3f7;
+    animation-duration: 20s;
+  }
+  .v15 .aurora i:nth-child(3) {
+    width: 480px;
+    height: 340px;
+    left: 38%;
+    top: 220px;
+    background: #e4c8ff;
+    animation-duration: 24s;
+  }
+  @keyframes v15-float {
+    to {
+      transform: translate(40px, 30px) scale(1.1);
+    }
+  }
+  .v15 .center {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+  .v15 .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 14px 5px 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid var(--line);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow);
+  }
+  .v15 .badge span {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--grad);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .v15 .hero h1 {
+    font-size: clamp(44px, 7vw, 108px);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    max-width: 14ch;
+  }
+  .v15 .grad {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .v15 .sub {
+    font-size: clamp(17px, 1.4vw, 20px);
+    color: var(--muted);
+    max-width: 56ch;
+  }
+  .v15 .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .nv-js .v15 [data-rise] {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: v15-rise 0.9s var(--ease) forwards;
+    animation-delay: calc(var(--d) * 110ms + 100ms);
+  }
+  @keyframes v15-rise {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* tilted console */
+  .v15 .stage {
+    position: relative;
+    margin-top: clamp(48px, 8vh, 80px);
+    perspective: 1400px;
+    padding-bottom: clamp(60px, 8vw, 110px);
+  }
+  .v15 .console {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    max-width: 1080px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 50px 120px -40px rgba(60, 40, 160, 0.4), 0 0 0 8px rgba(255, 255, 255, 0.5);
+    transform-origin: 50% 0;
+    transform: rotateX(var(--rx, 24deg)) scale(var(--sc, 0.92));
+    will-change: transform;
+    font-size: 14px;
+  }
+  .v15 .c-side {
+    padding: 18px 12px;
+    background: #f7f7fc;
+    border-right: 1px solid var(--line);
+    display: grid;
+    align-content: start;
+    gap: 2px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .v15 .c-side p {
+    padding: 8px 12px;
+    border-radius: 10px;
+  }
+  .v15 .c-side p.on {
+    background: #fff;
+    color: var(--fg);
+    box-shadow: var(--shadow);
+  }
+  .v15 .c-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700 !important;
+    color: var(--fg);
+    margin-bottom: 10px;
+  }
+  .v15 .c-brand .nv-mark {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+  }
+  .v15 .c-main {
+    padding: 20px 22px 24px;
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+  }
+  .v15 .c-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .v15 .c-top b {
+    font-size: 18px;
+  }
+  .v15 .c-top span {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .v15 .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .v15 .kpis div {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .v15 .kpis span {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .v15 .kpis b {
+    font-size: 24px;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .v15 .kpis em {
+    display: block;
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 600;
+    color: #12a36f;
+    margin-top: 2px;
+  }
+  .v15 .c-row {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 12px;
+  }
+  .v15 .chart,
+  .v15 .runs {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    min-width: 0;
+  }
+  .v15 .chart p,
+  .v15 .runs p {
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .v15 .bars {
+    height: 140px;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .v15 .bars i {
+    flex: 1;
+    height: var(--h);
+    border-radius: 6px 6px 2px 2px;
+    background: linear-gradient(180deg, #8b5cf6, #c9b8ff);
+    transform-origin: bottom;
+    animation: v15-bar 0.8s var(--ease) both;
+    animation-delay: calc(var(--i) * 50ms + 600ms);
+  }
+  .v15 .bars i:last-child {
+    background: var(--grad);
+  }
+  @keyframes v15-bar {
+    from {
+      transform: scaleY(0);
+    }
+  }
+  .v15 .runs ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 9px;
+  }
+  .v15 .runs li {
+    display: grid;
+    grid-template-columns: 8px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .v15 .st {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #12a36f;
+  }
+  .v15 .st.person {
+    background: #f0a020;
+  }
+  .v15 .rt {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .v15 .rd {
+    font: 12px var(--mono);
+    color: var(--muted);
+  }
+  @media (max-width: 860px) {
+    .v15 .console {
+      grid-template-columns: 1fr;
+    }
+    .v15 .c-side {
+      display: none;
+    }
+    .v15 .kpis {
+      grid-template-columns: 1fr 1fr;
+    }
+    .v15 .c-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* workflow demo */
+  .v15 .wf {
+    display: grid;
+    gap: 20px;
+  }
+  .v15 .wf-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    position: relative;
+  }
+  .v15 .wf-steps li {
+    position: relative;
+    padding: 18px 16px;
+    border-radius: 16px;
+    border: 1px solid var(--inv-line);
+    background: rgba(255, 255, 255, 0.03);
+    transition: background 0.4s, border-color 0.4s, transform 0.4s var(--ease);
+  }
+  .v15 .wf-steps li.done {
+    border-color: rgba(183, 166, 255, 0.35);
+  }
+  .v15 .wf-steps li.now {
+    background: rgba(109, 74, 255, 0.18);
+    border-color: #b7a6ff;
+    transform: translateY(-4px);
+  }
+  .v15 .wf-dot {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    margin-bottom: 14px;
+    font: 500 12px var(--mono);
+    border: 1px solid var(--inv-line);
+    transition: background 0.4s, border-color 0.4s;
+  }
+  .v15 .wf-steps li.done .wf-dot,
+  .v15 .wf-steps li.now .wf-dot {
+    background: var(--grad);
+    border-color: transparent;
+  }
+  .v15 .wf-steps b {
+    display: block;
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+  .v15 .wf-steps small {
+    font-size: 13px;
+    color: var(--inv-muted);
+    line-height: 1.4;
+    display: block;
+  }
+  .v15 .wf-card {
+    background: #fff;
+    color: var(--fg);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .v15 .wf-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    font: 13px var(--mono);
+    color: var(--muted);
+  }
+  .v15 .wf-eg {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .v15 .wf-card dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .v15 .wf-card dl div {
+    padding: 18px 20px 22px;
+  }
+  .v15 .wf-card dl div + div {
+    border-left: 1px solid var(--line);
+  }
+  .v15 .wf-card dt {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .v15 .wf-card dd {
+    margin: 0;
+    font-weight: 600;
+    font-size: 15px;
+    transition: color 0.3s;
+  }
+  .v15 .wf-card dd.flash {
+    color: var(--accent);
+  }
+  @media (max-width: 960px) {
+    .v15 .wf-steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .v15 .wf-card dl {
+      grid-template-columns: 1fr 1fr;
+    }
+    .v15 .wf-card dl div + div {
+      border-left: 0;
+    }
+    .v15 .wf-card dl div {
+      border-top: 1px solid var(--line);
+    }
+  }
+  @media (max-width: 520px) {
+    .v15 .wf-steps {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
+
+<script>
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // console flattens from a 3D tilt as you scroll into it
+  const stage = document.querySelector<HTMLElement>('[data-tilt-stage]')!;
+  const con = document.querySelector<HTMLElement>('[data-tilt]')!;
+  const tilt = () => {
+    if (reduced) {
+      con.style.setProperty('--rx', '0deg');
+      con.style.setProperty('--sc', '1');
+      return;
+    }
+    const r = stage.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight * 0.9)));
+    con.style.setProperty('--rx', `${24 * (1 - p)}deg`);
+    con.style.setProperty('--sc', String(0.92 + 0.08 * p));
+  };
+  addEventListener('scroll', tilt, { passive: true });
+  addEventListener('resize', tilt);
+  tilt();
+
+  // KPI counters
+  document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+    const target = Number(el.dataset.count);
+    const suffix = el.dataset.suffix ?? '';
+    if (reduced) {
+      el.textContent = target.toLocaleString('en-US') + suffix;
+      return;
+    }
+    const start = performance.now() + 500;
+    const step = (now: number) => {
+      const p = Math.min(1, Math.max(0, (now - start) / 1800));
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString('en-US') + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+
+  // workflow: steps light up in order and the record updates with each one
+  const wf = document.querySelector<HTMLElement>('[data-wf]')!;
+  const steps = [...wf.querySelectorAll<HTMLElement>('[data-step]')];
+  const fields = [...wf.querySelectorAll<HTMLElement>('[data-vals]')].map((el) => ({
+    el,
+    vals: JSON.parse(el.dataset.vals!) as string[],
+  }));
+  let i = 0;
+  let timer = 0;
+  const show = (n: number) => {
+    steps.forEach((s, k) => {
+      s.classList.toggle('done', k < n);
+      s.classList.toggle('now', k === n);
+    });
+    fields.forEach(({ el, vals }) => {
+      const v = vals[Math.min(n, vals.length - 1)];
+      if (el.textContent !== v) {
+        el.textContent = v;
+        el.classList.add('flash');
+        setTimeout(() => el.classList.remove('flash'), 600);
+      }
+    });
+  };
+  if (reduced) show(steps.length - 1);
+  else
+    new IntersectionObserver(([e]) => {
+      clearInterval(timer);
+      if (e.isIntersecting) {
+        show(i);
+        timer = window.setInterval(() => {
+          i = (i + 1) % (steps.length + 2); // hold on the finished state for two beats
+          show(Math.min(i, steps.length - 1));
+        }, 1300);
+      }
+    }, { threshold: 0.3 }).observe(wf);
+</script>

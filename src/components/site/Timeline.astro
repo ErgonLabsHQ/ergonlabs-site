@@ -1,0 +1,130 @@
+---
+// "Four stages, from first call to production." A vertical timeline that fills as you scroll (from Sage).
+import { process } from '../../nuvareth';
+---
+
+<section class="nv-section tl" id="process" data-tl>
+  <div class="nv-wrap tl-in">
+    <div class="tl-head">
+      <p class="nv-label">Process</p>
+      <h2>Four stages, from first call to production.</h2>
+      <p class="nv-lede">A predictable path, with something working in your hands from week two.</p>
+    </div>
+    <ol class="tl-list">
+      <span class="tl-rail" aria-hidden="true"><i data-tl-fill></i></span>
+      {process.map((p) => (
+        <li data-tl-item>
+          <span class="dot" aria-hidden="true"></span>
+          <p class="when">{p.time}</p>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .tl-in {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: start;
+  }
+  .tl-head {
+    display: grid;
+    gap: 18px;
+    position: sticky;
+    top: 110px;
+  }
+  .tl-head h2 {
+    font-size: clamp(34px, 4.4vw, 60px);
+  }
+  .tl-list {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 48px;
+    display: grid;
+    gap: clamp(40px, 7vh, 80px);
+  }
+  .tl-rail {
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--line);
+  }
+  .tl-rail i {
+    display: block;
+    width: 100%;
+    height: calc(var(--p, 0) * 100%);
+    background: var(--accent);
+  }
+  .tl-list li {
+    position: relative;
+    opacity: 0.4;
+    transition: opacity 0.4s;
+  }
+  .tl-list li:global(.lit) {
+    opacity: 1;
+  }
+  .dot {
+    position: absolute;
+    left: -48px;
+    top: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--line);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .tl-list li:global(.lit) .dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+  .when {
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 8px 0 12px;
+  }
+  h3 {
+    font-size: clamp(30px, 3vw, 44px);
+    margin-bottom: 10px;
+  }
+  .tl-list p:last-child {
+    color: var(--muted);
+    max-width: 50ch;
+    font-size: 17px;
+  }
+  @media (max-width: 860px) {
+    .tl-in {
+      grid-template-columns: 1fr;
+    }
+    .tl-head {
+      position: static;
+    }
+  }
+</style>
+
+<script>
+  const tl = document.querySelector<HTMLElement>('[data-tl]');
+  if (tl) {
+    const fill = tl.querySelector<HTMLElement>('[data-tl-fill]')!;
+    const items = [...tl.querySelectorAll<HTMLElement>('[data-tl-item]')];
+    const list = tl.querySelector<HTMLElement>('.tl-list')!;
+    const onScroll = () => {
+      const r = list.getBoundingClientRect();
+      const mid = innerHeight * 0.6;
+      fill.style.setProperty('--p', String(Math.min(1, Math.max(0, (mid - r.top) / r.height))));
+      items.forEach((it) => it.classList.toggle('lit', it.getBoundingClientRect().top < mid));
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>

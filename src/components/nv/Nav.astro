@@ -1,0 +1,28 @@
+---
+// Nuvareth top bar. `base` prefixes the in-page anchors (use "/" on pages other than the homepage).
+import { brand, nvNav } from '../../nuvareth';
+
+interface Props {
+  home?: string;
+  base?: string;
+  extra?: { label: string; href: string; current?: boolean }[];
+}
+const { home = '/', base = '', extra = [] } = Astro.props;
+const cta = brand.bookingUrl || `${base}#contact`;
+---
+
+<header class="nv-nav" data-nv-nav>
+  <div class="nv-wrap nv-nav-in">
+    <a class="nv-logo" href={home}>
+      <span class="nv-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><path d="M10.5 22V10l11 12V10"></path></svg>
+      </span>
+      {brand.name}
+    </a>
+    <nav aria-label="Primary">
+      {nvNav.map((n) => <a href={`${base}${n.href}`}>{n.label}</a>)}
+      {extra.map((n) => <a href={n.href} aria-current={n.current ? 'page' : undefined}>{n.label}</a>)}
+    </nav>
+    <a class="nv-btn nv-btn-sm" href={cta}>Start a project</a>
+  </div>
+</header>

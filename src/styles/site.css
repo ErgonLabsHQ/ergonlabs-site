@@ -1,0 +1,481 @@
+/* Live Nuvareth site: the Blueprint layout and type, in the Sage palette. Tokens feed nv.css. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.site {
+  --bg: #f4f1e8;
+  --surface: #fbfaf5;
+  --fg: #13291f;
+  --muted: #55665c;
+  --line: rgba(19, 41, 31, 0.13);
+  --accent: #1d6b4f;
+  --accent-fg: #ffffff;
+  --accent-soft: rgba(29, 107, 79, 0.1);
+  --sage: #c9d8c5;
+  --mint: #9fd3b5;
+  --clay: #d98e5f;
+  --panel: #13291f;
+  --inv-bg: #10251c;
+  --inv-fg: #eef1e8;
+  --inv-muted: rgba(238, 241, 232, 0.64);
+  --inv-line: rgba(238, 241, 232, 0.14);
+  --display: 'IBM Plex Sans', system-ui, sans-serif;
+  --body: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --h-weight: 600;
+  --h-track: -0.025em;
+  --radius: 6px;
+  --shadow: none;
+  background-image: linear-gradient(rgba(19, 41, 31, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(19, 41, 31, 0.045) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* buttons and mark */
+.site .nv-btn {
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 4px;
+}
+.site .nv-btn.ghost {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--fg);
+}
+.site .nv-ai .nv-btn.ghost,
+.site .nv-contact .nv-btn.ghost {
+  color: var(--inv-fg);
+  border-color: var(--inv-fg);
+}
+.site .nv-contact .nv-btn {
+  background: var(--mint);
+  color: var(--fg);
+}
+.site .nv-mark {
+  border-radius: 4px;
+  background: var(--fg);
+}
+.site .nv-mark svg {
+  stroke: var(--sage);
+}
+.site .nv-nav nav a[aria-current='page'] {
+  opacity: 1;
+  box-shadow: inset 0 -2px 0 var(--accent);
+  border-radius: 0;
+}
+
+/* dark sections get the blueprint grid too */
+.site .nv-ai,
+.site .nv-contact {
+  background-color: var(--inv-bg);
+  background-image: linear-gradient(rgba(238, 241, 232, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 241, 232, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.site .nv-ai .nv-label,
+.site .nv-contact .nv-label {
+  color: var(--mint);
+}
+
+/* services: blueprint corner marks */
+.site .nv-services > li {
+  position: relative;
+}
+.site .nv-services > li::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+}
+.site .nv-num {
+  color: var(--muted);
+}
+.site .nv-chips li {
+  background: var(--bg);
+  border-color: transparent;
+}
+
+/* engagements, as in Sage */
+.site .nv-plans > li.featured {
+  background: var(--sage);
+  border-color: transparent;
+  box-shadow: none;
+}
+.site .nv-badge {
+  background: var(--fg);
+  color: var(--bg);
+}
+.site .nv-rules ol li > span {
+  color: var(--accent);
+}
+
+/* founders page */
+.fd-hero {
+  padding: clamp(130px, 17vh, 180px) 0 clamp(50px, 7vh, 80px);
+  border-bottom: 1px solid var(--fg);
+}
+.fd-hero h1 {
+  font-size: clamp(40px, 5.4vw, 80px);
+  line-height: 1.02;
+  max-width: 16ch;
+  margin: 20px 0 24px;
+}
+.fd-hero p.nv-lede {
+  max-width: 62ch;
+}
+.fd-list {
+  display: grid;
+  gap: clamp(60px, 9vw, 120px);
+}
+.fd {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: start;
+  max-width: 1000px;
+}
+.fd:nth-child(even) {
+  grid-template-columns: minmax(0, 1fr) 300px;
+  margin-left: auto;
+}
+.fd:nth-child(even) .fd-photo {
+  order: 2;
+}
+.fd-photo {
+  position: sticky;
+  top: 100px;
+  margin: 0;
+}
+.fd-photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--sage);
+  filter: saturate(0.92);
+}
+.fd-photo figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  font: 500 12px/1.4 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fd-photo::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 22px;
+  height: 22px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+}
+.fd-body {
+  display: grid;
+  gap: 22px;
+}
+.fd-role {
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.fd-body h2 {
+  font-size: clamp(36px, 4.4vw, 62px);
+}
+.fd-lead {
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.4;
+  font-weight: 500;
+  max-width: 40ch;
+}
+.fd-bio {
+  display: grid;
+  gap: 14px;
+  color: var(--muted);
+  max-width: 62ch;
+}
+.fd-hl {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+.fd-hl li {
+  padding: 14px 14px 14px 0;
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+  font-size: 15.5px;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.fd-hl li::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  transform: translateY(-1px);
+}
+.fd-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.fd-stack span {
+  font: 500 12.5px/1 var(--mono);
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.fd-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+.fd-links a {
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+}
+.fd-links a:hover {
+  color: var(--accent);
+}
+
+.values {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--inv-line);
+  border-left: 1px solid var(--inv-line);
+}
+.values li {
+  padding: 30px 28px 34px;
+  border-right: 1px solid var(--inv-line);
+  border-bottom: 1px solid var(--inv-line);
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.v-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.v-top > span:last-child {
+  font: 500 12px/1 var(--mono);
+  color: var(--inv-muted);
+}
+.v-ico {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--inv-line);
+  border-radius: 6px;
+  color: var(--mint);
+}
+.values h3 {
+  font-size: clamp(22px, 2vw, 28px);
+}
+.values p {
+  color: var(--inv-muted);
+}
+
+.fd-cta {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+.fd-cta h2 {
+  font-size: clamp(32px, 4vw, 56px);
+  max-width: 20ch;
+}
+
+@media (max-width: 900px) {
+  .fd,
+  .fd:nth-child(even) {
+    grid-template-columns: 1fr;
+  }
+  .fd:nth-child(even) .fd-photo {
+    order: 0;
+  }
+  .fd-photo {
+    position: relative;
+    top: 0;
+    max-width: 280px;
+  }
+  .fd-hero-in {
+    grid-template-columns: 1fr !important;
+  }
+  .fd-draw {
+    max-width: 520px;
+  }
+  .values {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .values,
+  .fd-hl {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* service icons */
+.site .nv-svc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+.site .nv-ico {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--accent);
+  background: var(--bg);
+}
+.site .nv-services > li:hover .nv-ico {
+  border-color: var(--accent);
+}
+
+/* founders header drawing */
+.fd-hero-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(30px, 5vw, 70px);
+  align-items: center;
+}
+.fd-draw {
+  margin: 0;
+}
+.fd-draw svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.fd-draw .guide * {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+.fd-draw .guide .dash {
+  stroke-dasharray: 3 4;
+  stroke: var(--accent);
+  opacity: 0.7;
+}
+.fd-draw .ln path {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fd-draw 1.6s var(--ease) forwards 0.2s;
+}
+.fd-draw .ln .strong {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  animation-delay: 1.2s;
+}
+.fd-draw .ln .ticks {
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  stroke: var(--accent);
+  opacity: 0;
+  animation: fd-fade 0.5s ease forwards 1.8s;
+}
+.fd-draw .node * {
+  fill: var(--bg);
+  stroke: var(--fg);
+  stroke-width: 1.5;
+}
+.fd-draw .node .fill {
+  fill: var(--accent);
+  stroke: none;
+}
+.fd-draw .node .end {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fd-draw .node path.end {
+  fill: none;
+}
+.fd-draw .lbl {
+  font: 500 11px var(--mono);
+  letter-spacing: 0.12em;
+  fill: var(--muted);
+}
+.fd-draw .mid {
+  text-anchor: middle;
+}
+@keyframes fd-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes fd-fade {
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fd-draw .ln path {
+    stroke-dashoffset: 0;
+  }
+  .fd-draw .ln .ticks {
+    opacity: 1;
+  }
+}

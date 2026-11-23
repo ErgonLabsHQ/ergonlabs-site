@@ -2,10 +2,10 @@
 // Variation 5, "Flight": one continuous scroll-driven scene. Particles orbit the headline, then
 // collapse into rings around a core and pour into a demo card as you scroll. Paper planes glide
 // in the margins for the whole page and get thrown around by fast scrolling.
-import Variant from '../../layouts/Variant.astro';
-import VariantSections from '../../components/VariantSections.astro';
-import VariantLog from '../../components/VariantLog.astro';
-import { site } from '../../site';
+import Variant from '../../../layouts/Variant.astro';
+import VariantSections from '../../../components/VariantSections.astro';
+import VariantLog from '../../../components/VariantLog.astro';
+import { site } from '../../../site';
 const fonts = 'https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap';
 const chips = ['AI agents', 'Web apps', 'Mobile', 'Games', 'Backend', 'Cloud'];
 ---
@@ -14,7 +14,7 @@ const chips = ['AI agents', 'Web apps', 'Mobile', 'Games', 'Backend', 'Cloud'];
   <canvas class="planes" data-planes aria-hidden="true"></canvas>
 
   <header class="top">
-    <a class="logo" href="/v/5"><i></i>{site.name}</a>
+    <a class="logo" href="/archive/v/5"><i></i>{site.name}</a>
     <nav>
       <a href="#work">AI work</a>
       <a href="#services">Services</a>
