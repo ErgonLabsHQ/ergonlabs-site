@@ -11,7 +11,7 @@ const extra = [{ label: 'Founders', href: '/founders', current: true }];
 ---
 
 <Site title={`Founders — ${brand.name}`} description="Meet the founders of Nuvareth, an AI engineering firm.">
-  <Nav home="/" base="/" extra={extra} />
+  <Nav home="/" base="/" extra={extra} blueprint />
 
   <main>
     <section class="fd-hero">
@@ -122,12 +122,10 @@ const extra = [{ label: 'Founders', href: '/founders', current: true }];
     <section class="nv-section">
       <div class="nv-wrap fd-cta">
         <h2 data-nv-reveal>Talk to the founders about your project.</h2>
-        <div class="fd-links">
-          <a class="nv-btn" href="/#contact">Start a project</a>
-        </div>
+        <a class="nv-btn" href="/#contact">Start a project <span aria-hidden="true">→</span></a>
       </div>
     </section>
   </main>
 
-  <Footer base="/" extra={[{ label: 'Founders', href: '/founders' }]} />
+  <Footer base="/" extra={[{ label: 'Founders', href: '/founders' }]} blueprint />
 </Site>

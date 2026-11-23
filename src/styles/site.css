@@ -332,6 +332,18 @@ img {
   gap: 30px;
   flex-wrap: wrap;
 }
+.fd-cta .nv-btn {
+  padding: 15px 26px;
+  font-size: 16px;
+}
+.site .nv-foot-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.site .nv-logo {
+  gap: 11px;
+}
 .fd-cta h2 {
   font-size: clamp(32px, 4vw, 56px);
   max-width: 20ch;

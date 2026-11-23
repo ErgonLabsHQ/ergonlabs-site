@@ -13,12 +13,13 @@ interface Props {
   home?: string;
   extra?: { label: string; href: string }[];
   icons?: boolean;
+  blueprint?: boolean;
 }
-const { v, home = v ? `/archive/v/${v}` : '/', extra = [], icons = false } = Astro.props;
+const { v, home = v ? `/archive/v/${v}` : '/', extra = [], icons = false, blueprint = false } = Astro.props;
 const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 'Data platform', 'Audit or advice', 'Not sure yet'];
 ---
 
-<Nav home={home} extra={extra} />
+<Nav home={home} extra={extra} blueprint={blueprint} />
 
 <main>
   <slot name="hero" />
@@ -216,4 +217,4 @@ const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 
   </section>
 </main>
 
-<Footer extra={extra} />
+<Footer extra={extra} blueprint={blueprint} />

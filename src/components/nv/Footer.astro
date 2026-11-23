@@ -1,18 +1,20 @@
 ---
 import { brand, nvNav } from '../../nuvareth';
+import Logo from '../site/Logo.astro';
 
 interface Props {
   base?: string;
   extra?: { label: string; href: string }[];
+  blueprint?: boolean;
 }
-const { base = '', extra = [] } = Astro.props;
+const { base = '', extra = [], blueprint = false } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
 <footer class="nv-foot">
   <div class="nv-wrap nv-foot-in">
     <div>
-      <p class="nv-foot-name">{brand.name}</p>
+      <p class="nv-foot-name">{blueprint && <Logo size={34} />}{brand.name}</p>
       <p>{brand.headline}.</p>
     </div>
     <nav aria-label="Footer">
