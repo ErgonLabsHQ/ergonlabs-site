@@ -135,7 +135,6 @@ export const founders = [
     stack: ['LLM agents', 'Reinforcement learning', 'PyTorch', 'LangGraph', 'MCP', 'Evaluation & safety'],
     links: [
       { label: 'LinkedIn', href: 'https://linkedin.com/in/talha-asif7' },
-      { label: 'GitHub', href: 'https://github.com/Talhaasif7' },
       { label: 'Portfolio', href: 'https://talha-asif-dev.vercel.app' },
     ],
   },
