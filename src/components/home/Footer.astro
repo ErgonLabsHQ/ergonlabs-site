@@ -6,8 +6,9 @@ import OwlMark from './OwlMark.astro';
 import { brand, nvNav } from '../../nuvareth';
 
 const onHome = Astro.url.pathname === '/';
-// the "AI in production" section was removed
-const nav = [...nvNav.filter((n) => n.href !== '#ai').map((n) => ({ ...n, href: onHome ? n.href : `/${n.href}` })), { label: 'Founders', href: '/founders' }];
+// the "AI in production" section was replaced by testimonials
+const links = nvNav.flatMap((n) => (n.href === '#ai' ? [{ label: 'Testimonials', href: '#testimonials' }] : [n]));
+const nav = [...links.map((n) => ({ ...n, href: onHome ? n.href : `/${n.href}` })), { label: 'Founders', href: '/founders' }];
 const year = new Date().getFullYear();
 ---
 

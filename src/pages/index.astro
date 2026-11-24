@@ -9,6 +9,7 @@ import PillarScene from '../components/home/PillarScene.astro';
 import Nav from '../components/home/Nav.astro';
 import Footer from '../components/home/Footer.astro';
 import Btn from '../components/home/Btn.astro';
+import Testimonials from '../components/home/Testimonials.astro';
 import { brand, services, facts, process, engagements, values, faqs, founders } from '../nuvareth';
 
 const words = ['Engineering', 'the', 'Next', 'Era', 'of', 'Intelligence.'];
@@ -123,8 +124,11 @@ const pillars = [
       </div>
     </section>
 
+    <!-- testimonials -->
+    <Testimonials />
+
     <!-- process -->
-    <section class="sec alt" id="process" data-tl>
+    <section class="sec" id="process" data-tl>
       <div class="wrap">
         <div class="head">
           <h2 data-split>Four stages, from first call to production.</h2>
@@ -145,7 +149,7 @@ const pillars = [
     </section>
 
     <!-- engagements -->
-    <section class="sec" id="engagements">
+    <section class="sec alt" id="engagements">
       <div class="wrap">
         <div class="head">
           <h2 data-split>Four ways to work with us.</h2>
@@ -169,7 +173,7 @@ const pillars = [
     </section>
 
     <!-- values -->
-    <section class="sec alt" id="values">
+    <section class="sec" id="values">
       <div class="wrap">
         <div class="head">
           <h2 data-split>What we stand for.</h2>
@@ -187,7 +191,7 @@ const pillars = [
     </section>
 
     <!-- founders -->
-    <section class="sec" id="founders">
+    <section class="sec alt" id="founders">
       <div class="wrap">
         <div class="head">
           <h2 data-split>The engineers behind {brand.name}.</h2>
@@ -208,7 +212,7 @@ const pillars = [
     </section>
 
     <!-- faq -->
-    <section class="sec alt" id="faq">
+    <section class="sec" id="faq">
       <div class="wrap faq">
         <div class="head">
           <h2 data-split>Questions clients ask first.</h2>
@@ -225,7 +229,7 @@ const pillars = [
     </section>
 
     <!-- contact -->
-    <section class="sec contact last" id="contact">
+    <section class="sec alt contact last" id="contact">
       <div class="wrap">
         <div class="head">
           <h2 data-split>Tell us what you are building.</h2>

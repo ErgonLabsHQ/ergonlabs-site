@@ -1,0 +1,323 @@
+---
+// Testimonials: one large quote card at a time (portrait or initials tile on the left, the quote on the right),
+// with prev/next buttons and segmented progress bars. Auto-advances every 7s, pauses on hover/focus, supports
+// arrow keys and swipe. While the data is flagged as placeholder, a visible notice says so.
+import { testimonials, testimonialsArePlaceholders } from '../../testimonials';
+
+const initials = (n: string) =>
+  n
+    .split(' ')
+    .filter((w) => /^[A-Z]/.test(w))
+    .slice(-2)
+    .map((w) => w[0])
+    .join('');
+---
+
+<section class="sec alt" id="testimonials">
+  <div class="wrap">
+    <div class="head">
+      <h2 data-split>What clients say.</h2>
+      {testimonialsArePlaceholders && <p class="chip ts-flag">Placeholder testimonials, replace before launch</p>}
+    </div>
+
+    <div class="ts card" data-ts data-r role="region" aria-roledescription="carousel" aria-label="Client testimonials" tabindex="0">
+      <ul class="ts-track">
+        {testimonials.map((t, i) => (
+          <li class:list={['ts-slide', { on: i === 0 }]} aria-roledescription="slide" aria-label={`${i + 1} of ${testimonials.length}`} aria-hidden={i === 0 ? 'false' : 'true'}>
+            <div class="ts-face">
+              {t.photo ? (
+                <img src={t.photo} alt={`Portrait of ${t.name}`} width="480" height="480" loading="lazy" />
+              ) : (
+                <span class="ts-init" aria-hidden="true">{initials(t.name)}</span>
+              )}
+            </div>
+            <figure class="ts-body">
+              <svg class="ts-q" viewBox="0 0 40 30" aria-hidden="true"><path d="M0 30V17L8 0h8l-5 15h6v15zM23 30V17l8-17h8l-5 15h6v15z"></path></svg>
+              <blockquote>
+                <p>{t.quote}</p>
+              </blockquote>
+              <figcaption>
+                <b>{t.name}</b>
+                <span>{t.role}, {t.company}</span>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+
+      <div class="ts-ctrl">
+        <div class="ts-bars" role="tablist" aria-label="Choose a testimonial">
+          {testimonials.map((t, i) => (
+            <button type="button" role="tab" class:list={{ on: i === 0 }} aria-selected={i === 0 ? 'true' : 'false'} aria-label={`Show testimonial from ${t.name}`} data-ts-go={i}>
+              <i></i>
+            </button>
+          ))}
+        </div>
+        <div class="ts-arrows">
+          <button type="button" class="ts-btn" aria-label="Previous testimonial" data-ts-prev>←</button>
+          <button type="button" class="ts-btn" aria-label="Next testimonial" data-ts-next>→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ts-flag {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .ts {
+    padding: 0;
+    outline-offset: 4px;
+  }
+  .ts-track {
+    display: grid;
+  }
+  .ts-slide {
+    grid-area: 1 / 1;
+    display: grid;
+    grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(24px, 4vw, 56px);
+    padding: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s var(--ease), visibility 0s 0.6s;
+  }
+  .ts-slide.on {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.6s var(--ease);
+  }
+  .ts-face {
+    position: relative;
+    aspect-ratio: 1;
+    background: var(--card-2);
+    overflow: hidden;
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.9s var(--ease-io);
+  }
+  .ts-slide.on .ts-face {
+    clip-path: inset(0 0 0 0);
+  }
+  .ts-face img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ts-init {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font: 700 clamp(52px, 7vw, 88px) / 1 var(--font);
+    letter-spacing: -0.06em;
+    color: var(--on-accent);
+    background:
+      linear-gradient(color-mix(in srgb, var(--on-accent) 8%, transparent) 1px, transparent 1px) 0 0 / 22px 22px,
+      linear-gradient(90deg, color-mix(in srgb, var(--on-accent) 8%, transparent) 1px, transparent 1px) 0 0 / 22px 22px,
+      var(--accent);
+  }
+  .ts-body {
+    margin: 0;
+    display: grid;
+    align-content: center;
+    gap: 22px;
+  }
+  .ts-q {
+    width: 28px;
+    fill: var(--text);
+  }
+  .ts blockquote {
+    margin: 0;
+  }
+  .ts blockquote p {
+    font-size: clamp(18px, 1.8vw, 22px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+    color: var(--text);
+    text-wrap: pretty;
+  }
+  .ts-slide p {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.7s var(--ease) 0.15s, transform 0.7s var(--ease) 0.15s;
+  }
+  .ts-slide.on p {
+    opacity: 1;
+    transform: none;
+  }
+  .ts figcaption {
+    display: grid;
+    gap: 2px;
+  }
+  .ts figcaption b {
+    font-size: 16px;
+    letter-spacing: -0.02em;
+  }
+  .ts figcaption span {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .ts-ctrl {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 24px;
+    border-top: 1px solid var(--line);
+  }
+  .ts-bars {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    max-width: 320px;
+  }
+  .ts-bars button {
+    flex: 1;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    display: grid;
+    align-items: center;
+  }
+  .ts-bars i {
+    display: block;
+    height: 2px;
+    background: var(--line-2);
+    position: relative;
+    overflow: hidden;
+  }
+  .ts-bars i::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--text);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .ts-bars button.done i::after {
+    transform: scaleX(1);
+  }
+  .ts-bars button.on i::after {
+    animation: ts-fill var(--dur, 7s) linear forwards;
+  }
+  .ts.paused .ts-bars button.on i::after {
+    animation-play-state: paused;
+  }
+  @keyframes ts-fill {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .ts-arrows {
+    display: flex;
+    gap: 6px;
+  }
+  .ts-btn {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: var(--card-2);
+    color: var(--text);
+    font: 600 18px/1 var(--font);
+    transition: background-color 0.25s, color 0.25s;
+  }
+  .ts-btn:hover {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  @media (max-width: 760px) {
+    .ts-slide {
+      grid-template-columns: 1fr;
+    }
+    .ts-face {
+      width: 120px;
+    }
+    .ts-init {
+      font-size: 48px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ts-bars button.on i::after {
+      animation: none;
+      transform: scaleX(1);
+    }
+  }
+</style>
+
+<script>
+  const ts = document.querySelector<HTMLElement>('[data-ts]');
+  if (ts) {
+    const slides = [...ts.querySelectorAll<HTMLElement>('.ts-slide')];
+    const bars = [...ts.querySelectorAll<HTMLButtonElement>('[data-ts-go]')];
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DUR = 7000;
+    let cur = 0;
+    let timer = 0;
+    let left = DUR;
+    let started = 0;
+
+    const show = (n: number) => {
+      cur = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        s.classList.toggle('on', i === cur);
+        s.setAttribute('aria-hidden', String(i !== cur));
+      });
+      bars.forEach((b, i) => {
+        b.classList.remove('on');
+        b.classList.toggle('done', i < cur);
+        b.setAttribute('aria-selected', String(i === cur));
+      });
+      // restart the fill animation on the active bar
+      void bars[cur].offsetWidth;
+      bars[cur].classList.add('on');
+      left = DUR;
+      schedule();
+    };
+    const schedule = () => {
+      clearTimeout(timer);
+      if (reduced || ts.classList.contains('paused')) return;
+      started = performance.now();
+      timer = window.setTimeout(() => show(cur + 1), left);
+    };
+    const pause = () => {
+      if (ts.classList.contains('paused')) return;
+      ts.classList.add('paused');
+      clearTimeout(timer);
+      left = Math.max(0, left - (performance.now() - started));
+    };
+    const resume = () => {
+      ts.classList.remove('paused');
+      schedule();
+    };
+
+    ts.querySelector('[data-ts-prev]')?.addEventListener('click', () => show(cur - 1));
+    ts.querySelector('[data-ts-next]')?.addEventListener('click', () => show(cur + 1));
+    bars.forEach((b, i) => b.addEventListener('click', () => show(i)));
+    ts.addEventListener('pointerenter', pause);
+    ts.addEventListener('pointerleave', resume);
+    ts.addEventListener('focusin', pause);
+    ts.addEventListener('focusout', (e) => {
+      if (!ts.contains(e.relatedTarget as Node)) resume();
+    });
+    ts.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') show(cur + 1);
+      if (e.key === 'ArrowLeft') show(cur - 1);
+    });
+    let x0: number | null = null;
+    ts.addEventListener('touchstart', (e) => (x0 = e.touches[0].clientX), { passive: true });
+    ts.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+
+    // only run the clock while the carousel is on screen
+    new IntersectionObserver(([e]) => (e.isIntersecting ? resume() : pause())).observe(ts);
+  }
+</script>
