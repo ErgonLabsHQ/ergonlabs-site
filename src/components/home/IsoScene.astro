@@ -57,7 +57,7 @@ switch (kind) {
         parts: [
           { d: plane(-55, -55, z, 110, 110), k: i === 2 ? 'top' : 'ghost' },
           { d: cells(-55, -55, z, 110, 110, 5), k: 'ln' },
-          ...[[1, 1], [3, 2], [2, 4], [4, 0]].slice(0, 2 + i).map(([a, b]) => ({ d: plane(-55 + a * 22, -55 + b * 22, z, 22, 22), k: (a + b + i) % 3 ? 'white' : 'amber' })),
+          ...[[1, 1], [3, 2], [2, 4], [4, 0]].slice(0, 2 + i).map(([a, b]) => ({ d: plane(-55 + a * 22, -55 + b * 22, z, 22, 22), k: (a + b + i) % 3 ? 'white' : 'mid' })),
         ],
         handles: hs(-55, -55, z, 110, 110),
       });
@@ -89,7 +89,7 @@ switch (kind) {
       const b = box(-45, -45, z, 90, 90, 22);
       L.push({
         lift: i * 12,
-        parts: [{ d: b.right, k: 'r' }, { d: b.left, k: 'l' }, { d: b.top, k: i === 2 ? 'white' : 'top' }, { d: wallX(-34, 45, z + 8, 8, 6), k: i === 1 ? 'amber' : 'white' }, { d: wallX(-22, 45, z + 8, 8, 6), k: 'ghost' }],
+        parts: [{ d: b.right, k: 'r' }, { d: b.left, k: 'l' }, { d: b.top, k: i === 2 ? 'white' : 'top' }, { d: wallX(-34, 45, z + 8, 8, 6), k: i === 1 ? 'mid' : 'white' }, { d: wallX(-22, 45, z + 8, 8, 6), k: 'ghost' }],
       });
     });
     L.push({ parts: [{ d: arc([45, 0, 75], [110, -10, 10], 30), k: 'flow' }, { d: plane(95, -30, 0, 34, 40), k: 'ghost' }], handles: hs(95, -30, 0, 34, 40) });
@@ -97,8 +97,9 @@ switch (kind) {
   }
   case 'cloud': {
     L.push({ parts: [...solid(-80, -10, 0, 34, 34, 26), ...solid(-20, 30, 0, 34, 34, 40), ...solid(40, -40, 0, 34, 34, 18)] });
-    L.push({ parts: [{ d: line([[-63, 7, 26], [-63, 7, 84]]) + line([[-3, 47, 40], [-3, 47, 84]]) + line([[57, -23, 18], [57, -23, 84]]), k: 'flow' }] });
-    L.push({ lift: 20, bob: true, parts: [{ d: plane(-100, -60, 84, 190, 130), k: 'ghost' }, { d: cells(-100, -60, 84, 190, 130, 4), k: 'ln' }], handles: hs(-100, -60, 84, 190, 130) });
+    // the cloud plane stays low enough that bobbing and the hover lift never reach the card title
+    L.push({ parts: [{ d: line([[-63, 7, 26], [-63, 7, 58]]) + line([[-3, 47, 40], [-3, 47, 58]]) + line([[57, -23, 18], [57, -23, 58]]), k: 'flow' }] });
+    L.push({ lift: 8, bob: true, parts: [{ d: plane(-88, -52, 58, 170, 116), k: 'ghost' }, { d: cells(-88, -52, 58, 170, 116, 4), k: 'ln' }], handles: hs(-88, -52, 58, 170, 116) });
     break;
   }
   case 'data': {
@@ -106,7 +107,7 @@ switch (kind) {
       const c = cyl(-50, 0, z, 34, 20);
       L.push({ lift: i * 10, parts: [{ d: `${c.side}`, k: 'ln' }, { d: c.front, k: 'ln' }, { e: c.top, k: i === 2 ? 'white' : 'top' }] });
     });
-    L.push({ parts: [[30, -60, 30], [52, -60, 56], [74, -60, 42], [96, -60, 80]].flatMap(([x, y, h], i) => solid(x, y, 0, 16, 16, h, i === 3 ? 'amber' : 'top')) });
+    L.push({ parts: [[30, -60, 30], [52, -60, 56], [74, -60, 42], [96, -60, 80]].flatMap(([x, y, h], i) => solid(x, y, 0, 16, 16, h, i === 3 ? 'mid' : 'top')) });
     L.push({ parts: [{ d: arc([-50, 0, 72], [104, -52, 80], 40), k: 'flow' }] });
     break;
   }
@@ -149,7 +150,7 @@ switch (kind) {
     L.push({ parts: [...solid(-90, -70, 0, 170, 150, 12)] });
     L.push({ lift: 10, parts: [...solid(-10, -70, 12, 36, 36, 36)] });
     L.push({ lift: 16, parts: [{ d: c.side, k: 'ln' }, { d: c.front, k: 'ln' }, { e: c.top, k: 'white' }] });
-    L.push({ lift: 22, bob: true, parts: [{ d: `M${base[1].join(' ')}L${base[2].join(' ')}L${base[3].join(' ')}L${ax} ${ay}Z`, k: 'l' }, { d: `M${base[1].join(' ')}L${base[2].join(' ')}L${ax} ${ay}Z`, k: 'amber' }] });
+    L.push({ lift: 22, bob: true, parts: [{ d: `M${base[1].join(' ')}L${base[2].join(' ')}L${base[3].join(' ')}L${ax} ${ay}Z`, k: 'l' }, { d: `M${base[1].join(' ')}L${base[2].join(' ')}L${ax} ${ay}Z`, k: 'mid' }] });
   }
 }
 const floor = grid(140, 20);

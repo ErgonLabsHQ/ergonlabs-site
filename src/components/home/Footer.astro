@@ -1,18 +1,20 @@
 ---
 // Site footer shared by the homepage and /founders: contact details, link columns, and the giant outlined
-// ERGON wordmark that draws itself in when it scrolls into view.
-import Mark from './Mark.astro';
+// ERGON wordmark with the owl perched on it, wings spread; both draw themselves in when they scroll into view
+// and the owl keeps flapping slowly.
+import OwlMark from './OwlMark.astro';
 import { brand, nvNav } from '../../nuvareth';
 
 const onHome = Astro.url.pathname === '/';
-const nav = [...nvNav.map((n) => ({ ...n, href: onHome ? n.href : `/${n.href}` })), { label: 'Founders', href: '/founders' }];
+// the "AI in production" section was removed
+const nav = [...nvNav.filter((n) => n.href !== '#ai').map((n) => ({ ...n, href: onHome ? n.href : `/${n.href}` })), { label: 'Founders', href: '/founders' }];
 const year = new Date().getFullYear();
 ---
 
-<footer class="foot">
+<footer class="foot dk">
   <div class="wrap foot-in">
     <div class="foot-talk">
-      <a class="brand" href="/" aria-label={brand.name}><Mark /><span>{brand.name}</span></a>
+      <a class="brand" href="/" aria-label={brand.name}><OwlMark /><span>{brand.name}</span></a>
       <h2>Let's talk.</h2>
       <p>Email us directly or find us online.</p>
       <div class="mail-row">
@@ -35,7 +37,8 @@ const year = new Date().getFullYear();
   <div class="wrap foot-base">
     <span>© {year} {brand.name}. All rights reserved.</span>
   </div>
-  <svg class="giant" viewBox="0 0 1000 210" aria-hidden="true" data-giant>
+  <svg class="giant" viewBox="0 -250 1000 460" aria-hidden="true" data-giant>
+    <OwlMark variant="ghost" flap="always" crop={false} x={70} y={-240} width={860} height={430} />
     <text x="500" y="190" text-anchor="middle" textLength="990" lengthAdjust="spacingAndGlyphs">ERGON</text>
   </svg>
 </footer>

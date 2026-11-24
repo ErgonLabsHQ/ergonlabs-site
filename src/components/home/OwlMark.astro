@@ -1,0 +1,51 @@
+---
+// The Ergon Labs owl (the "Faceted" concept): flat angular planes, wings spread wide, amber eyes.
+// Drawn in a 600 x 300 box; the left wing is drawn once and mirrored. Wings pivot at the shoulder (284, 152).
+//   variant  solid - filled with currentColor (nav, light/dark backgrounds)
+//            ghost - near-invisible fill with a hairline outline, eyes still glowing (giant footer wordmark)
+//   flap     always - slow continuous wingbeat; hover - beats when its .brand link is hovered; none
+// Pass x / y / width / height to nest it inside another SVG.
+interface Props {
+  variant?: 'solid' | 'ghost';
+  flap?: 'always' | 'hover' | 'none';
+  class?: string;
+  x?: number;
+  y?: number;
+  width?: number | string;
+  height?: number | string;
+  crop?: boolean; // tight viewBox around the owl (for inline marks)
+}
+const { variant = 'solid', flap = 'hover', class: cls = '', x, y, width, height, crop = true } = Astro.props;
+const wing = 'M284 144 L232 104 L160 94 L92 116 L56 162 L96 150 L112 171 L142 153 L158 175 L188 156 L208 175 L234 159 L262 181 L286 174 Z';
+const head = 'M269 82 L283 99 L300 95 L317 99 L331 82 L336 121 L300 154 L264 121 Z';
+const body = 'M281 148 L319 148 L311 194 L300 202 L289 194 Z';
+const viewBox = crop ? '50 76 500 130' : '0 0 600 300';
+---
+
+<svg
+  class:list={['owl', `owl-${variant}`, `owl-flap-${flap}`, cls]}
+  viewBox={viewBox}
+  x={x}
+  y={y}
+  width={width}
+  height={height}
+  overflow="visible"
+  aria-hidden="true"
+>
+  <g class="owl-wing"><path d={wing} class="owl-f"></path></g>
+  <g transform="matrix(-1 0 0 1 600 0)"><g class="owl-wing"><path d={wing} class="owl-f"></path></g></g>
+  <path d={body} class="owl-f"></path>
+  <g class="owl-head">
+    <path d={head} class="owl-f"></path>
+    {[287, 313].map((cx) => (
+      <>
+        <circle cx={cx} cy="119" r="10" class="owl-eye"></circle>
+        <g class="owl-blink">
+          <circle cx={cx} cy="119" r="4.6" class="owl-pupil"></circle>
+          <circle cx={cx - 2.6} cy="116.2" r="1.7" fill="#fff"></circle>
+        </g>
+      </>
+    ))}
+    <path d="M295 129 L305 129 L300 139 Z" class="owl-beak"></path>
+  </g>
+</svg>

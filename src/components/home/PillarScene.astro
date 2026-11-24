@@ -1,0 +1,258 @@
+---
+// Small isometric animations for the three "Our view" pillars, each made for its idea:
+//   tested   - a scan bar sweeps across a grid of test cases; each tile turns white as it passes, one is flagged.
+//   measured - a live trace draws itself across an upright dashboard panel, under a dashed budget line.
+//   owned    - a block lifts off our plinth and lands on yours; your plinth lights up on arrival.
+// Shares the .iso styles (strokes, faces, reveal) with the service illustrations.
+import { P, plane, wallX, box, grid, line, arc } from './iso';
+
+interface Props {
+  kind: 'tested' | 'measured' | 'owned';
+}
+const { kind } = Astro.props;
+const floor = grid(120, 20);
+const f = (n: number) => +n.toFixed(1);
+
+// tested: a 4 x 3 grid of cases
+const T = 26;
+const GAP = 8;
+const cols = 4;
+const rows = 3;
+const x0 = -((cols * T + (cols - 1) * GAP) / 2);
+const y0 = -((rows * T + (rows - 1) * GAP) / 2);
+const tiles = Array.from({ length: cols * rows }, (_, k) => {
+  const c = k % cols;
+  const r = Math.floor(k / cols);
+  const x = x0 + c * (T + GAP);
+  const y = y0 + r * (T + GAP);
+  return { c, r, d: plane(x, y, 0, T, T), flag: k === 6 };
+});
+const scanStart = x0 - 14;
+const scanLen = cols * (T + GAP) + 14;
+const scanWall = `M${P(scanStart, y0 - 12, 0).map(f).join(' ')}L${P(scanStart, y0 - 12 + rows * (T + GAP) + 16, 0).map(f).join(' ')}L${P(scanStart, y0 - 12 + rows * (T + GAP) + 16, 34).map(f).join(' ')}L${P(scanStart, y0 - 12, 34).map(f).join(' ')}Z`;
+const [sdx, sdy] = [scanLen * Math.cos(Math.PI / 6), scanLen * 0.5];
+
+// measured: an upright panel along x with a trace drawn in world coordinates
+const PX = -84;
+const PW = 168;
+const PH = 92;
+const PY = 20;
+const panel = wallX(PX, PY, 0, PW, PH);
+const vals = [0.32, 0.42, 0.36, 0.55, 0.48, 0.62, 0.5, 0.58, 0.44, 0.66, 0.52, 0.6, 0.47];
+const trace = line(vals.map((v, i) => [PX + 8 + (i * (PW - 16)) / (vals.length - 1), PY, 8 + v * (PH - 20)] as [number, number, number]));
+const budget = line([[PX + 4, PY, 8 + 0.74 * (PH - 20)], [PX + PW - 4, PY, 8 + 0.74 * (PH - 20)]]);
+let gridLines = '';
+for (let i = 1; i < 4; i++) gridLines += line([[PX, PY, (PH / 4) * i], [PX + PW, PY, (PH / 4) * i]]);
+const base = box(PX - 6, PY - 20, 0, PW + 12, 20, 6);
+
+// owned: two plinths and a block that travels between them
+const ours = box(-96, -30, 0, 56, 56, 26);
+const yours = box(40, -30, 0, 56, 56, 40);
+const yoursTop = plane(40, -30, 40, 56, 56);
+const block = box(-14, -14, 0, 28, 28, 28); // drawn at the origin, moved along the path
+const from = P(-68, -2, 26);
+const to = P(68, -2, 40);
+const hop = `M${f(from[0])} ${f(from[1])}Q${f((from[0] + to[0]) / 2)} ${f(Math.min(from[1], to[1]) - 90)} ${f(to[0])} ${f(to[1])}`;
+const hopLine = arc([-68, -2, 54], [68, -2, 68], 70);
+---
+
+<svg class={`iso mini pil pil-${kind}`} viewBox="-170 -130 340 200" aria-hidden="true" data-iso>
+  <g class="iso-floor"><path d={floor}></path></g>
+
+  {kind === 'tested' && (
+    <>
+      <g class="as" style="--i:0">
+        {tiles.map((t) => <path d={t.d} class="ghost" />)}
+      </g>
+      <g class="as" style="--i:1">
+        {tiles.map((t) => (
+          <path d={t.d} class:list={['t-pass', { 't-flag': t.flag }]} style={`--c:${t.c};--r:${t.r}`} />
+        ))}
+      </g>
+      <g class="as" style="--i:2">
+        <g class="t-scan" style={`--sdx:${f(sdx)}px;--sdy:${f(sdy)}px`}>
+          <path d={scanWall} class="scan-wall" />
+        </g>
+      </g>
+    </>
+  )}
+
+  {kind === 'measured' && (
+    <>
+      <g class="as" style="--i:0">
+        <path d={base.right} class="r" /><path d={base.left} class="l" /><path d={base.top} class="top" />
+      </g>
+      <g class="as" style="--i:1">
+        <path d={panel} class="top" />
+        <path d={gridLines} class="ln" />
+        <path d={budget} class="m-budget" />
+      </g>
+      <g class="as" style="--i:2">
+        <path d={trace} class="m-trace" pathLength="1" id="m-trace" />
+        <rect class="m-dot" x="-3.5" y="-3.5" width="7" height="7">
+          <animateMotion dur="4s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear"><mpath href="#m-trace" /></animateMotion>
+        </rect>
+      </g>
+    </>
+  )}
+
+  {kind === 'owned' && (
+    <>
+      <g class="as" style="--i:0">
+        <path d={ours.right} class="r" /><path d={ours.left} class="l" /><path d={ours.top} class="ghost" />
+      </g>
+      <g class="as" style="--i:1">
+        <path d={yours.right} class="r" /><path d={yours.left} class="l" /><path d={yours.top} class="top" />
+        <path d={yoursTop} class="o-glow" />
+      </g>
+      <g class="as" style="--i:2">
+        <path d={hopLine} class="dash" />
+        <g class="o-block">
+          <path d={block.right} class="r" /><path d={block.left} class="l" /><path d={block.top} class="white" />
+          <animateMotion dur="4.4s" repeatCount="indefinite" path={hop} keyPoints="0;0;1;1" keyTimes="0;0.2;0.62;1" calcMode="spline" keySplines="0 0 1 1;0.55 0 0.35 1;0 0 1 1" />
+        </g>
+      </g>
+    </>
+  )}
+</svg>
+
+<style>
+  /* tested */
+  .t-pass {
+    fill: #ececec;
+    stroke: #fff;
+    opacity: 0;
+    animation: t-pass 5s linear infinite;
+    animation-delay: calc(var(--c) * 0.62s + var(--r) * 0.05s);
+  }
+  .t-flag {
+    fill: #7d7d7d;
+    stroke: #d0d0d0;
+  }
+  @keyframes t-pass {
+    0% {
+      opacity: 0;
+    }
+    6%,
+    62% {
+      opacity: 1;
+    }
+    78%,
+    100% {
+      opacity: 0;
+    }
+  }
+  .t-scan {
+    animation: t-scan 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation-delay: -0.5s;
+  }
+  @keyframes t-scan {
+    0% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    52% {
+      transform: translate(var(--sdx), var(--sdy));
+      opacity: 1;
+    }
+    62%,
+    100% {
+      transform: translate(var(--sdx), var(--sdy));
+      opacity: 0;
+    }
+  }
+  :global(.iso) .scan-wall {
+    fill: rgba(255, 255, 255, 0.08);
+    stroke: #fff;
+  }
+
+  /* measured */
+  :global(.iso) .m-budget {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.55);
+    stroke-dasharray: 4 4;
+  }
+  :global(.iso) .m-trace {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.6 !important;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: m-draw 4s linear infinite;
+  }
+  @keyframes m-draw {
+    80% {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+    92% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+  }
+  .m-dot {
+    fill: #fff;
+  }
+
+  /* owned */
+  :global(.iso) .o-glow {
+    fill: #efefef;
+    stroke: #fff;
+    opacity: 0;
+    animation: o-glow 4.4s ease-out infinite;
+  }
+  @keyframes o-glow {
+    0%,
+    60% {
+      opacity: 0;
+    }
+    66% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 0.25;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  .o-block {
+    animation: o-fade 4.4s linear infinite;
+  }
+  @keyframes o-fade {
+    0% {
+      opacity: 0;
+    }
+    8%,
+    86% {
+      opacity: 1;
+    }
+    96%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .t-pass,
+    .t-scan,
+    :global(.iso) .m-trace,
+    :global(.iso) .o-glow,
+    .o-block {
+      animation: none;
+    }
+    .t-pass {
+      opacity: 1;
+    }
+    :global(.iso) .m-trace {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

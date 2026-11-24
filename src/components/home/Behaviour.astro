@@ -1,7 +1,7 @@
 ---
 // Homepage behaviour: nav state and mobile menu, scroll reveals, word-split headings, isometric scenes that
-// assemble on entry, card hover tilt, the "Our view" words lighting up with scroll, the process rail, the
-// architecture demo data, the giant footer wordmark drawing itself, ambient stars, copy-email and the form.
+// assemble on entry, card hover tilt, the "Our view" words lighting up with scroll, the process rail, the giant
+// footer wordmark drawing itself, the nav matching the band beneath it, copy-email and the form.
 ---
 
 <script>
@@ -71,6 +71,11 @@
   const tlItems = [...document.querySelectorAll<HTMLElement>('[data-tl-item]')];
   const onScroll = () => {
     nav?.classList.toggle('scrolled', scrollY > 24);
+    // the nav takes the colour scheme of whatever band is underneath it
+    if (nav) {
+      const under = document.elementsFromPoint(innerWidth / 2, nav.offsetHeight + 4).find((el) => !nav.contains(el));
+      nav.classList.toggle('dk', !!under?.closest('.dk'));
+    }
     if (mfText) {
       const r = mfText.getBoundingClientRect();
       const p = Math.max(0, Math.min(1, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
@@ -86,58 +91,6 @@
   };
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  // ambient stars in the hero and contact sections
-  document.querySelectorAll<HTMLElement>('[data-stars]').forEach((box) => {
-    let seed = box.classList.contains('dim') ? 11 : 7;
-    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    let html = '';
-    for (let i = 0; i < 60; i++) {
-      html += `<i style="left:${(rnd() * 100).toFixed(2)}%;top:${(rnd() * 100).toFixed(2)}%;--s:${(1 + rnd() * 1.5).toFixed(1)}px;animation-delay:${(rnd() * 6).toFixed(1)}s;animation-duration:${(3 + rnd() * 5).toFixed(1)}s"></i>`;
-    }
-    for (let i = 0; i < 10; i++) {
-      html += `<b style="left:${(rnd() * 100).toFixed(2)}%;top:${(30 + rnd() * 70).toFixed(2)}%;--dx:${((rnd() - 0.5) * 220).toFixed(0)}px;--dy:${(-60 - rnd() * 140).toFixed(0)}px;animation-delay:${(rnd() * -20).toFixed(1)}s;animation-duration:${(14 + rnd() * 16).toFixed(1)}s"></b>`;
-    }
-    box.innerHTML = html;
-  });
-
-  // architecture demo (illustrative values)
-  const arch = document.querySelector<HTMLElement>('[data-arch]');
-  if (arch) {
-    const m = (k: string) => arch.querySelector<HTMLElement>(`[data-m="${k}"]`)!;
-    const bar = (k: string) => arch.querySelector<HTMLElement>(`[data-bar="${k}"]`)!;
-    const log = arch.querySelector<HTMLElement>('[data-log]')!;
-    const intents = ['refund request', 'order status', 'address change', 'invoice copy', 'plan change', 'warranty claim'];
-    let reqId = 48210;
-    const rand = (a: number, b: number) => a + Math.random() * (b - a);
-    const tick = () => {
-      const lat = rand(1.2, 1.7);
-      const cost = rand(0.0052, 0.0071);
-      const cache = rand(33, 44);
-      const esc = rand(2.6, 3.6);
-      m('lat').textContent = `${lat.toFixed(2)}s`;
-      m('cost').textContent = `$${cost.toFixed(4)}`;
-      m('cache').textContent = `${cache.toFixed(0)}%`;
-      m('esc').textContent = `${esc.toFixed(1)}%`;
-      bar('lat').style.setProperty('--w', `${(lat / 2) * 100}%`);
-      bar('cost').style.setProperty('--w', `${(cost / 0.01) * 100}%`);
-      bar('cache').style.setProperty('--w', `${cache}%`);
-      bar('esc').style.setProperty('--w', `${esc * 10}%`);
-      const human = Math.random() < 0.15;
-      const li = document.createElement('li');
-      li.innerHTML = `#${++reqId} ${intents[reqId % intents.length]} · ${lat.toFixed(1)}s · ${human ? '<b class="h">to a person</b>' : '<b>resolved</b>'}`;
-      log.prepend(li);
-      while (log.children.length > 6) log.lastElementChild?.remove();
-    };
-    for (let i = 0; i < 6; i++) tick();
-    if (!reduced) {
-      let t = 0;
-      new IntersectionObserver(([e]) => {
-        clearInterval(t);
-        if (e.isIntersecting) t = window.setInterval(tick, 1400);
-      }).observe(arch);
-    }
-  }
 
   // copy email
   document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) =>

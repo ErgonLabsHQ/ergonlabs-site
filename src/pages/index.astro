@@ -5,9 +5,11 @@
 import Home from '../layouts/Home.astro';
 import HeroField from '../components/home/HeroField.astro';
 import IsoScene from '../components/home/IsoScene.astro';
+import PillarScene from '../components/home/PillarScene.astro';
 import Nav from '../components/home/Nav.astro';
 import Footer from '../components/home/Footer.astro';
-import { brand, services, facts, aiPoints, process, engagements, values, faqs, founders } from '../nuvareth';
+import Btn from '../components/home/Btn.astro';
+import { brand, services, facts, process, engagements, values, faqs, founders } from '../nuvareth';
 
 const words = ['Engineering', 'the', 'Next', 'Era', 'of', 'Intelligence.'];
 const ticker = [...new Set(services.flatMap((s) => s.items.slice(0, 3)))].slice(0, 18);
@@ -28,22 +30,11 @@ const mfParts: [string, boolean][] = [
 ];
 const mfWords = mfParts.flatMap(([t, hl]) => t.split(' ').map((w) => ({ w, hl })));
 const pillars = [
-  { title: 'Tested', text: 'Against your real cases, before anything reaches users.', kind: 'quality' },
-  { title: 'Measured', text: 'In production: quality, latency and cost on every request.', kind: 'data' },
-  { title: 'Owned', text: 'By your team, with code, docs and handover from day one.', kind: 'backend' },
+  { title: 'Tested', text: 'Against your real cases, before anything reaches users.', kind: 'tested' as const },
+  { title: 'Measured', text: 'In production: quality, latency and cost on every request.', kind: 'measured' as const },
+  { title: 'Owned', text: 'By your team, with code, docs and handover from day one.', kind: 'owned' as const },
 ];
 
-// architecture example (illustrative values)
-const nodes: [string, number, number, number, string, string][] = [
-  ['client', 6, 150, 144, 'Your app', 'web · mobile · API'],
-  ['gw', 190, 150, 130, 'Gateway', 'auth · limits'],
-  ['orch', 370, 150, 150, 'Orchestrator', 'agent loop'],
-  ['ret', 570, 40, 150, 'Retrieval', 'vector + keyword'],
-  ['router', 570, 150, 150, 'Model router', 'cost · latency'],
-  ['tools', 570, 260, 150, 'Tools', 'CRM · ERP · email'],
-  ['eval', 370, 300, 150, 'Evals + traces', 'every request'],
-];
-const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65', 'M520 175H570', 'M520 185C545 185 545 285 570 285', 'M445 200V300'];
 ---
 
 <Home>
@@ -52,15 +43,14 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
   <main>
     <!-- hero -->
     <section class="hero">
-      <div class="stars" aria-hidden="true" data-stars></div>
       <div class="wrap hero-copy">
         <h1>
           {words.map((w, i) => <span class="wd" style={`--w:${i + 1}`}>{w}</span>)}
         </h1>
         <p class="lede rise" style="--w:7">{brand.intro}</p>
         <div class="actions rise" style="--w:8">
-          <a class="btn" href="#contact">Start a project <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn btn-dark" href="/founders">Meet the founders <span class="arr" aria-hidden="true">→</span></a>
+          <Btn href="#contact" label="Start a project" />
+          <Btn href="/founders" label="Meet the founders" variant="secondary" />
         </div>
       </div>
       <HeroField />
@@ -88,7 +78,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
     </section>
 
     <!-- services -->
-    <section class="sec alt" id="services">
+    <section class="sec dk" id="services">
       <div class="wrap">
         <div class="head">
           <h2 data-split>End-to-end engineering, with AI at the core.</h2>
@@ -113,7 +103,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
     </section>
 
     <!-- our view -->
-    <section class="sec" id="view" data-mf>
+    <section class="sec dk" id="view" data-mf>
       <div class="wrap">
         <div class="mf">
           <h2 data-split>{mfHead}</h2>
@@ -124,62 +114,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
         <ul class="pillars">
           {pillars.map((p, i) => (
             <li data-r style={`--i:${i}`}>
-              <IsoScene kind={p.kind} class="mini" />
-              <h3>{p.title}</h3>
-              <p>{p.text}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-
-    <!-- AI in production -->
-    <section class="sec alt" id="ai">
-      <div class="wrap">
-        <div class="head">
-          <h2 data-split>A demo takes an afternoon. Production takes engineering.</h2>
-          <p class="lede" data-r>
-            Getting a model to look clever in a meeting is easy. Getting it to be right every day, on messy input and
-            slow APIs, is engineering. This is what that looks like.
-          </p>
-        </div>
-
-        <div class="arch card" data-arch data-r>
-          <div class="arch-map">
-            <div class="arch-bar">
-              <span>architecture / support-agent · example</span>
-              <span class="ok">all systems normal</span>
-            </div>
-            <svg viewBox="0 0 740 360" role="img" aria-label="Requests flow from your app through a gateway to an orchestrator, which calls retrieval, a model router and tools, with every request traced and evaluated.">
-              {links.map((d) => <path d={d} class="ln" />)}
-              {links.slice(0, 5).map((d, i) => (
-                <rect x="-3.5" y="-3.5" width="7" height="7" class="pk">
-                  <animateMotion dur={`${1.6 + i * 0.25}s`} repeatCount="indefinite" path={d} begin={`${i * 0.3}s`} />
-                </rect>
-              ))}
-              {nodes.map(([id, x, y, w, label, sub]) => (
-                <g class:list={['nd', { core: id === 'orch' }]}>
-                  <rect x={x} y={y} width={w} height="50"></rect>
-                  <rect x={x - 3} y={y - 3} width="6" height="6" class="hd"></rect>
-                  <rect x={x + w - 3} y={y + 47} width="6" height="6" class="hd"></rect>
-                  <text x={x + 12} y={y + 22} class="t">{label}</text>
-                  <text x={x + 12} y={y + 39} class="s">{sub}</text>
-                </g>
-              ))}
-            </svg>
-          </div>
-          <div class="arch-side">
-            <div class="m"><span>p95 latency</span><b data-m="lat">1.42s</b><i><em data-bar="lat"></em></i></div>
-            <div class="m"><span>Cost per task</span><b data-m="cost">$0.0061</b><i><em data-bar="cost"></em></i></div>
-            <div class="m"><span>Cache hit rate</span><b data-m="cache">38%</b><i><em data-bar="cache"></em></i></div>
-            <div class="m"><span>Reviewed by a person</span><b data-m="esc">3.1%</b><i><em data-bar="esc"></em></i></div>
-            <ul class="log" data-log></ul>
-          </div>
-        </div>
-
-        <ul class="points">
-          {aiPoints.map((p, i) => (
-            <li class="card" data-r data-tilt style={`--i:${i}`}>
+              <PillarScene kind={p.kind} />
               <h3>{p.title}</h3>
               <p>{p.text}</p>
             </li>
@@ -189,7 +124,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
     </section>
 
     <!-- process -->
-    <section class="sec" id="process" data-tl>
+    <section class="sec alt" id="process" data-tl>
       <div class="wrap">
         <div class="head">
           <h2 data-split>Four stages, from first call to production.</h2>
@@ -210,7 +145,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
     </section>
 
     <!-- engagements -->
-    <section class="sec alt" id="engagements">
+    <section class="sec" id="engagements">
       <div class="wrap">
         <div class="head">
           <h2 data-split>Four ways to work with us.</h2>
@@ -218,7 +153,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
         </div>
         <ul class="plans">
           {engagements.map((e, i) => (
-            <li class:list={['card', { featured: e.featured }]} data-r data-tilt style={`--i:${i}`}>
+            <li class:list={['card', { featured: e.featured, dk: e.featured }]} data-r data-tilt style={`--i:${i}`}>
               {e.featured && <span class="badge">Most common</span>}
               <h3>{e.name}</h3>
               <p class="for">{e.for}</p>
@@ -226,9 +161,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
               <ul>
                 {e.points.map((p) => <li>{p}</li>)}
               </ul>
-              <a class:list={['btn', 'btn-block', { 'btn-dark': !e.featured }]} href="#contact">
-                Discuss this <span class="arr" aria-hidden="true">→</span>
-              </a>
+              <Btn href="#contact" label="Discuss this" size="block" />
             </li>
           ))}
         </ul>
@@ -236,7 +169,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
     </section>
 
     <!-- values -->
-    <section class="sec" id="values">
+    <section class="sec alt" id="values">
       <div class="wrap">
         <div class="head">
           <h2 data-split>What we stand for.</h2>
@@ -254,7 +187,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
     </section>
 
     <!-- founders -->
-    <section class="sec alt" id="founders">
+    <section class="sec" id="founders">
       <div class="wrap">
         <div class="head">
           <h2 data-split>The engineers behind {brand.name}.</h2>
@@ -270,12 +203,12 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
             </li>
           ))}
         </ul>
-        <p class="center" data-r><a class="btn btn-dark" href="/founders">Meet the founders <span class="arr" aria-hidden="true">→</span></a></p>
+        <p class="center" data-r><Btn href="/founders" label="Meet the founders" variant="secondary" /></p>
       </div>
     </section>
 
     <!-- faq -->
-    <section class="sec" id="faq">
+    <section class="sec alt" id="faq">
       <div class="wrap faq">
         <div class="head">
           <h2 data-split>Questions clients ask first.</h2>
@@ -292,8 +225,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
     </section>
 
     <!-- contact -->
-    <section class="sec alt contact" id="contact">
-      <div class="stars dim" aria-hidden="true" data-stars></div>
+    <section class="sec contact last" id="contact">
       <div class="wrap">
         <div class="head">
           <h2 data-split>Tell us what you are building.</h2>
@@ -319,7 +251,7 @@ const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65',
             <span>The short version</span>
             <textarea name="message" rows="4" required placeholder="What you need, by when, and what is in the way."></textarea>
           </label>
-          <button class="btn" type="submit">Write the email <span class="arr" aria-hidden="true">→</span></button>
+          <Btn type="submit" label="Write the email" />
         </form>
       </div>
     </section>

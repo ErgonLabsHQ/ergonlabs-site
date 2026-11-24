@@ -1,10 +1,10 @@
 ---
-// Founders page, in the same studio style as the homepage: centred hero, a "How we work" card with an isometric
-// flow drawing, then one section per founder (portrait, bio, highlights, expertise chips, links).
+// Founders page, in the same studio style as the homepage: centred hero, then one section per founder
+// (portrait, bio, highlights, expertise chips, links).
 import Home from '../layouts/Home.astro';
 import Nav from '../components/home/Nav.astro';
 import Footer from '../components/home/Footer.astro';
-import FlowScene from '../components/home/FlowScene.astro';
+import Btn from '../components/home/Btn.astro';
 import { brand, founders } from '../nuvareth';
 import '../styles/founders.css';
 ---
@@ -14,7 +14,6 @@ import '../styles/founders.css';
 
   <main>
     <section class="hero fd-hero">
-      <div class="stars" aria-hidden="true" data-stars></div>
       <div class="wrap hero-copy">
         <h1>
           {['The', 'engineers', 'behind', ...brand.name.split(' ')].map((w, i, a) => (
@@ -28,26 +27,14 @@ import '../styles/founders.css';
         </p>
         <nav class="fd-jump rise" style="--w:8" aria-label="Founders">
           {founders.map((f) => (
-            <a class="btn btn-dark" href={`#${f.id}`}>{f.name} <span class="arr" aria-hidden="true">↓</span></a>
+            <Btn href={`#${f.id}`} label={f.name} variant="secondary" arrow="↓" />
           ))}
         </nav>
       </div>
     </section>
 
-    <section class="sec alt">
-      <div class="wrap">
-        <div class="head">
-          <h2 data-split>Engineering and AI research, one team.</h2>
-          <p class="lede" data-r>Both founders work on your project together, from the first call to production.</p>
-        </div>
-        <div class="card fd-flow" data-r>
-          <FlowScene />
-        </div>
-      </div>
-    </section>
-
     {founders.map((f, i) => (
-      <section class:list={['sec', { alt: i % 2 === 1 }]} id={f.id}>
+      <section class:list={['sec', { alt: i % 2 === 0, last: i === founders.length - 1 }]} id={f.id}>
         <div class:list={['wrap', 'fd', { flip: i % 2 === 1 }]}>
           <figure class="fd-photo" data-r>
             <div class="fd-frame">
@@ -77,7 +64,7 @@ import '../styles/founders.css';
             </ul>
             <p class="fd-links" data-r>
               {f.links.map((l) => (
-                <a class="btn btn-dark btn-sm" href={l.href} target="_blank" rel="noopener">{l.label} <span class="ext" aria-hidden="true">↗</span></a>
+                <Btn href={l.href} label={l.label} variant="secondary" size="sm" arrow="↗" target="_blank" rel="noopener" />
               ))}
             </p>
           </div>

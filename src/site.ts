@@ -5,7 +5,7 @@ export const site = {
   tagline: 'Software and AI engineering',
   description:
     'A small studio of senior engineers. More than ten years of production software and AI, from people who have worked at leading companies since 2018 across the whole development cycle.',
-  email: 'hello@example.com', // TODO: replace with the real inbox
+  email: 'ergonlabs.hq@gmail.com',
   bookingUrl: '', // optional: Cal.com / Calendly link. When set, the main buttons point to it.
   location: 'Prague',
   socials: [

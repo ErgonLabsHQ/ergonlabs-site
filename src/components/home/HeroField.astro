@@ -1,8 +1,10 @@
 ---
-// Hero illustration: an isometric field of square pillars drawn on a canvas in hairlines. Slow waves roll across
-// it, the pillars under the cursor rise into a hill (the cursor's position is projected back onto the grid), a few
-// tiles pulse amber like work in flight, and the field rises from the centre outwards on load. Edges fade into
-// the page. It pauses offscreen and draws one still frame when motion is reduced.
+// Hero illustration: an isometric field of square pillars drawn on a canvas, in the light theme's greys. Slow
+// waves roll across it, the pillars under the cursor rise into a hill (the cursor's position is projected back
+// onto the grid), the tallest crests turn charcoal, a few tiles flash dark now and then, and the field rises
+// from the centre outwards on load. Edges fade into the page.
+// Performance: 17 x 17 pillars, colours precomputed into lookup tables (no per-pillar string building), device
+// pixel ratio capped at 1.5, and the loop stops while the hero is offscreen. One still frame for reduced motion.
 ---
 
 <div class="hf" aria-hidden="true">
@@ -12,10 +14,10 @@
 <style>
   .hf {
     position: relative;
-    width: min(1280px, 100%);
+    width: min(1180px, 100%);
     margin: 0 auto;
     aspect-ratio: 2.15 / 1;
-    max-height: 600px;
+    max-height: 560px;
   }
   .hf canvas {
     position: absolute;
@@ -34,11 +36,12 @@
 <script>
   const cv = document.querySelector<HTMLCanvasElement>('[data-hf]');
   if (cv) {
-    const ctx = cv.getContext('2d')!;
+    const ctx = cv.getContext('2d', { alpha: true })!;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const N = 21; // grid is N x N
+    const N = 17;
     const C = Math.cos(Math.PI / 6);
     const S = 0.5;
+    const G = 0.16; // gap inside each cell
     let W = 0,
       H = 0,
       cell = 0,
@@ -46,12 +49,31 @@
       oy = 0,
       dpr = 1;
 
-    // a few tiles that light up amber now and then
+    // colour lookup tables, 0..LV-1 from flat to crest
+    const LV = 48;
+    const lerp = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
+    const rgb = (v: number) => `rgb(${v},${v},${v})`;
+    const TOP = Array.from({ length: LV }, (_, k) => rgb(lerp(250, 35, (k / (LV - 1)) ** 2)));
+    const EDGE = Array.from({ length: LV }, (_, k) => `rgba(35,35,35,${(0.22 + (k / (LV - 1)) * 0.5).toFixed(3)})`);
+    const RIGHT = '#e4e4e4';
+    const LEFT = '#d7d7d7';
+    const SPARK = '#232323';
+
+    // static per-cell data in back-to-front draw order: centre distance, edge fade, flashing cells
     let seed = 3;
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    const sparks = Array.from({ length: 9 }, () => ({ i: Math.floor(rnd() * N), j: Math.floor(rnd() * N), p: rnd() * 9, d: 6 + rnd() * 6 }));
+    const sparkAt = new Map<number, { p: number; d: number }>();
+    for (let k = 0; k < 7; k++) sparkAt.set(Math.floor(rnd() * N) * N + Math.floor(rnd() * N), { p: rnd() * 9, d: 5 + rnd() * 6 });
+    const cells: { i: number; j: number; d: number; fade: number; spark: number }[] = [];
+    for (let s = 0; s <= 2 * (N - 1); s++) {
+      for (let i = Math.max(0, s - N + 1); i <= Math.min(N - 1, s); i++) {
+        const j = s - i;
+        const d = Math.hypot(i - N / 2 + 0.5, j - N / 2 + 0.5);
+        const fade = Math.max(0, Math.min(1, (1.08 - d / (N / 2)) / 0.45));
+        if (fade > 0.01) cells.push({ i, j, d, fade, spark: sparkAt.has(i * N + j) ? i * N + j : -1 });
+      }
+    }
 
-    // pointer, projected onto the grid (smoothed)
     let mi = -99,
       mj = -99,
       ti = -99,
@@ -61,18 +83,15 @@
 
     const resize = () => {
       const r = cv.getBoundingClientRect();
-      dpr = Math.min(2, devicePixelRatio || 1);
+      dpr = Math.min(1.5, devicePixelRatio || 1);
       W = r.width;
       H = r.height;
       cv.width = Math.round(W * dpr);
       cv.height = Math.round(H * dpr);
-      // fit the diamond: width = 2 * N * cell * C
-      cell = Math.min(W / (2 * N * C) * 1.02, (H * 0.92) / (N * S * 2 + 3.2));
+      cell = Math.min((W / (2 * N * C)) * 1.02, (H * 0.92) / (N * S * 2 + 3.2));
       ox = W / 2;
       oy = H * 0.5 - N * cell * S + cell * 2.4;
     };
-
-    const proj = (x: number, y: number, z: number) => [ox + (x - y) * C * cell, oy + (x + y) * S * cell - z * cell];
 
     addEventListener(
       'pointermove',
@@ -80,7 +99,6 @@
         const r = cv.getBoundingClientRect();
         const px = (e.clientX - r.left - ox) / (C * cell);
         const py = (e.clientY - r.top - oy + cell * 0.8) / (S * cell);
-        // x - y = px, x + y = py
         ti = (px + py) / 2 - 0.5;
         tj = (py - px) / 2 - 0.5;
         hoverT = ti > -3 && tj > -3 && ti < N + 3 && tj < N + 3 ? 1 : 0;
@@ -88,134 +106,107 @@
       { passive: true },
     );
 
-    const height = (i: number, j: number, t: number, intro: number) => {
-      const cx = i - N / 2 + 0.5;
-      const cy = j - N / 2 + 0.5;
-      const d = Math.hypot(cx, cy);
-      // two slow interfering waves plus a ripple from the centre
-      let h =
-        0.55 * Math.sin(cx * 0.42 + t * 0.9) * Math.cos(cy * 0.36 - t * 0.7) +
-        0.45 * Math.sin(d * 0.75 - t * 1.6) * Math.max(0, 1 - d / (N * 0.75));
-      h = 1.05 + h * 1.25;
-      // the hill under the cursor
-      const md = (i - mi) ** 2 + (j - mj) ** 2;
-      h += hover * 3.4 * Math.exp(-md / 6);
-      // rise from the centre on load
-      const k = Math.max(0, Math.min(1, intro * 1.6 - d / (N * 0.6)));
-      return Math.max(0.15, h) * (k * k * (3 - 2 * k));
-    };
-
-    const fadeAt = (i: number, j: number) => {
-      const d = Math.hypot(i - N / 2 + 0.5, j - N / 2 + 0.5) / (N / 2);
-      return Math.max(0, Math.min(1, (1.08 - d) / 0.45));
-    };
-
-    const pillar = (i: number, j: number, h: number, a: number, top: string, edge: string) => {
-      const g = 0.16; // gap inside the cell
-      const x0 = i + g,
-        y0 = j + g,
-        x1 = i + 1 - g,
-        y1 = j + 1 - g;
-      const A = proj(x0, y0, h),
-        B = proj(x1, y0, h),
-        Cc = proj(x1, y1, h),
-        D = proj(x0, y1, h);
-      const B0 = proj(x1, y0, 0),
-        C0 = proj(x1, y1, 0),
-        D0 = proj(x0, y1, 0);
-      ctx.globalAlpha = a;
-      ctx.strokeStyle = edge;
-      // right face
-      ctx.beginPath();
-      ctx.moveTo(B[0], B[1]);
-      ctx.lineTo(Cc[0], Cc[1]);
-      ctx.lineTo(C0[0], C0[1]);
-      ctx.lineTo(B0[0], B0[1]);
-      ctx.closePath();
-      ctx.fillStyle = '#1f1f1f';
-      ctx.fill();
-      ctx.stroke();
-      // left face
-      ctx.beginPath();
-      ctx.moveTo(D[0], D[1]);
-      ctx.lineTo(Cc[0], Cc[1]);
-      ctx.lineTo(C0[0], C0[1]);
-      ctx.lineTo(D0[0], D0[1]);
-      ctx.closePath();
-      ctx.fillStyle = '#171717';
-      ctx.fill();
-      ctx.stroke();
-      // top
-      ctx.beginPath();
-      ctx.moveTo(A[0], A[1]);
-      ctx.lineTo(B[0], B[1]);
-      ctx.lineTo(Cc[0], Cc[1]);
-      ctx.lineTo(D[0], D[1]);
-      ctx.closePath();
-      ctx.fillStyle = top;
-      ctx.fill();
-      ctx.stroke();
-    };
-
-    const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
-    let t0 = performance.now();
+    const t0 = performance.now();
     let running = true;
+    let raf = 0;
 
     const frame = (now: number) => {
-      const t = (now - t0) / 1000;
-      const intro = reduced ? 1 : Math.min(1, t / 2.2);
-      mi += (ti - mi) * 0.12;
-      mj += (tj - mj) * 0.12;
-      hover += (hoverT - hover) * 0.05;
+      const t = ((now - t0) / 1000) * 1.15;
+      const intro = reduced ? 1 : Math.min(1, (now - t0) / 1800);
+      mi += (ti - mi) * 0.14;
+      mj += (tj - mj) * 0.14;
+      hover += (hoverT - hover) * 0.06;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
       ctx.lineWidth = 1;
       ctx.lineJoin = 'round';
+      const cs = C * cell;
+      const ss = S * cell;
 
       // floor grid
-      ctx.globalAlpha = 0.5 * intro;
-      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.globalAlpha = intro;
+      ctx.strokeStyle = 'rgba(0,0,0,0.06)';
       ctx.beginPath();
       for (let k = -4; k <= N + 4; k++) {
-        let [a, b] = proj(k, -4, 0);
-        let [c, d] = proj(k, N + 4, 0);
-        ctx.moveTo(a, b);
-        ctx.lineTo(c, d);
-        [a, b] = proj(-4, k, 0);
-        [c, d] = proj(N + 4, k, 0);
-        ctx.moveTo(a, b);
-        ctx.lineTo(c, d);
+        ctx.moveTo(ox + (k + 4) * cs, oy + (k - 4) * ss);
+        ctx.lineTo(ox + (k - N - 4) * cs, oy + (k + N + 4) * ss);
+        ctx.moveTo(ox + (-4 - k) * cs, oy + (k - 4) * ss);
+        ctx.lineTo(ox + (N + 4 - k) * cs, oy + (k + N + 4) * ss);
       }
       ctx.stroke();
 
-      // pillars, back to front
-      for (let s = 0; s <= 2 * (N - 1); s++) {
-        for (let i = Math.max(0, s - N + 1); i <= Math.min(N - 1, s); i++) {
-          const j = s - i;
-          const a = fadeAt(i, j);
-          if (a <= 0.01) continue;
-          const h = height(i, j, t, intro);
-          if (h <= 0.01) continue;
-          // brighter tops on the crests
-          const lift = Math.max(0, Math.min(1, (h - 1.5) / 1.9));
-          let top = `rgb(${mix(42, 236, lift * lift)},${mix(42, 236, lift * lift)},${mix(42, 236, lift * lift)})`;
-          let edge = `rgba(255,255,255,${(0.28 + lift * 0.5).toFixed(3)})`;
-          for (const sp of sparks) {
-            if (sp.i === i && sp.j === j) {
-              const ph = ((t + sp.p) % sp.d) / sp.d;
-              const glow = ph < 0.25 ? Math.sin((ph / 0.25) * Math.PI) : 0;
-              if (glow > 0) {
-                top = `rgb(${mix(42, 245, glow)},${mix(42, 165, glow)},${mix(42, 36, glow)})`;
-                edge = `rgba(255,214,144,${(0.3 + glow * 0.6).toFixed(3)})`;
-              }
-            }
+      for (const c of cells) {
+        const { i, j, d } = c;
+        const cx = i - N / 2 + 0.5;
+        const cy = j - N / 2 + 0.5;
+        let h =
+          0.55 * Math.sin(cx * 0.5 + t * 0.9) * Math.cos(cy * 0.44 - t * 0.7) +
+          0.45 * Math.sin(d * 0.9 - t * 1.6) * Math.max(0, 1 - d / (N * 0.75));
+        h = 1.05 + h * 1.25;
+        if (hover > 0.01) h += hover * 3.4 * Math.exp(-((i - mi) ** 2 + (j - mj) ** 2) / 5);
+        const k = Math.max(0, Math.min(1, intro * 1.6 - d / (N * 0.6)));
+        h = Math.max(0.15, h) * (k * k * (3 - 2 * k));
+        if (h <= 0.01) continue;
+
+        const lv = Math.max(0, Math.min(LV - 1, Math.round(((h - 1.5) / 1.9) * (LV - 1))));
+        let top = TOP[lv];
+        let edge = EDGE[lv];
+        if (c.spark >= 0) {
+          const sp = sparkAt.get(c.spark)!;
+          if (((t + sp.p) % sp.d) / sp.d < 0.2) {
+            top = SPARK;
+            edge = EDGE[LV - 1];
           }
-          pillar(i, j, h, a * intro, top, edge);
         }
+
+        // pillar corners on screen (world x/y in cells, z = height in px)
+        const x0 = i + G,
+          x1 = i + 1 - G,
+          y0 = j + G,
+          y1 = j + 1 - G;
+        const z = h * cell;
+        const Ax = ox + (x0 - y0) * cs,
+          Ay = oy + (x0 + y0) * ss;
+        const Bx = ox + (x1 - y0) * cs,
+          By = oy + (x1 + y0) * ss;
+        const Cx = ox + (x1 - y1) * cs,
+          Cy = oy + (x1 + y1) * ss;
+        const Dx = ox + (x0 - y1) * cs,
+          Dy = oy + (x0 + y1) * ss;
+
+        ctx.globalAlpha = c.fade * intro;
+        ctx.strokeStyle = edge;
+        ctx.beginPath();
+        ctx.moveTo(Bx, By - z);
+        ctx.lineTo(Cx, Cy - z);
+        ctx.lineTo(Cx, Cy);
+        ctx.lineTo(Bx, By);
+        ctx.closePath();
+        ctx.fillStyle = RIGHT;
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(Dx, Dy - z);
+        ctx.lineTo(Cx, Cy - z);
+        ctx.lineTo(Cx, Cy);
+        ctx.lineTo(Dx, Dy);
+        ctx.closePath();
+        ctx.fillStyle = LEFT;
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(Ax, Ay - z);
+        ctx.lineTo(Bx, By - z);
+        ctx.lineTo(Cx, Cy - z);
+        ctx.lineTo(Dx, Dy - z);
+        ctx.closePath();
+        ctx.fillStyle = top;
+        ctx.fill();
+        ctx.stroke();
       }
       ctx.globalAlpha = 1;
-      if (running && !reduced) requestAnimationFrame(frame);
+      if (running && !reduced) raf = requestAnimationFrame(frame);
     };
 
     resize();
@@ -230,9 +221,10 @@
       new IntersectionObserver(([e]) => {
         const was = running;
         running = e.isIntersecting;
-        if (running && !was) requestAnimationFrame(frame);
+        if (running && !was) raf = requestAnimationFrame(frame);
+        if (!running) cancelAnimationFrame(raf);
       }).observe(cv);
-      requestAnimationFrame(frame);
+      raf = requestAnimationFrame(frame);
     }
   }
 </script>
