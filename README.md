@@ -1,6 +1,7 @@
-# Destiny Valley site
+# Ergon Labs site
 
-One-page Astro site. Static output, no framework runtime, a few kB of JavaScript.
+Website for Ergon Labs, an AI engineering firm. Built with Astro: static output, no framework runtime, a small
+amount of JavaScript for the animations.
 
 ## Run it
 
@@ -11,48 +12,70 @@ npm run build      # writes ./dist
 npm run preview    # serves ./dist
 ```
 
-## Change the content
+## Before going live
 
-All text, services, FAQs and contact details are in `src/site.ts`. Before going live:
+1. In `src/site.ts`, set `email` and the `socials` links (LinkedIn and X). They are placeholders.
+2. Optionally set `bookingUrl` in `src/site.ts` to a Cal.com or Calendly link; the "Start a project" buttons then
+   open the calendar instead of the contact form.
+3. Set `site` in `astro.config.mjs` to the real domain (used for canonical URLs).
+4. Read the copy in `src/nuvareth.ts` and keep only what is true for the team.
 
-1. Set `name`, `email`, `location` and the `socials` links. They are placeholders.
-2. Set `bookingUrl` to a Cal.com or Calendly link if you want the main buttons to open a calendar.
-3. Set `site` in `astro.config.mjs` to the real domain.
-4. Read every claim in `src/site.ts` and keep only what is true for your team (more than ten years of experience, work at leading companies since 2018, ML and game engine expertise, reply within one working day, a demo every week, month-to-month terms, fixing problems day or night after launch).
+The contact form opens the visitor's mail app with the message filled in. To receive submissions directly, point
+the form in `src/components/nv/Shell.astro` (and its handler in `src/components/nv/Behaviour.astro`) at a form
+service or your own endpoint.
 
-The contact form opens the visitor's mail app with the message filled in. To receive submissions directly, point the
-form in `src/components/Contact.astro` at a form service or your own endpoint.
+## Pages
+
+- `/` (`src/pages/index.astro`): hero, services, "Our view" statement, AI in production demo, process timeline,
+  engagements, values, FAQ and the contact form.
+- `/founders` (`src/pages/founders.astro`): the founders and their profiles.
+
+Both pages end with the same footer: a centred contact section, a large wordmark with the owl, and the copyright.
 
 ## Where things are
 
-- `src/components/Hero.astro`: the pinned opening. A pixel-art valley is drawn on a small canvas and scaled up;
-  scrolling builds a bridge across it in four stages, one per step in `process` (in `src/site.ts`). The stage
-  boundaries are the `bounds` array in the script, and the drawing is the `draw` function.
-- `src/components/Services.astro`: the service list (click a row to open it).
-- `src/components/AgentDemo.astro`: three example panels (an agent run, a bug fix, a six-week project) that advance on
-  a timer. Their content is illustrative and lives at the top of that file.
-- `src/components/Engagements.astro`: the four ways of working and the house rules.
-- `src/styles/global.css`: colours, type and shared styles. The palette is `--paper`, `--ink`, `--blue`, `--sun`,
-  `--mint` and `--coral`; the scene in `Hero.astro` repeats those colours as constants.
+- **Content:** `src/nuvareth.ts` (headline, services, process, FAQ, founders, values). Contact details and social
+  links come from `src/site.ts`.
+- **Layout and theme:** `src/layouts/Site.astro` (fonts, favicon, background), `src/styles/nv.css` (shared
+  structure) and `src/styles/site.css` (the dark night theme: colour tokens, cards, buttons, founders page).
+  The accent colours are `--accent` (amber) and `--accent-2` (light amber).
+- **Brand:**
+  - `src/components/site/Owl.astro`: the owl drawing used in the logo and footer.
+  - `src/components/site/Logo.astro`: the logo. The default lockup has the owl perched on the N of ERGON; the
+    `inline` version (owl beside the wordmark) is used in the navigation bar.
+  - `public/ergon-favicon.svg`: the favicon.
+- **Background:**
+  - `src/components/site/Backdrop.astro`: dot grid, glows, stars, fireflies and shooting stars, plus the cursor
+    spotlight on cards and the tilt on founder photos.
+  - `src/components/site/NightOwl.astro`: the large owl in front of the moon. Its eyes follow the cursor and blink;
+    it fades to a softer level once the hero is scrolled past.
+- **Sections:** `src/components/nv/` (page shell, navigation bar, shared page script) and `src/components/site/`
+  (hero, "Our view" statement in `Manifesto.astro`, architecture demo, timeline, values, footer in
+  `SiteFooter.astro`).
 
-The previous look is kept in `../agency-site-previous-look/` in case you want anything back from it.
+All animations respect the visitor's "reduce motion" setting.
 
-## Live site: Nuvareth
+## Founder photos
 
-The homepage (`src/pages/index.astro`) is the Blueprint layout in the Sage colour scheme, with Sage's process
-timeline and engagements. `/founders` (`src/pages/founders.astro`) introduces the founders and the company values.
+`public/founders/` holds the photos shown on the site: each founder cut out of the original photo and placed on
+the site's night background. The originals are in `assets-src/founders-original/`.
 
-- Content: `src/nuvareth.ts` (headline, services, process, commitments, FAQ, founders, values).
-- Layout and styles: `src/layouts/Site.astro`, `src/styles/nv.css` (shared structure) and `src/styles/site.css`
-  (colours, type and the founders page).
-- Page sections: `src/components/nv/` (page shell, nav, footer) and `src/components/site/` (hero, statement,
-  architecture demo, timeline).
-- Founder photos: `public/founders/`.
+To give a new photo the same treatment, use `assets-src/portraits.py`. It needs Python with `numpy`, `pillow` and
+`onnxruntime`, plus the ISNet background-removal model (`isnet-general-use.onnx`, about 170 MB, from the
+[rembg releases](https://github.com/danielgatis/rembg/releases/tag/v0.0.0)):
+
+```
+python assets-src/portraits.py assets-src/founders-original public/founders isnet-general-use.onnx
+```
+
+It processes every `.webp` in the source folder, writes 800 × 800 images, and also saves each cut-out mask as a
+`-mask.png` next to the output (these are not needed by the site).
 
 ## Archive
 
 Earlier designs live under `/archive` (index at `src/pages/archive/index.astro`): the original Destiny Valley
-homepage, variations 1 to 9, and the Nuvareth directions 10 to 15 (Classic, Midnight, Ivory, Sage, Blueprint, Aurora).
+homepage, variations 1 to 9, and the Nuvareth directions 10 to 15. They use their own layouts and styles
+(`src/layouts/Base.astro`, `src/layouts/Variant.astro`, `src/styles/global.css`) and are not linked from the live site.
 
 ## Deploy
 
