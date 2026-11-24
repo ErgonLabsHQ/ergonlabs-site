@@ -1,0 +1,170 @@
+---
+// Isometric line illustration for a service card. Each scene is built from layers: on reveal the layers drop
+// into place one after another, some keep bobbing, dashed links flow, and hovering the card pulls the layers
+// apart into an exploded view (each layer's --lift). Purely decorative.
+import { P, plane, corners, wallX, wallY, box, grid, disc, cyl, arc, line, quad } from './iso';
+
+interface Props {
+  kind: string;
+  class?: string;
+}
+const { kind, class: cls = '' } = Astro.props;
+
+type Part = { d?: string; e?: { cx: number; cy: number; rx: number; ry: number }; k: string };
+type Layer = { lift?: number; bob?: boolean; move?: string; parts: Part[]; handles?: [number, number][] };
+
+const solid = (x: number, y: number, z: number, w: number, d: number, h: number, top = 'top'): Part[] => {
+  const b = box(x, y, z, w, d, h);
+  return [
+    { d: b.right, k: 'r' },
+    { d: b.left, k: 'l' },
+    { d: b.top, k: top },
+  ];
+};
+const cells = (x: number, y: number, z: number, w: number, d: number, n: number) => {
+  let s = '';
+  for (let i = 1; i < n; i++) {
+    s += line([[x + (w / n) * i, y, z], [x + (w / n) * i, y + d, z]]);
+    s += line([[x, y + (d / n) * i, z], [x + w, y + (d / n) * i, z]]);
+  }
+  return s;
+};
+const hs = (x: number, y: number, z: number, w: number, d: number) => corners(x, y, z, w, d);
+
+const L: Layer[] = [];
+switch (kind) {
+  case 'ai': {
+    L.push({ parts: solid(-30, -30, 0, 60, 60, 34) });
+    for (const [x, y] of [[-118, -22], [-22, -118], [62, 48]] as [number, number][]) {
+      L.push({
+        lift: 6,
+        bob: true,
+        parts: [
+          { d: plane(x, y, 14, 42, 42), k: 'ghost' },
+          { d: cells(x, y, 14, 42, 42, 3), k: 'ln' },
+          { d: arc([0, 0, 34], [x + 21, y + 21, 14], 30), k: 'flow' },
+        ],
+        handles: hs(x, y, 14, 42, 42),
+      });
+    }
+    L.push({ lift: 22, bob: true, parts: [{ d: plane(-24, -24, 76, 48, 48), k: 'white' }, { d: line([[-10, 0, 76], [10, 0, 76]]) + line([[0, -10, 76], [0, 10, 76]]), k: 'ink' }], handles: hs(-24, -24, 76, 48, 48) });
+    break;
+  }
+  case 'ml': {
+    [0, 42, 84].forEach((z, i) => {
+      L.push({
+        lift: i * 16,
+        parts: [
+          { d: plane(-55, -55, z, 110, 110), k: i === 2 ? 'top' : 'ghost' },
+          { d: cells(-55, -55, z, 110, 110, 5), k: 'ln' },
+          ...[[1, 1], [3, 2], [2, 4], [4, 0]].slice(0, 2 + i).map(([a, b]) => ({ d: plane(-55 + a * 22, -55 + b * 22, z, 22, 22), k: (a + b + i) % 3 ? 'white' : 'amber' })),
+        ],
+        handles: hs(-55, -55, z, 110, 110),
+      });
+    });
+    L.push({ parts: [{ d: line([[-55, 55, 0], [-55, 55, 84]]) + line([[55, -55, 0], [55, -55, 84]]) + line([[55, 55, 0], [55, 55, 84]]), k: 'dash' }] });
+    break;
+  }
+  case 'automation': {
+    L.push({ parts: [{ d: plane(-120, -22, 0, 240, 44), k: 'ghost' }, { d: line([[-120, 0, 0], [120, 0, 0]]), k: 'flow' }], handles: hs(-120, -22, 0, 240, 44) });
+    L.push({ move: 'conv', parts: [-100, -40, 20, 80].flatMap((x) => solid(x, -12, 0, 24, 24, 20)) });
+    L.push({ lift: 10, parts: [...solid(96, -40, 0, 30, 30, 70), ...solid(60, -34, 58, 66, 18, 12)] });
+    break;
+  }
+  case 'web': {
+    L.push({ parts: [{ d: wallX(-80, 20, 0, 150, 100), k: 'top' }, { d: wallX(-80, 20, 88, 150, 12), k: 'ghost' }, { d: wallX(-68, 20, 40, 60, 38), k: 'white' }, { d: wallX(2, 20, 62, 56, 6) + wallX(2, 20, 50, 40, 6) + wallX(-68, 20, 12, 126, 18), k: 'ghost' }] });
+    L.push({ lift: 14, bob: true, parts: [{ d: plane(30, -70, 30, 56, 40), k: 'ghost' }, { d: cells(30, -70, 30, 56, 40, 2), k: 'ln' }, { d: arc([58, -50, 30], [40, 20, 70], 20), k: 'flow' }], handles: hs(30, -70, 30, 56, 40) });
+    L.push({ lift: 24, bob: true, parts: [{ d: plane(-60, -90, 60, 44, 44), k: 'white' }], handles: hs(-60, -90, 60, 44, 44) });
+    break;
+  }
+  case 'mobile': {
+    L.push({ parts: [...solid(-30, -50, 0, 60, 100, 8), { d: plane(-24, -44, 8, 48, 88), k: 'ghost' }, { d: plane(-24, -44, 8, 48, 16), k: 'white' }] });
+    L.push({ lift: 14, bob: true, parts: [{ d: plane(-34, -30, 46, 68, 28), k: 'top' }, { d: line([[-26, -16, 46], [20, -16, 46]]), k: 'ln' }], handles: hs(-34, -30, 46, 68, 28) });
+    L.push({ lift: 26, bob: true, parts: [{ d: plane(-28, 8, 84, 56, 24), k: 'white' }], handles: hs(-28, 8, 84, 56, 24) });
+    L.push({ parts: [{ d: line([[0, -16, 8], [0, -16, 46]]) + line([[0, 20, 46], [0, 20, 84]]), k: 'dash' }] });
+    break;
+  }
+  case 'backend': {
+    [0, 32, 64].forEach((z, i) => {
+      const b = box(-45, -45, z, 90, 90, 22);
+      L.push({
+        lift: i * 12,
+        parts: [{ d: b.right, k: 'r' }, { d: b.left, k: 'l' }, { d: b.top, k: i === 2 ? 'white' : 'top' }, { d: wallX(-34, 45, z + 8, 8, 6), k: i === 1 ? 'amber' : 'white' }, { d: wallX(-22, 45, z + 8, 8, 6), k: 'ghost' }],
+      });
+    });
+    L.push({ parts: [{ d: arc([45, 0, 75], [110, -10, 10], 30), k: 'flow' }, { d: plane(95, -30, 0, 34, 40), k: 'ghost' }], handles: hs(95, -30, 0, 34, 40) });
+    break;
+  }
+  case 'cloud': {
+    L.push({ parts: [...solid(-80, -10, 0, 34, 34, 26), ...solid(-20, 30, 0, 34, 34, 40), ...solid(40, -40, 0, 34, 34, 18)] });
+    L.push({ parts: [{ d: line([[-63, 7, 26], [-63, 7, 84]]) + line([[-3, 47, 40], [-3, 47, 84]]) + line([[57, -23, 18], [57, -23, 84]]), k: 'flow' }] });
+    L.push({ lift: 20, bob: true, parts: [{ d: plane(-100, -60, 84, 190, 130), k: 'ghost' }, { d: cells(-100, -60, 84, 190, 130, 4), k: 'ln' }], handles: hs(-100, -60, 84, 190, 130) });
+    break;
+  }
+  case 'data': {
+    [0, 26, 52].forEach((z, i) => {
+      const c = cyl(-50, 0, z, 34, 20);
+      L.push({ lift: i * 10, parts: [{ d: `${c.side}`, k: 'ln' }, { d: c.front, k: 'ln' }, { e: c.top, k: i === 2 ? 'white' : 'top' }] });
+    });
+    L.push({ parts: [[30, -60, 30], [52, -60, 56], [74, -60, 42], [96, -60, 80]].flatMap(([x, y, h], i) => solid(x, y, 0, 16, 16, h, i === 3 ? 'amber' : 'top')) });
+    L.push({ parts: [{ d: arc([-50, 0, 72], [104, -52, 80], 40), k: 'flow' }] });
+    break;
+  }
+  case 'design': {
+    [-70, -30, 10, 50].forEach((x, i) => {
+      L.push({
+        lift: 0,
+        move: `spread s${i}`,
+        parts: [
+          { d: wallY(x, -60, 0, 110, 90), k: i === 3 ? 'white' : 'ghost' },
+          { d: wallY(x, -48, 58, 46, 20) + wallY(x, 10, 20, 38, 38), k: i === 3 ? 'ink' : 'ln' },
+        ],
+        handles: [P(x, -60, 0), P(x, 50, 0), P(x, 50, 90), P(x, -60, 90)],
+      });
+    });
+    break;
+  }
+  case 'quality': {
+    L.push({ parts: [...solid(-45, -45, 0, 90, 90, 50), { d: line([[-18, 0, 50], [-2, 16, 50], [24, -14, 50]]), k: 'ink2' }] });
+    L.push({ move: 'scan', parts: [{ d: plane(-70, -70, 10, 140, 140), k: 'scan' }], handles: hs(-70, -70, 10, 140, 140) });
+    break;
+  }
+  case 'rescue': {
+    L.push({ parts: [...solid(-35, -35, 0, 70, 70, 30), ...solid(-35, -35, 70, 70, 70, 30)] });
+    L.push({ move: 'fix', parts: solid(-35, -35, 35, 70, 70, 30, 'white') });
+    L.push({ parts: [{ d: quad([[-50, -50, 0], [50, -50, 0], [50, -50, 110], [-50, -50, 110]]) + line([[50, -50, 0], [50, 50, 0], [50, 50, 110], [50, -50, 110]]) + line([[-50, -50, 0], [-50, 50, 0], [50, 50, 0]]) + line([[-50, -50, 110], [-50, 50, 110], [50, 50, 110]]) + line([[-50, 50, 0], [-50, 50, 110]]), k: 'dash' }] });
+    break;
+  }
+  case 'advisory': {
+    L.push({ parts: [{ d: plane(-90, -50, 0, 120, 100), k: 'ghost' }, ...[[-80, -40, 20], [-50, -40, 40], [-20, -40, 30], [10, -40, 64]].flatMap(([x, y, h], i) => solid(x, y, 0, 16, 16, h, i === 3 ? 'white' : 'top'))], handles: hs(-90, -50, 0, 120, 100) });
+    L.push({ lift: 20, bob: true, parts: [{ d: plane(40, 0, 60, 60, 76), k: 'top' }, { d: line([[50, 14, 60], [88, 14, 60]]) + line([[50, 28, 60], [80, 28, 60]]) + line([[50, 42, 60], [88, 42, 60]]) + line([[50, 56, 60], [70, 56, 60]]), k: 'ln' }], handles: hs(40, 0, 60, 60, 76) });
+    L.push({ parts: [{ d: arc([70, 38, 60], [18, -32, 64], 36), k: 'flow' }] });
+    break;
+  }
+  default: {
+    // everything else: an assortment on a shared plinth
+    const c = cyl(40, -30, 12, 22, 44);
+    const [ax, ay] = P(-40, 30, 70);
+    const base = [P(-62, 8, 12), P(-18, 8, 12), P(-18, 52, 12), P(-62, 52, 12)];
+    L.push({ parts: [...solid(-90, -70, 0, 170, 150, 12)] });
+    L.push({ lift: 10, parts: [...solid(-10, -70, 12, 36, 36, 36)] });
+    L.push({ lift: 16, parts: [{ d: c.side, k: 'ln' }, { d: c.front, k: 'ln' }, { e: c.top, k: 'white' }] });
+    L.push({ lift: 22, bob: true, parts: [{ d: `M${base[1].join(' ')}L${base[2].join(' ')}L${base[3].join(' ')}L${ax} ${ay}Z`, k: 'l' }, { d: `M${base[1].join(' ')}L${base[2].join(' ')}L${ax} ${ay}Z`, k: 'amber' }] });
+  }
+}
+const floor = grid(140, 20);
+---
+
+<svg class={`iso ${cls}`} viewBox="-195 -160 390 245" aria-hidden="true" data-iso>
+  <g class="iso-floor"><path d={floor}></path></g>
+  {L.map((l, i) => (
+    <g class="as" style={`--i:${i}`}>
+      <g class:list={['ly', l.move]} style={`--lift:${l.lift ?? 0}px`}>
+        <g class:list={{ bob: l.bob }} style={`--b:${(i * 0.7) % 3}s`}>
+          {l.parts.map((p) => (p.e ? <ellipse class={p.k} cx={p.e.cx} cy={p.e.cy} rx={p.e.rx} ry={p.e.ry} /> : <path class={p.k} d={p.d} />))}
+          {l.handles?.map(([x, y]) => <rect class="hd" x={+(x - 2.5).toFixed(1)} y={+(y - 2.5).toFixed(1)} width="5" height="5" />)}
+        </g>
+      </g>
+    </g>
+  ))}
+</svg>

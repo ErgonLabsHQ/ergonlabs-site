@@ -1,21 +1,374 @@
 ---
-// The live Ergon Labs homepage: Blueprint layout in the Sage palette, with Sage's process timeline and engagements.
-// Earlier designs are kept under /archive.
-import Site from '../layouts/Site.astro';
-import Shell from '../components/nv/Shell.astro';
-import Hero from '../components/site/Hero.astro';
-import Manifesto from '../components/site/Manifesto.astro';
-import ArchDemo from '../components/site/ArchDemo.astro';
-import Timeline from '../components/site/Timeline.astro';
+// The live Ergon Labs homepage. Monochrome studio look: Geist, flat sharp-cornered cards, uppercase chips and
+// animated isometric line illustrations, with an amber accent. All copy comes from nuvareth.ts and the earlier
+// homepage components, word for word. Earlier designs are kept under /archive.
+import Home from '../layouts/Home.astro';
+import HeroScene from '../components/home/HeroScene.astro';
+import IsoScene from '../components/home/IsoScene.astro';
+import Mark from '../components/home/Mark.astro';
+import { brand, services, facts, nvNav, aiPoints, process, engagements, values, faqs, founders } from '../nuvareth';
 
-const extra = [{ label: 'Founders', href: '/founders' }];
+const nav = [...nvNav, { label: 'Founders', href: '/founders' }];
+const words = ['Engineering', 'the', 'Next', 'Era', 'of', 'Intelligence.'];
+const ticker = [...new Set(services.flatMap((s) => s.items.slice(0, 3)))].slice(0, 18);
+// rows of three, then two, alternating (spans on a six-column grid)
+const spans = services.map((_, i) => (i % 5 < 3 ? 2 : 3));
+const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 'Data platform', 'Audit or advice', 'Not sure yet'];
+
+// "Our view" statement (from the earlier Manifesto section)
+const mfHead = 'Production AI is an engineering discipline.';
+const mfParts: [string, boolean][] = [
+  ['It has to handle', false],
+  ['real data, real load and real budgets,', true],
+  ['and its answers have to be', false],
+  ['verifiable.', true],
+  ['We engineer for those conditions', false],
+  ['from day one:', true],
+  ['tested against your real cases, measured in production, and built so your own team can own it.', false],
+];
+const mfWords = mfParts.flatMap(([t, hl]) => t.split(' ').map((w) => ({ w, hl })));
+const pillars = [
+  { title: 'Tested', text: 'Against your real cases, before anything reaches users.', kind: 'quality' },
+  { title: 'Measured', text: 'In production: quality, latency and cost on every request.', kind: 'data' },
+  { title: 'Owned', text: 'By your team, with code, docs and handover from day one.', kind: 'backend' },
+];
+
+// architecture example (illustrative values)
+const nodes: [string, number, number, number, string, string][] = [
+  ['client', 6, 150, 144, 'Your app', 'web · mobile · API'],
+  ['gw', 190, 150, 130, 'Gateway', 'auth · limits'],
+  ['orch', 370, 150, 150, 'Orchestrator', 'agent loop'],
+  ['ret', 570, 40, 150, 'Retrieval', 'vector + keyword'],
+  ['router', 570, 150, 150, 'Model router', 'cost · latency'],
+  ['tools', 570, 260, 150, 'Tools', 'CRM · ERP · email'],
+  ['eval', 370, 300, 150, 'Evals + traces', 'every request'],
+];
+const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65', 'M520 175H570', 'M520 185C545 185 545 285 570 285', 'M445 200V300'];
+const year = new Date().getFullYear();
 ---
 
-<Site>
-  <Shell home="/" extra={extra} icons blueprint>
-    <Hero slot="hero" />
-    <Manifesto slot="after-services" />
-    <ArchDemo slot="demo" />
-    <Timeline slot="process" />
-  </Shell>
-</Site>
+<Home>
+  <header class="nav" data-nav>
+    <div class="wrap nav-in">
+      <a class="brand" href="/" aria-label={brand.name}><Mark /><span>{brand.name}</span></a>
+      <nav class="nav-links" aria-label="Main">
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+      </nav>
+      <div class="nav-cta">
+        <a class="btn btn-sm" href="#contact">Start a project <span class="arr" aria-hidden="true">→</span></a>
+        <button class="burger" type="button" aria-label="Menu" aria-expanded="false" data-burger><i></i><i></i></button>
+      </div>
+    </div>
+    <nav class="nav-sheet" aria-label="Mobile" data-sheet>
+      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+    </nav>
+  </header>
+
+  <main>
+    <!-- hero -->
+    <section class="hero">
+      <div class="stars" aria-hidden="true" data-stars></div>
+      <div class="wrap hero-copy">
+        <p class="pill rise" style="--w:0"><i aria-hidden="true"></i>Ergon Labs / AI engineering firm</p>
+        <h1>
+          {words.map((w, i) => <span class="wd" style={`--w:${i + 1}`}>{w}</span>)}
+        </h1>
+        <p class="lede rise" style="--w:7">{brand.intro}</p>
+        <div class="actions rise" style="--w:8">
+          <a class="btn" href="#contact">Start a project <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn btn-dark" href="/founders">Meet the founders <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <HeroScene />
+      <div class="ticker" aria-hidden="true">
+        <div class="track">
+          {[0, 1].map(() => (
+            <div class="row">
+              {ticker.map((t) => <span>{t}</span>)}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- facts -->
+    <section class="facts" aria-label="At a glance">
+      <div class="wrap facts-in">
+        {facts.map((f, i) => (
+          <div data-r style={`--i:${i}`}>
+            <b>{f.k}</b>
+            <span>{f.v}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- services -->
+    <section class="sec alt" id="services">
+      <div class="wrap">
+        <div class="head">
+          <h2 data-split>End-to-end engineering, with AI at the core.</h2>
+          <p class="lede" data-r>
+            One senior team across strategy, models, software and infrastructure, so nothing falls into the gap between
+            separate vendors.
+          </p>
+        </div>
+        <ul class="svc">
+          {services.map((s, i) => (
+            <li class="card" data-r data-tilt style={`--span:${spans[i]};--i:${i % 3}`}>
+              <h3>{s.title}</h3>
+              <IsoScene kind={s.id} />
+              <p>{s.blurb}</p>
+              <ul class="chips">
+                {s.items.slice(0, 5).map((it) => <li>{it}</li>)}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- our view -->
+    <section class="sec" id="view" data-mf>
+      <div class="wrap">
+        <div class="mf">
+          <h2 data-split>{mfHead}</h2>
+          <p class="mf-text" data-mf-text>
+            {mfWords.map(({ w, hl }) => <span class:list={{ hl }}>{w} </span>)}
+          </p>
+        </div>
+        <ul class="pillars">
+          {pillars.map((p, i) => (
+            <li data-r style={`--i:${i}`}>
+              <IsoScene kind={p.kind} class="mini" />
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- AI in production -->
+    <section class="sec alt" id="ai">
+      <div class="wrap">
+        <div class="head">
+          <h2 data-split>A demo takes an afternoon. Production takes engineering.</h2>
+          <p class="lede" data-r>
+            Getting a model to look clever in a meeting is easy. Getting it to be right every day, on messy input and
+            slow APIs, is engineering. This is what that looks like.
+          </p>
+        </div>
+
+        <div class="arch card" data-arch data-r>
+          <div class="arch-map">
+            <div class="arch-bar">
+              <span>architecture / support-agent · example</span>
+              <span class="ok">all systems normal</span>
+            </div>
+            <svg viewBox="0 0 740 360" role="img" aria-label="Requests flow from your app through a gateway to an orchestrator, which calls retrieval, a model router and tools, with every request traced and evaluated.">
+              {links.map((d) => <path d={d} class="ln" />)}
+              {links.slice(0, 5).map((d, i) => (
+                <rect x="-3.5" y="-3.5" width="7" height="7" class="pk">
+                  <animateMotion dur={`${1.6 + i * 0.25}s`} repeatCount="indefinite" path={d} begin={`${i * 0.3}s`} />
+                </rect>
+              ))}
+              {nodes.map(([id, x, y, w, label, sub]) => (
+                <g class:list={['nd', { core: id === 'orch' }]}>
+                  <rect x={x} y={y} width={w} height="50"></rect>
+                  <rect x={x - 3} y={y - 3} width="6" height="6" class="hd"></rect>
+                  <rect x={x + w - 3} y={y + 47} width="6" height="6" class="hd"></rect>
+                  <text x={x + 12} y={y + 22} class="t">{label}</text>
+                  <text x={x + 12} y={y + 39} class="s">{sub}</text>
+                </g>
+              ))}
+            </svg>
+          </div>
+          <div class="arch-side">
+            <div class="m"><span>p95 latency</span><b data-m="lat">1.42s</b><i><em data-bar="lat"></em></i></div>
+            <div class="m"><span>Cost per task</span><b data-m="cost">$0.0061</b><i><em data-bar="cost"></em></i></div>
+            <div class="m"><span>Cache hit rate</span><b data-m="cache">38%</b><i><em data-bar="cache"></em></i></div>
+            <div class="m"><span>Reviewed by a person</span><b data-m="esc">3.1%</b><i><em data-bar="esc"></em></i></div>
+            <ul class="log" data-log></ul>
+          </div>
+        </div>
+
+        <ul class="points">
+          {aiPoints.map((p, i) => (
+            <li class="card" data-r data-tilt style={`--i:${i}`}>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- process -->
+    <section class="sec" id="process" data-tl>
+      <div class="wrap">
+        <div class="head">
+          <h2 data-split>Four stages, from first call to production.</h2>
+          <p class="lede" data-r>A predictable path, with something working in your hands from week two.</p>
+        </div>
+        <ol class="tl">
+          <span class="tl-rail" aria-hidden="true"><i data-tl-fill></i></span>
+          {process.map((p, i) => (
+            <li data-r data-tl-item style={`--i:${i}`}>
+              <span class="tl-mark" aria-hidden="true"></span>
+              <p class="chip">{p.time}</p>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- engagements -->
+    <section class="sec alt" id="engagements">
+      <div class="wrap">
+        <div class="head">
+          <h2 data-split>Four ways to work with us.</h2>
+          <p class="lede" data-r>Each starts with a free call and a written quote. You know the cost before you commit to anything.</p>
+        </div>
+        <ul class="plans">
+          {engagements.map((e, i) => (
+            <li class:list={['card', { featured: e.featured }]} data-r data-tilt style={`--i:${i}`}>
+              {e.featured && <span class="badge">Most common</span>}
+              <h3>{e.name}</h3>
+              <p class="for">{e.for}</p>
+              <p>{e.text}</p>
+              <ul>
+                {e.points.map((p) => <li>{p}</li>)}
+              </ul>
+              <a class:list={['btn', 'btn-block', { 'btn-dark': !e.featured }]} href="#contact">
+                Discuss this <span class="arr" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- values -->
+    <section class="sec" id="values">
+      <div class="wrap">
+        <div class="head">
+          <h2 data-split>What we stand for.</h2>
+          <p class="lede" data-r>The principles that guide how we design, build and run AI systems for our clients.</p>
+        </div>
+        <ol class="vt">
+          {values.map((v, i) => (
+            <li data-r style={`--i:${i % 2}`}>
+              <h3>{v.title}</h3>
+              <p>{v.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- founders -->
+    <section class="sec alt" id="founders">
+      <div class="wrap">
+        <div class="head">
+          <h2 data-split>The engineers behind {brand.name}.</h2>
+        </div>
+        <ul class="team">
+          {founders.map((f, i) => (
+            <li data-r style={`--i:${i}`}>
+              <a href="/founders">
+                <span class="ph"><img src={f.photo} alt={f.alt} loading="lazy" width="320" height="320" /></span>
+                <b>{f.name}</b>
+                <span>{f.role}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="center" data-r><a class="btn btn-dark" href="/founders">Meet the founders <span class="arr" aria-hidden="true">→</span></a></p>
+      </div>
+    </section>
+
+    <!-- faq -->
+    <section class="sec" id="faq">
+      <div class="wrap faq">
+        <div class="head">
+          <h2 data-split>Questions clients ask first.</h2>
+        </div>
+        <div class="qa">
+          {faqs.map((f) => (
+            <details data-r>
+              <summary>{f.q}<i aria-hidden="true"></i></summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- contact -->
+    <section class="sec alt contact" id="contact">
+      <div class="stars dim" aria-hidden="true" data-stars></div>
+      <div class="wrap">
+        <div class="head">
+          <h2 data-split>Tell us what you are building.</h2>
+          <p class="lede" data-r>
+            A few lines is enough. An engineer reads it and replies within one working day with questions and a first
+            opinion.
+          </p>
+        </div>
+        <form class="form card" data-form data-email={brand.email} data-r>
+          <div class="two">
+            <label><span>Name</span><input name="name" autocomplete="name" required /></label>
+            <label><span>Work email</span><input name="email" type="email" autocomplete="email" required /></label>
+          </div>
+          <fieldset>
+            <legend>What is it about?</legend>
+            <div class="pick">
+              {needs.map((n) => (
+                <label><input type="checkbox" name="need" value={n} /><span>{n}</span></label>
+              ))}
+            </div>
+          </fieldset>
+          <label>
+            <span>The short version</span>
+            <textarea name="message" rows="4" required placeholder="What you need, by when, and what is in the way."></textarea>
+          </label>
+          <button class="btn" type="submit">Write the email <span class="arr" aria-hidden="true">→</span></button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <div class="foot-talk">
+        <a class="brand" href="/" aria-label={brand.name}><Mark /><span>{brand.name}</span></a>
+        <h2>Let's talk.</h2>
+        <p>Email us directly or find us online.</p>
+        <div class="mail-row">
+          <a class="mail" href={`mailto:${brand.email}`}>{brand.email}</a>
+          <button class="copy" type="button" data-copy={brand.email} aria-label="Copy email address"><span data-copy-label>Copy</span></button>
+        </div>
+      </div>
+      <div class="foot-cols">
+        <div>
+          <p class="foot-h">Pages</p>
+          {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+        </div>
+        <div>
+          <p class="foot-h">Contact</p>
+          <a href={`mailto:${brand.email}`}>Email</a>
+          {brand.socials.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}
+        </div>
+      </div>
+    </div>
+    <div class="wrap foot-base">
+      <span>© {year} {brand.name}. All rights reserved.</span>
+    </div>
+    <svg class="giant" viewBox="0 0 1000 210" aria-hidden="true" data-giant>
+      <text x="500" y="190" text-anchor="middle" textLength="990" lengthAdjust="spacingAndGlyphs">ERGON</text>
+    </svg>
+  </footer>
+</Home>
