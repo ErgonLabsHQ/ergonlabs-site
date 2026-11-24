@@ -93,7 +93,7 @@ img {
   }
 }
 
-/* labels become small pills with a live dot */
+/* section labels */
 .site .nv-label {
   display: inline-flex;
   align-items: center;
@@ -102,14 +102,6 @@ img {
   width: fit-content;
   color: var(--accent-2);
   letter-spacing: 0.14em;
-}
-.site .nv-label::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
 }
 
 /* buttons */
@@ -548,15 +540,6 @@ img {
   display: flex;
   gap: 10px;
   align-items: center;
-}
-.fd-hl li::before {
-  content: '';
-  flex: none;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
 }
 .fd-stack {
   display: flex;

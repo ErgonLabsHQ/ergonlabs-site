@@ -9,7 +9,7 @@ const ticker = [...new Set(services.flatMap((s) => s.items.slice(0, 3)))].slice(
 <section class="hero">
   <div class="nv-wrap grid">
     <div class="copy">
-      <p class="nv-label rise" style="--w:0">Ergon Labs · AI engineering firm</p>
+      <p class="nv-label rise" style="--w:0">Ergon Labs / AI engineering firm</p>
       <h1>
         {words.map((w, i) => <span class:list={['wd', { grad: i > 3 }]} style={`--w:${i + 1}`}>{w}</span>)}
       </h1>
@@ -90,9 +90,10 @@ const ticker = [...new Set(services.flatMap((s) => s.items.slice(0, 3)))].slice(
     color: #aeb4c1;
   }
   .row span::after {
-    content: '✦';
-    color: var(--accent);
-    font-size: 11px;
+    content: '';
+    width: 1px;
+    height: 14px;
+    background: var(--line-strong);
   }
   @keyframes tick {
     to {
