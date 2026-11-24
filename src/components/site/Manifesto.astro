@@ -1,51 +1,334 @@
 ---
-// A short statement whose words light up as it scrolls past.
-const text =
-  'Production AI is an engineering discipline. It has to handle real data, real load and real budgets, and its answers have to be verifiable. We engineer for those conditions from day one: tested against your real cases, measured in production, and built so your own team can own it.';
+// "Our view": a glass panel with a travelling border light. The opening line is a gradient headline; the rest of
+// the statement lights up word by word as it scrolls past, key phrases glowing amber, while a progress rail fills.
+// Three pillars underneath summarise the commitment.
+const headline = 'Production AI is an engineering discipline.';
+const parts: [string, boolean][] = [
+  ['It has to handle', false],
+  ['real data, real load and real budgets,', true],
+  ['and its answers have to be', false],
+  ['verifiable.', true],
+  ['We engineer for those conditions', false],
+  ['from day one:', true],
+  ['tested against your real cases, measured in production, and built so your own team can own it.', false],
+];
+const words = parts.flatMap(([t, hl]) => t.split(' ').map((w) => ({ w, hl })));
+
+const pillars = [
+  {
+    n: '01',
+    title: 'Tested',
+    text: 'Against your real cases, before anything reaches users.',
+    icon: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" class="f"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/>',
+  },
+  {
+    n: '02',
+    title: 'Measured',
+    text: 'In production: quality, latency and cost on every request.',
+    icon: '<path d="M3 20h18"/><path d="M3 15l4.5-4.5 4 3L17 7l4 3" class="pulse"/><path d="M17 7h4v4"/>',
+  },
+  {
+    n: '03',
+    title: 'Owned',
+    text: 'By your team, with code, docs and handover from day one.',
+    icon: '<circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3M17 6l2.5 2.5M14.5 8.5 16.5 10.5"/>',
+  },
+];
 ---
 
-<section class="manifesto" data-mf>
+<section class="mf" data-mf>
   <div class="nv-wrap">
-    <p class="nv-label">Our view</p>
-    <p class="mf-text">{text.split(' ').map((w) => <span>{w} </span>)}</p>
+    <div class="mf-panel">
+      <span class="mf-rail" aria-hidden="true"><i data-mf-fill></i></span>
+      <span class="mf-spot" aria-hidden="true"></span>
+
+      <div class="mf-top">
+        <p class="nv-label">Our view</p>
+        <span class="mf-quote" aria-hidden="true">“</span>
+      </div>
+
+      <h2 class="mf-head" data-nv-reveal><span class="grad">{headline}</span></h2>
+
+      <p class="mf-text" data-mf-text>
+        {words.map(({ w, hl }) => <span class:list={{ hl }}>{w} </span>)}
+      </p>
+
+      <ul class="mf-pillars">
+        {pillars.map((p, i) => (
+          <li data-nv-reveal style={`--i:${i}`}>
+            <span class="mf-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" set:html={p.icon}></svg>
+            </span>
+            <div>
+              <p class="mf-n">{p.n}</p>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 </section>
 
 <style>
-  .manifesto {
-    padding: clamp(80px, 12vw, 160px) 0;
-    border-top: 1px solid var(--line);
+  .mf {
+    padding: clamp(70px, 9vw, 130px) 0;
+  }
+  .mf-panel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(32px, 5.5vw, 80px) clamp(26px, 6vw, 90px) clamp(28px, 4.5vw, 60px);
+    border-radius: 32px;
+    border: 1px solid var(--line);
+    background: radial-gradient(70% 60% at 100% 0%, rgba(139, 123, 255, 0.12), transparent 60%),
+      radial-gradient(60% 70% at 0% 100%, rgba(245, 165, 36, 0.12), transparent 60%), rgba(14, 17, 23, 0.72);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 60px 120px -60px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  }
+  /* light travelling around the border */
+  .mf-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--mf-a, 0deg), transparent 0 72%, rgba(245, 165, 36, 0.9) 86%, transparent 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: mf-spin 7s linear infinite;
+    pointer-events: none;
+  }
+  /* faint grid inside the panel */
+  .mf-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, #000, transparent);
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, #000, transparent);
+  }
+  @property --mf-a {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+  @keyframes mf-spin {
+    to {
+      --mf-a: 360deg;
+    }
+  }
+  /* glow that drifts down the panel with the reading progress */
+  .mf-spot {
+    position: absolute;
+    z-index: -1;
+    left: 10%;
+    top: calc(var(--p, 0) * 70%);
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(245, 165, 36, 0.13), transparent);
+    filter: blur(20px);
+    transition: top 0.3s linear;
+    pointer-events: none;
+  }
+
+  .mf-rail {
+    position: absolute;
+    left: clamp(14px, 2.2vw, 34px);
+    top: clamp(40px, 6vw, 88px);
+    bottom: clamp(40px, 6vw, 88px);
+    width: 2px;
+    border-radius: 2px;
+    background: var(--line);
+  }
+  .mf-rail i {
+    display: block;
+    width: 100%;
+    height: calc(var(--p, 0) * 100%);
+    border-radius: inherit;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    box-shadow: 0 0 12px rgba(245, 165, 36, 0.8);
+  }
+
+  .mf-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .mf-quote {
+    font: 700 clamp(90px, 11vw, 160px) / 0.7 'Space Grotesk', var(--display);
+    background: linear-gradient(180deg, var(--accent-2), rgba(245, 165, 36, 0.05));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-top: -6px;
+    user-select: none;
+  }
+
+  .mf-head {
+    margin-top: 8px;
+    font-size: clamp(34px, 5vw, 72px);
+    line-height: 1.02;
+    max-width: 16ch;
   }
   .mf-text {
-    margin-top: 24px;
-    font: 500 clamp(26px, 3.4vw, 48px) / 1.25 var(--display);
+    margin-top: clamp(22px, 3vw, 36px);
+    font: 500 clamp(22px, 2.5vw, 36px) / 1.35 var(--display);
     letter-spacing: -0.02em;
-    max-width: 30ch;
+    max-width: 34ch;
   }
   .mf-text span {
-    color: rgba(19, 41, 31, 0.18);
-    transition: color 0.3s;
+    color: rgba(255, 255, 255, 0.13);
+    filter: blur(1.5px);
+    transition: color 0.45s ease, filter 0.45s ease, text-shadow 0.45s ease;
   }
   .mf-text span:global(.on) {
     color: var(--fg);
+    filter: none;
+  }
+  .mf-text span.hl:global(.on) {
+    color: var(--accent-2);
+    text-shadow: 0 0 24px rgba(245, 165, 36, 0.55);
+  }
+
+  .mf-pillars {
+    list-style: none;
+    margin: clamp(40px, 5vw, 64px) 0 0;
+    padding: clamp(26px, 3vw, 36px) 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(16px, 2.5vw, 32px);
+  }
+  .mf-pillars li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .mf-ico {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    color: var(--accent-2);
+    background: linear-gradient(160deg, rgba(245, 165, 36, 0.22), rgba(245, 165, 36, 0.03));
+    border: 1px solid rgba(245, 165, 36, 0.28);
+    box-shadow: 0 0 30px -8px rgba(245, 165, 36, 0.5);
+  }
+  .mf-ico svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+  }
+  .mf-ico :global(.f) {
+    fill: currentColor;
+  }
+  /* small looping icon animations */
+  .mf-pillars li:nth-child(1) .mf-ico svg {
+    animation: mf-aim 4s ease-in-out infinite;
+  }
+  .mf-ico :global(.pulse) {
+    stroke-dasharray: 30;
+    animation: mf-trace 3s ease-in-out infinite;
+  }
+  .mf-pillars li:nth-child(3) .mf-ico svg {
+    transform-origin: 8px 15px;
+    animation: mf-turn 4.5s ease-in-out infinite;
+  }
+  @keyframes mf-aim {
+    50% {
+      transform: scale(0.88) rotate(45deg);
+    }
+  }
+  @keyframes mf-trace {
+    0% {
+      stroke-dashoffset: 30;
+    }
+    50%,
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes mf-turn {
+    0%,
+    60%,
+    100% {
+      transform: none;
+    }
+    75% {
+      transform: rotate(-25deg);
+    }
+  }
+  .mf-n {
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .mf-pillars h3 {
+    font-size: clamp(20px, 1.8vw, 24px);
+    margin-bottom: 6px;
+  }
+  .mf-pillars p:last-child {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  @media (max-width: 860px) {
+    .mf-pillars {
+      grid-template-columns: 1fr;
+    }
+    .mf-quote {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mf-panel::before,
+    .mf-ico svg,
+    .mf-ico :global(.pulse) {
+      animation: none;
+    }
+    .mf-text span {
+      filter: none;
+    }
   }
 </style>
 
 <script>
-  const words = [...document.querySelectorAll<HTMLElement>('[data-mf] .mf-text span')];
-  const text = document.querySelector<HTMLElement>('[data-mf] .mf-text');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const light = () => {
-    if (!text) return;
-    if (reduced) {
-      words.forEach((w) => w.classList.add('on'));
-      return;
-    }
-    const r = text.getBoundingClientRect();
-    const p = Math.min(1, Math.max(0, (innerHeight * 0.75 - r.top) / (r.height + innerHeight * 0.25)));
-    const n = Math.round(p * words.length);
-    words.forEach((w, i) => w.classList.toggle('on', i < n));
-  };
-  addEventListener('scroll', light, { passive: true });
-  light();
+  const mf = document.querySelector<HTMLElement>('[data-mf]');
+  const text = document.querySelector<HTMLElement>('[data-mf-text]');
+  if (mf && text) {
+    const words = [...text.querySelectorAll<HTMLElement>('span')];
+    const panel = mf.querySelector<HTMLElement>('.mf-panel')!;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const light = () => {
+      if (reduced) {
+        words.forEach((w) => w.classList.add('on'));
+        panel.style.setProperty('--p', '1');
+        return;
+      }
+      const r = text.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (innerHeight * 0.78 - r.top) / (r.height + innerHeight * 0.3)));
+      const n = Math.round(p * words.length);
+      words.forEach((w, i) => w.classList.toggle('on', i < n));
+      panel.style.setProperty('--p', p.toFixed(3));
+    };
+    addEventListener('scroll', light, { passive: true });
+    addEventListener('resize', light);
+    light();
+  }
 </script>

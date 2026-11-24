@@ -1,18 +1,130 @@
----
-// Nuvareth logo, concept 5 "Blueprint": the N drafted on a construction grid inside crop marks,
-// with the accent node at the top right. Colours follow the surrounding text (--fg) and --accent.
+﻿---
+// Ergon Labs lockup: the owl perched on the N of ERGON, with LABS set small beside it.
+// On load the owl drops onto the N; after that it blinks and glances around. Hovering the logo tilts its head.
+// Text colour follows the surrounding text (currentColor); LABS uses --el-labs (amber by default).
+import Owl from './Owl.astro';
+
 interface Props {
-  size?: number;
+  size?: number; // font size of ERGON in px
+  inline?: boolean; // compact bar version: owl icon beside the wordmark instead of perched on the N
 }
-const { size = 30 } = Astro.props;
+const { size = 24, inline = false } = Astro.props;
 ---
 
-<svg class="nv-logo-mark" viewBox="0 0 64 64" width={size} height={size} aria-hidden="true">
-  <path d="M6 14V6h8M50 6h8v8M58 50v8h-8M14 58H6v-8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"></path>
-  <g fill="currentColor" opacity="0.35">
-    <circle cx="32" cy="16" r="2.2"></circle><circle cx="16" cy="32" r="2.2"></circle><circle cx="32" cy="32" r="2.2"></circle>
-    <circle cx="48" cy="32" r="2.2"></circle><circle cx="32" cy="48" r="2.2"></circle>
-  </g>
-  <path d="M16 48V16l32 32V16" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
-  <circle cx="48" cy="16" r="5" fill="var(--accent, #1d6b4f)"></circle>
-</svg>
+{inline ? (
+  <span class="el-lockup el-inline" style={`--el-size:${size}px`} aria-label="Ergon Labs" role="img">
+    <Owl class="el-icon" />
+    <span class="el-text" aria-hidden="true">
+      <span class="el-word">ERGON</span>
+      <span class="el-labs">LABS</span>
+    </span>
+  </span>
+) : (
+  <span class="el-lockup" style={`--el-size:${size}px`} aria-label="Ergon Labs" role="img">
+    <span class="el-word" aria-hidden="true">
+      ERGO<span class="el-n">N<Owl class="el-perch" /></span>
+    </span>
+    <span class="el-labs" aria-hidden="true">LABS</span>
+  </span>
+)}
+
+<style is:global>
+  .el-lockup {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: calc(var(--el-size) * 0.45);
+    padding-top: calc(var(--el-size) * 1.14);
+    line-height: 1;
+    color: inherit;
+  }
+  .el-inline {
+    align-items: center;
+    padding-top: 0;
+    gap: calc(var(--el-size) * 0.3);
+  }
+  .el-text {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: calc(var(--el-size) * 0.45);
+  }
+  .el-icon {
+    height: calc(var(--el-size) * 1.55);
+    width: auto;
+    flex: none;
+    transform-origin: 50% 100%;
+    animation: el-land 0.9s cubic-bezier(0.3, 0.7, 0.3, 1) 0.15s both;
+  }
+  .el-inline:hover .el-icon {
+    animation: el-tilt 0.7s ease-in-out;
+  }
+  .el-word {
+    font: 700 var(--el-size) / 0.8 'Space Grotesk', 'IBM Plex Sans', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  .el-n {
+    position: relative;
+    display: inline-block;
+  }
+  .el-labs {
+    font: 600 calc(var(--el-size) * 0.36) / 1 'IBM Plex Mono', ui-monospace, monospace;
+    letter-spacing: 0.42em;
+    color: var(--el-labs, #c47f12);
+    margin-bottom: 0.05em;
+  }
+  .el-perch {
+    position: absolute;
+    left: 50%;
+    bottom: 84%;
+    width: 0.98em;
+    height: auto;
+    margin-left: -0.49em;
+    overflow: visible;
+    transform-origin: 50% 100%;
+    animation: el-land 0.9s cubic-bezier(0.3, 0.7, 0.3, 1) 0.15s both;
+  }
+  .el-lockup:hover .el-perch {
+    animation: el-tilt 0.7s ease-in-out;
+  }
+  .el-owl .el-lid {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+    transform: scaleY(0);
+    animation: el-blink 5.2s ease-in-out 1.4s infinite;
+  }
+  .el-owl .el-pupils {
+    animation: el-glance 9s ease-in-out 2.5s infinite;
+  }
+
+  @keyframes el-land {
+    0% { transform: translateY(-140%) scale(0.9); opacity: 0; }
+    55% { transform: translateY(0) scale(1.06, 0.88); opacity: 1; }
+    75% { transform: translateY(-6%) scale(0.97, 1.04); }
+    100% { transform: none; }
+  }
+  @keyframes el-blink {
+    0%, 90%, 100% { transform: scaleY(0); }
+    93%, 95% { transform: scaleY(1); }
+  }
+  @keyframes el-glance {
+    0%, 30%, 100% { transform: none; }
+    36%, 52% { transform: translateX(1.6px); }
+    58%, 74% { transform: translateX(-1.6px); }
+    80% { transform: none; }
+  }
+  @keyframes el-tilt {
+    0%, 100% { transform: none; }
+    35% { transform: rotate(-12deg); }
+    70% { transform: rotate(8deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .el-perch,
+    .el-icon,
+    .el-inline:hover .el-icon,
+    .el-lockup:hover .el-perch,
+    .el-owl .el-lid,
+    .el-owl .el-pupils {
+      animation: none;
+    }
+  }
+</style>

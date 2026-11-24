@@ -1,0 +1,31 @@
+---
+// Company values: what Ergon Labs stands for. Shown on the homepage (company information lives there; the
+// founders page is about the people).
+import Icon from './Icon.astro';
+import { values } from '../../nuvareth';
+
+const valueIcons = ['rigour', 'responsible', 'transparency', 'security', 'research', 'partnership'];
+---
+
+<section class="nv-section nv-ai" id="values">
+  <div class="nv-wrap">
+    <div class="nv-head">
+      <p class="nv-label">Our values</p>
+      <h2 data-nv-reveal>What we stand for.</h2>
+      <p class="nv-lede" data-nv-reveal>
+        The principles that guide how we design, build and run AI systems for our clients.
+      </p>
+    </div>
+    <ol class="values">
+      {values.map((v, i) => (
+        <li data-nv-reveal style={`--i:${i % 3}`}>
+          <p class="v-top">
+            <span class="v-ico"><Icon name={valueIcons[i]} size={30} /></span>
+          </p>
+          <h3>{v.title}</h3>
+          <p>{v.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

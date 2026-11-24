@@ -1,12 +1,12 @@
-// Content for the Nuvareth site (the live homepage, /founders, and the archived /archive/v/10-15 versions).
+// Content for the Ergon Labs site (the live homepage, /founders, and the archived /archive/v/10-15 versions).
 // Shares the detailed lists with site.ts, minus anything game-focused, with the wording kept professional.
 import { site, services as allServices, engagements, aiPoints } from './site';
 
 export const brand = {
-  name: 'Nuvareth',
+  name: 'Ergon Labs',
   headline: 'Engineering the Next Era of Intelligence',
   intro:
-    'Nuvareth is an AI engineering firm. Lead engineers and AI researchers with experience across US and European companies, building agents, custom models and the systems around them.',
+    'Ergon Labs is an AI engineering firm. Lead engineers and AI researchers with experience across US and European companies, building agents, custom models and the systems around them.',
   email: site.email,
   location: site.location,
   bookingUrl: site.bookingUrl,
@@ -109,7 +109,7 @@ export const founders = [
     bio: [
       'Rizwan has led distributed engineering teams as a technical team lead, setting quality standards and guiding architecture on products for clients including Sourcegraph, Appsmith, Parabol and Immunefi.',
       'He has built embedded, white-label payroll and workforce platforms used by businesses across the US, from complex scheduling systems and shared SDKs to payments and platform APIs. Alongside full-stack product engineering, he builds and deploys machine learning systems, from deep learning models on AWS SageMaker to retrieval and agentic AI.',
-      'At Nuvareth he leads architecture and delivery, making sure every system is built to run reliably in production.',
+      'At Ergon Labs he leads architecture and delivery, making sure every system is built to run reliably in production.',
     ],
     highlights: ['Technical team lead', '6+ years in production', 'Full-stack & platform architecture', 'Applied ML on AWS'],
     stack: ['TypeScript', 'React', 'Node.js', 'C# / .NET', 'PostgreSQL', 'PyTorch', 'RAG & agents'],
@@ -129,7 +129,7 @@ export const founders = [
     bio: [
       'Talha has carried out AI research with the University of Illinois Urbana-Champaign, building fault-injection benchmarks for SREGym, an agent benchmark accepted at NeurIPS 2026, and with the Norwegian University of Science and Technology on reinforcement learning for multilingual fact verification.',
       'He is an author of research papers on prompt-injection security for AI agents, test-time reasoning, and energy-efficient, well-calibrated NLP. In industry he built an LLM evaluation platform serving more than 2,000 users for a New York AI company, and he was selected for Google Summer of Code 2026 to build AI moderation for Drupal.',
-      'At Nuvareth he leads AI research and evaluation, bringing research-grade rigour to every model we put into production.',
+      'At Ergon Labs he leads AI research and evaluation, bringing research-grade rigour to every model we put into production.',
     ],
     highlights: ['Published AI researcher', 'NeurIPS 2026 benchmark work', 'Google Summer of Code 2026', 'LLM evaluation at scale'],
     stack: ['LLM agents', 'Reinforcement learning', 'PyTorch', 'LangGraph', 'MCP', 'Evaluation & safety'],

@@ -1,6 +1,7 @@
 ---
 import { brand, nvNav } from '../../nuvareth';
 import Logo from '../site/Logo.astro';
+import Behaviour from './Behaviour.astro';
 
 interface Props {
   base?: string;
@@ -14,7 +15,7 @@ const year = new Date().getFullYear();
 <footer class="nv-foot">
   <div class="nv-wrap nv-foot-in">
     <div>
-      <p class="nv-foot-name">{blueprint && <Logo size={34} />}{brand.name}</p>
+      <p class="nv-foot-name">{blueprint ? <Logo size={30} /> : brand.name}</p>
       <p>{brand.headline}.</p>
     </div>
     <nav aria-label="Footer">
@@ -31,33 +32,4 @@ const year = new Date().getFullYear();
   </div>
 </footer>
 
-<script>
-  // shared behaviour: nav state, scroll reveal, contact form to mail app
-  document.documentElement.classList.add('nv-js');
-  const nav = document.querySelector('[data-nv-nav]');
-  const onScroll = () => nav?.classList.toggle('scrolled', window.scrollY > 24);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
-
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      }
-    },
-    { threshold: 0.12, rootMargin: '0px 0px -6% 0px' },
-  );
-  document.querySelectorAll('[data-nv-reveal]').forEach((el) => io.observe(el));
-
-  const form = document.querySelector<HTMLFormElement>('[data-nv-form]');
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const d = new FormData(form);
-    const needs = d.getAll('need').join(', ') || 'Not specified';
-    const body = `Name: ${d.get('name')}\nEmail: ${d.get('email')}\nAbout: ${needs}\n\n${d.get('message')}`;
-    window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(`Project enquiry from ${d.get('name')}`)}&body=${encodeURIComponent(body)}`;
-  });
-</script>
+<Behaviour />

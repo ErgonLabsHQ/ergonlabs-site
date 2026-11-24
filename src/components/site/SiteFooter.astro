@@ -1,0 +1,317 @@
+---
+// Ergon Labs footer: a centred contact section (contact details only), then a giant wordmark with the owl
+// perched on the N, and the copyright line.
+import { brand } from '../../nuvareth';
+import Owl from './Owl.astro';
+import Behaviour from '../nv/Behaviour.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="el-foot">
+  <section class="nv-wrap ft-contact" aria-labelledby="ft-contact-title">
+    <p class="nv-label">Contact</p>
+    <h2 id="ft-contact-title" data-nv-reveal>Let's <span class="grad">talk.</span></h2>
+    <p class="ft-lede" data-nv-reveal>Email us directly or find us online.</p>
+
+    <div class="ft-mail-row" data-nv-reveal>
+      <a class="ft-mail" href={`mailto:${brand.email}`}>{brand.email}</a>
+      <button class="ft-copy" type="button" data-copy={brand.email} aria-label="Copy email address">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"></rect><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"></path></svg>
+        <span data-copy-label>Copy</span>
+      </button>
+    </div>
+
+    <ul class="ft-social" data-nv-reveal>
+      <li>
+        <a href={`mailto:${brand.email}`}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"></rect><path d="m4 7 8 6 8-6"></path></svg>
+          Email
+        </a>
+      </li>
+      {brand.socials.map((s) => (
+        <li>
+          <a href={s.href} target="_blank" rel="noopener">
+            {s.label === 'LinkedIn' ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M8 10.5V16M8 7.5v.01M12 16v-5.5M12 13c0-1.7 1-2.7 2.3-2.7 1.4 0 2.2.9 2.2 2.7v3"></path></svg>
+            ) : (
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4h4.2l10.8 16h-4.2L4.5 4Z"></path><path d="M19 4l-6.1 7M11.1 13 5 20"></path></svg>
+            )}
+            {s.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <div class="ft-giant" aria-hidden="true" data-ft-giant>
+    <span class="ft-word">ERGO<span class="ft-n">N<Owl class="ft-owl" /></span></span>
+  </div>
+
+  <div class="nv-wrap ft-base">
+    <span>© {year} {brand.name}. All rights reserved.</span>
+  </div>
+</footer>
+
+<Behaviour />
+
+<style>
+  .el-foot {
+    position: relative;
+    margin-top: clamp(40px, 6vw, 80px);
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    background: radial-gradient(60% 50% at 50% 0%, rgba(245, 165, 36, 0.1), transparent 70%),
+      linear-gradient(180deg, rgba(10, 12, 17, 0.3), rgba(10, 12, 17, 0.92) 45%, #07080c);
+  }
+  /* animated light running along the top edge */
+  .el-foot::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 40%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: ft-run 6s linear infinite;
+  }
+  @keyframes ft-run {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(260%);
+    }
+  }
+
+  /* centred contact section */
+  .ft-contact {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 18px;
+    padding-top: clamp(80px, 10vw, 130px);
+  }
+  .ft-contact :global(.nv-label) {
+    justify-self: center;
+  }
+  .ft-contact h2 {
+    font-size: clamp(44px, 7vw, 96px);
+    line-height: 1;
+  }
+  .ft-lede {
+    color: var(--muted);
+    font-size: clamp(16px, 1.3vw, 19px);
+  }
+  .ft-mail-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px 18px;
+    margin-top: 18px;
+  }
+  .ft-mail {
+    position: relative;
+    font: 600 clamp(24px, 3.4vw, 46px) / 1.15 var(--display);
+    letter-spacing: -0.02em;
+    color: var(--accent-2);
+    overflow-wrap: anywhere;
+  }
+  .ft-mail::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease);
+  }
+  .ft-mail:hover::after,
+  .ft-mail:focus-visible::after {
+    transform: scaleX(1);
+  }
+  .ft-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 15px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg);
+    font: 500 14px/1 var(--body);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+  }
+  .ft-copy svg,
+  .ft-social svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ft-copy:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .ft-copy:global(.done) {
+    color: #3ddc84;
+    border-color: rgba(61, 220, 132, 0.5);
+  }
+
+  .ft-social {
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .ft-social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(18, 21, 28, 0.7);
+    backdrop-filter: blur(8px);
+    color: #c6cbd6;
+    font-weight: 500;
+    font-size: 15px;
+    transition: transform 0.25s var(--ease), border-color 0.25s, color 0.25s, background 0.25s;
+  }
+  .ft-social a:hover {
+    transform: translateY(-3px);
+    border-color: rgba(245, 165, 36, 0.5);
+    background: var(--accent-soft);
+    color: var(--fg);
+  }
+
+  /* giant wordmark */
+  .ft-giant {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding-top: clamp(70px, 10vw, 140px);
+    margin-bottom: clamp(-30px, -2.5vw, -12px);
+    user-select: none;
+  }
+  .ft-word {
+    font: 700 clamp(90px, 24vw, 360px) / 0.8 'Space Grotesk', var(--display);
+    letter-spacing: -0.04em;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.015) 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transform: translateY(30%);
+    opacity: 0;
+    transition: transform 1.2s var(--ease), opacity 1.2s var(--ease);
+  }
+  .ft-giant:global(.in) .ft-word {
+    transform: none;
+    opacity: 1;
+  }
+  .ft-n {
+    position: relative;
+    display: inline-block;
+  }
+  .ft-giant :global(.ft-owl) {
+    position: absolute;
+    left: 50%;
+    bottom: 84%;
+    width: 0.5em;
+    margin-left: -0.25em;
+    transform-origin: 50% 100%;
+    opacity: 0;
+    transform: translateY(-60%);
+  }
+  .ft-giant:global(.in) :global(.ft-owl) {
+    animation: ft-land 1s cubic-bezier(0.3, 0.7, 0.3, 1) 0.6s forwards;
+  }
+  @keyframes ft-land {
+    0% {
+      opacity: 0;
+      transform: translateY(-60%) rotate(-8deg);
+    }
+    55% {
+      opacity: 1;
+      transform: translateY(0) scale(1.05, 0.9);
+    }
+    78% {
+      transform: translateY(-5%) scale(0.98, 1.03);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .ft-base {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding-top: 24px;
+    padding-bottom: 26px;
+    border-top: 1px solid var(--line);
+    font-size: 13.5px;
+    color: var(--muted);
+    background: #07080c;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .el-foot::before {
+      animation: none;
+    }
+    .ft-word,
+    .ft-giant :global(.ft-owl) {
+      transform: none;
+      opacity: 1;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const giant = document.querySelector('[data-ft-giant]');
+  if (giant) {
+    const io = new IntersectionObserver(
+      (es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          giant.classList.add('in');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(giant);
+  }
+
+  // copy the email address to the clipboard
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    const label = btn.querySelector<HTMLElement>('[data-copy-label]');
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy || '');
+        btn.classList.add('done');
+        if (label) label.textContent = 'Copied';
+        setTimeout(() => {
+          btn.classList.remove('done');
+          if (label) label.textContent = 'Copy';
+        }, 1800);
+      } catch {
+        window.location.href = `mailto:${btn.dataset.copy}`;
+      }
+    });
+  });
+</script>

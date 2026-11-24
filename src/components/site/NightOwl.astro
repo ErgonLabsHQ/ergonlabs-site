@@ -1,0 +1,327 @@
+---
+// Large background scene: an owl silhouette perched on a branch in front of a softly glowing moon.
+// Its amber eyes glow, follow the cursor and blink; the owl breathes and turns its head, clouds drift across the
+// moon and the branch sways a little. Purely decorative (aria-hidden) and fixed behind the page content.
+---
+
+<div class="no" aria-hidden="true" data-no>
+  <svg viewBox="0 0 400 540" class="no-svg">
+    <defs>
+      <radialGradient id="no-moon" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#fff1d2" stop-opacity="0.34"></stop>
+        <stop offset="0.55" stop-color="#ffd690" stop-opacity="0.2"></stop>
+        <stop offset="0.86" stop-color="#f5a524" stop-opacity="0.1"></stop>
+        <stop offset="1" stop-color="#f5a524" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="no-halo" cx="50%" cy="50%" r="50%">
+        <stop offset="0.5" stop-color="#f5a524" stop-opacity="0.12"></stop>
+        <stop offset="1" stop-color="#f5a524" stop-opacity="0"></stop>
+      </radialGradient>
+      <linearGradient id="no-body" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1a1d26"></stop>
+        <stop offset="1" stop-color="#0a0b10"></stop>
+      </linearGradient>
+      <linearGradient id="no-chest" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2a2219"></stop>
+        <stop offset="1" stop-color="#110f0c"></stop>
+      </linearGradient>
+      <linearGradient id="no-rim" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffd690" stop-opacity="0.75"></stop>
+        <stop offset="0.45" stop-color="#f5a524" stop-opacity="0.25"></stop>
+        <stop offset="0.8" stop-color="#f5a524" stop-opacity="0"></stop>
+      </linearGradient>
+      <radialGradient id="no-iris" cx="45%" cy="40%" r="60%">
+        <stop offset="0" stop-color="#fff0b8"></stop>
+        <stop offset="0.35" stop-color="#ffc443"></stop>
+        <stop offset="0.8" stop-color="#e88a0c"></stop>
+        <stop offset="1" stop-color="#9a5300"></stop>
+      </radialGradient>
+      <clipPath id="no-moon-clip"><circle cx="200" cy="200" r="172"></circle></clipPath>
+    </defs>
+
+    <!-- moon -->
+    <circle cx="200" cy="200" r="250" fill="url(#no-halo)" class="no-halo"></circle>
+    <circle cx="200" cy="200" r="172" fill="url(#no-moon)"></circle>
+    <circle cx="200" cy="200" r="172" fill="none" stroke="#ffe2a8" stroke-opacity="0.12" stroke-width="1"></circle>
+    <g fill="#ffe7b8" opacity="0.05">
+      <circle cx="150" cy="140" r="18"></circle>
+      <circle cx="262" cy="120" r="11"></circle>
+      <circle cx="290" cy="250" r="22"></circle>
+      <circle cx="120" cy="268" r="9"></circle>
+    </g>
+
+    <!-- drifting clouds -->
+    <g class="no-clouds" clip-path="url(#no-moon-clip)">
+      <ellipse class="c1" cx="120" cy="150" rx="110" ry="9" fill="#cfd6e6" opacity="0.08"></ellipse>
+      <ellipse class="c2" cx="290" cy="290" rx="130" ry="7" fill="#cfd6e6" opacity="0.06"></ellipse>
+      <ellipse class="c3" cx="220" cy="70" rx="90" ry="6" fill="#cfd6e6" opacity="0.07"></ellipse>
+    </g>
+
+    <!-- branch -->
+    <g class="no-branch">
+      <path d="M-60 462 C 60 446 170 452 260 446 S 380 432 470 424" stroke="#0b0c10" stroke-width="16" stroke-linecap="round" fill="none"></path>
+      <path d="M-60 456 C 60 440 170 446 260 440 S 380 426 470 418" stroke="#f5a524" stroke-opacity="0.22" stroke-width="1.5" fill="none"></path>
+      <path d="M318 436 C 338 416 360 404 392 398" stroke="#0b0c10" stroke-width="6" stroke-linecap="round" fill="none"></path>
+      <path d="M70 452 C 52 430 40 422 18 414" stroke="#0b0c10" stroke-width="5" stroke-linecap="round" fill="none"></path>
+      <g fill="#0d1210">
+        <path d="M392 398 q22 -18 40 -10 q-16 20 -40 10z"></path>
+        <path d="M372 404 q8 -26 28 -30 q-2 24 -28 30z"></path>
+        <path d="M18 414 q-24 -12 -40 0 q20 16 40 0z"></path>
+        <path d="M40 422 q-6 -24 -26 -30 q-2 24 26 30z"></path>
+      </g>
+    </g>
+
+    <!-- owl -->
+    <g class="no-owl">
+      <!-- tail below the branch -->
+      <path d="M176 440 L184 506 L200 494 L216 506 L224 440 Z" fill="#0b0c11"></path>
+      <g class="no-body">
+        <path d="M116 222 C 94 292 100 384 148 436 Q 200 468 252 436 C 300 384 306 292 284 222 Z" fill="url(#no-body)"></path>
+        <path d="M116 222 C 94 292 100 384 148 436 Q 200 468 252 436 C 300 384 306 292 284 222" fill="none" stroke="url(#no-rim)" stroke-width="1.6"></path>
+        <ellipse cx="200" cy="336" rx="60" ry="92" fill="url(#no-chest)"></ellipse>
+        <g fill="none" stroke="#f5a524" stroke-opacity="0.16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M168 282l8 7 8-7M192 282l8 7 8-7M216 282l8 7 8-7"></path>
+          <path d="M162 310l8 7 8-7M186 310l8 7 8-7M210 310l8 7 8-7M234 310l-3 3"></path>
+          <path d="M170 338l8 7 8-7M194 338l8 7 8-7M218 338l8 7 8-7"></path>
+          <path d="M180 366l8 7 8-7M204 366l8 7 8-7"></path>
+          <path d="M192 394l8 7 8-7"></path>
+        </g>
+        <!-- folded wings -->
+        <path class="no-wing l" d="M120 236 C 96 300 102 384 150 440 C 136 380 134 300 150 248 Z" fill="#0d0f15"></path>
+        <path class="no-wing r" d="M280 236 C 304 300 298 384 250 440 C 264 380 266 300 250 248 Z" fill="#0d0f15"></path>
+        <path d="M120 236 C 96 300 102 384 150 440M280 236 C 304 300 298 384 250 440" fill="none" stroke="url(#no-rim)" stroke-width="1.2"></path>
+        <g fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1.4" stroke-linecap="round">
+          <path d="M118 300 q14 10 22 30M114 340 q14 10 22 30M120 380 q12 8 18 26"></path>
+          <path d="M282 300 q-14 10 -22 30M286 340 q-14 10 -22 30M280 380 q-12 8 -18 26"></path>
+        </g>
+        <!-- talons -->
+        <g fill="none" stroke="#c8861a" stroke-width="4" stroke-linecap="round">
+          <path d="M178 436 v14M170 437 l-5 12M186 437 l5 12"></path>
+          <path d="M222 436 v14M214 437 l-5 12M230 437 l5 12"></path>
+        </g>
+      </g>
+
+      <g class="no-head">
+        <path d="M128 156 L110 76 Q140 110 166 124 Z" fill="#12141b"></path>
+        <path d="M272 156 L290 76 Q260 110 234 124 Z" fill="#12141b"></path>
+        <path d="M128 156 L110 76 Q140 110 166 124M272 156 L290 76 Q260 110 234 124" fill="none" stroke="url(#no-rim)" stroke-width="1.4"></path>
+        <ellipse cx="200" cy="196" rx="94" ry="82" fill="url(#no-body)"></ellipse>
+        <path d="M106 196 A 94 82 0 0 1 294 196" fill="none" stroke="url(#no-rim)" stroke-width="1.8"></path>
+        <!-- facial disc -->
+        <circle cx="162" cy="198" r="44" fill="#171a23"></circle>
+        <circle cx="238" cy="198" r="44" fill="#171a23"></circle>
+        <path d="M120 170 Q 162 150 196 182M280 170 Q 238 150 204 182" fill="none" stroke="#2a2d38" stroke-width="5" stroke-linecap="round"></path>
+        <!-- eyes -->
+        <g class="no-eyes">
+          <circle cx="162" cy="200" r="27" fill="url(#no-iris)" class="no-iris"></circle>
+          <circle cx="238" cy="200" r="27" fill="url(#no-iris)" class="no-iris"></circle>
+          <g class="no-pupils">
+            <circle cx="162" cy="200" r="12.5" fill="#07080b"></circle>
+            <circle cx="238" cy="200" r="12.5" fill="#07080b"></circle>
+            <circle cx="156" cy="193" r="4.2" fill="#fff" opacity="0.9"></circle>
+            <circle cx="232" cy="193" r="4.2" fill="#fff" opacity="0.9"></circle>
+            <circle cx="168" cy="206" r="1.8" fill="#fff" opacity="0.5"></circle>
+            <circle cx="244" cy="206" r="1.8" fill="#fff" opacity="0.5"></circle>
+          </g>
+          <ellipse class="no-lid" cx="162" cy="200" rx="29" ry="29" fill="#171a23"></ellipse>
+          <ellipse class="no-lid" cx="238" cy="200" rx="29" ry="29" fill="#171a23"></ellipse>
+        </g>
+        <path d="M192 226 L208 226 L200 250 Z" fill="#2b2014"></path>
+        <path d="M192 226 L208 226" stroke="#c8861a" stroke-opacity="0.5" stroke-width="1.5"></path>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .no {
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    right: max(-40px, -2vw);
+    top: 50%;
+    height: min(94vh, 980px);
+    aspect-ratio: 400 / 540;
+    transform: translateY(calc(-46% + var(--sy, 0px)));
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    opacity: 0;
+    animation: no-in 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s forwards;
+  }
+  @keyframes no-in {
+    from {
+      opacity: 0;
+      filter: blur(10px);
+    }
+    to {
+      opacity: 0.92;
+      filter: none;
+    }
+  }
+  .no-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    /* full strength in the hero, softer behind the reading sections (set on scroll) */
+    opacity: var(--o, 1);
+    transition: opacity 0.5s ease;
+  }
+
+  .no-halo {
+    transform-origin: 200px 200px;
+    animation: no-pulse 7s ease-in-out infinite;
+  }
+  @keyframes no-pulse {
+    50% {
+      transform: scale(1.08);
+      opacity: 0.7;
+    }
+  }
+  .no-clouds .c1 {
+    animation: no-cloud 38s linear infinite;
+  }
+  .no-clouds .c2 {
+    animation: no-cloud 52s linear infinite reverse;
+  }
+  .no-clouds .c3 {
+    animation: no-cloud 46s linear -20s infinite;
+  }
+  @keyframes no-cloud {
+    from {
+      transform: translateX(-260px);
+    }
+    to {
+      transform: translateX(260px);
+    }
+  }
+  .no-branch {
+    transform-origin: 200px 450px;
+    animation: no-sway 9s ease-in-out infinite;
+  }
+  .no-owl {
+    transform-origin: 200px 450px;
+    animation: no-sway 9s ease-in-out infinite;
+  }
+  @keyframes no-sway {
+    50% {
+      transform: rotate(0.8deg);
+    }
+  }
+  .no-body {
+    transform-origin: 200px 450px;
+    animation: no-breathe 4.2s ease-in-out infinite;
+  }
+  @keyframes no-breathe {
+    50% {
+      transform: scale(1.018, 0.992);
+    }
+  }
+  .no-head {
+    transform-origin: 200px 270px;
+    transform: rotate(var(--hr, 0deg)) translateY(var(--hy, 0px));
+    transition: transform 0.7s cubic-bezier(0.3, 0.8, 0.3, 1.1);
+  }
+  .no-iris {
+    filter: drop-shadow(0 0 6px rgba(245, 165, 36, 0.85)) drop-shadow(0 0 22px rgba(245, 165, 36, 0.45));
+  }
+  .no-pupils {
+    transform: translate(var(--ex, 0px), var(--ey, 0px));
+    transition: transform 0.3s ease-out;
+  }
+  .no-lid {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+    transform: scaleY(0);
+    animation: no-blink 6.5s ease-in-out 2.5s infinite;
+  }
+  @keyframes no-blink {
+    0%,
+    90%,
+    100% {
+      transform: scaleY(0);
+    }
+    93%,
+    94.5% {
+      transform: scaleY(1);
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .no {
+      height: min(80vh, 760px);
+      right: -12vw;
+    }
+  }
+  @media (max-width: 700px) {
+    .no {
+      top: auto;
+      bottom: -6vh;
+      right: -22vw;
+      height: 52vh;
+      transform: translateY(var(--sy, 0px));
+      animation-name: no-in-dim;
+    }
+    @keyframes no-in-dim {
+      to {
+        opacity: 0.5;
+      }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .no {
+      animation: none;
+      opacity: 0.92;
+    }
+    .no-halo,
+    .no-clouds *,
+    .no-branch,
+    .no-owl,
+    .no-body,
+    .no-lid {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const no = document.querySelector<HTMLElement>('[data-no]');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (no && !reduced) {
+    let last = performance.now();
+    const look = (x: number, y: number) => {
+      const r = no.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height * 0.37;
+      const dx = x - cx;
+      const dy = y - cy;
+      const d = Math.hypot(dx, dy) || 1;
+      const k = Math.min(1, d / 420);
+      no.style.setProperty('--ex', `${((dx / d) * 9 * k).toFixed(2)}px`);
+      no.style.setProperty('--ey', `${((dy / d) * 8 * k).toFixed(2)}px`);
+      no.style.setProperty('--hr', `${Math.max(-9, Math.min(9, (dx / 90) * k)).toFixed(2)}deg`);
+      no.style.setProperty('--hy', `${Math.max(-4, Math.min(4, (dy / 120) * k)).toFixed(2)}px`);
+    };
+    addEventListener(
+      'pointermove',
+      (e) => {
+        last = performance.now();
+        look(e.clientX, e.clientY);
+      },
+      { passive: true },
+    );
+    // when the cursor is idle the owl keeps watch, glancing around the page
+    setInterval(() => {
+      if (performance.now() - last < 3500) return;
+      look(Math.random() * innerWidth, innerHeight * (0.2 + Math.random() * 0.6));
+    }, 2800);
+  }
+  if (no) {
+    // slow parallax, and fade to a softer level once the hero is scrolled past
+    const onScroll = () => {
+      if (!reduced) no.style.setProperty('--sy', `${Math.min(60, scrollY * 0.03).toFixed(1)}px`);
+      no.style.setProperty('--o', (1 - Math.min(1, scrollY / (innerHeight * 0.8)) * 0.62).toFixed(3));
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>

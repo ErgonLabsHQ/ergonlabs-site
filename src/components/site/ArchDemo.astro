@@ -2,7 +2,7 @@
 // Architecture view of a production AI system: requests move through it while metrics and a request log update.
 // All values are illustrative.
 const nodes: [string, number, number, number, string, string][] = [
-  ['client', 20, 150, 120, 'Your app', 'web · mobile · API'],
+  ['client', 6, 150, 144, 'Your app', 'web · mobile · API'],
   ['gw', 190, 150, 130, 'Gateway', 'auth · limits'],
   ['orch', 370, 150, 150, 'Orchestrator', 'agent loop'],
   ['ret', 570, 40, 150, 'Retrieval', 'vector + keyword'],
@@ -11,7 +11,7 @@ const nodes: [string, number, number, number, string, string][] = [
   ['eval', 370, 300, 150, 'Evals + traces', 'every request'],
 ];
 const links = [
-  'M140 175H190',
+  'M150 175H190',
   'M320 175H370',
   'M520 165C545 165 545 65 570 65',
   'M520 175H570',
@@ -59,8 +59,10 @@ const links = [
   }
   .map {
     border: 1px solid var(--inv-line);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.02);
+    border-radius: 18px;
+    background: rgba(14, 17, 23, 0.7);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9);
   }
   .bar {
     display: flex;
@@ -83,7 +85,7 @@ const links = [
   }
   .ln {
     fill: none;
-    stroke: rgba(238, 241, 232, 0.25);
+    stroke: rgba(255, 255, 255, 0.18);
     stroke-width: 1.5;
     stroke-dasharray: 4 4;
   }
@@ -91,20 +93,21 @@ const links = [
     fill: var(--mint);
   }
   .nd rect {
-    fill: #17352a;
-    stroke: rgba(238, 241, 232, 0.28);
+    fill: #141822;
+    stroke: rgba(255, 255, 255, 0.16);
   }
   .nd.core rect {
     stroke: var(--mint);
     stroke-width: 1.5;
   }
   .nd .t {
-    fill: #eef1e8;
+    fill: #eef0f4;
     font: 600 14px var(--body);
   }
   .nd .s {
-    fill: #8fa79a;
-    font: 11px var(--mono);
+    fill: #8e95a3;
+    font: 10px var(--mono);
+    letter-spacing: -0.02em;
   }
   .side {
     display: grid;
@@ -114,7 +117,7 @@ const links = [
   .m {
     padding: 14px 16px;
     border: 1px solid var(--inv-line);
-    border-radius: 6px;
+    border-radius: 14px;
   }
   .m span {
     display: block;
@@ -148,7 +151,7 @@ const links = [
     height: 132px;
     overflow: hidden;
     border: 1px solid var(--inv-line);
-    border-radius: 6px;
+    border-radius: 14px;
     font: 11.5px/1.7 var(--mono);
     color: var(--inv-muted);
   }

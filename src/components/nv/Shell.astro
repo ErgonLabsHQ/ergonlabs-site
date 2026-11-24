@@ -5,6 +5,8 @@
 import { brand, services, facts, process, engagements, principles, faqs, aiPoints } from '../../nuvareth';
 import Nav from './Nav.astro';
 import Footer from './Footer.astro';
+import SiteFooter from '../site/SiteFooter.astro';
+import Values from '../site/Values.astro';
 import Icon from '../site/Icon.astro';
 import '../../styles/nv.css';
 
@@ -37,7 +39,7 @@ const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 
     <div class="nv-wrap">
       <div class="nv-head">
         <p class="nv-label">Services</p>
-        <h2 data-nv-reveal>End-to-end engineering, with AI at the core.</h2>
+        <h2 data-nv-reveal>End-to-end engineering, <span class="grad">with AI at the core.</span></h2>
         <p class="nv-lede" data-nv-reveal>
           One senior team across strategy, models, software and infrastructure, so nothing falls into the gap
           between separate vendors.
@@ -143,6 +145,7 @@ const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 
         ))}
       </ul>
 
+      {!blueprint && (
       <div class="nv-rules">
         <div>
           <p class="nv-label">Principles</p>
@@ -160,8 +163,11 @@ const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 
           ))}
         </ol>
       </div>
+      )}
     </div>
   </section>
+
+  {blueprint && <Values />}
 
   <section class="nv-section" id="faq">
     <div class="nv-wrap nv-faq">
@@ -187,12 +193,12 @@ const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 
     <div class="nv-wrap nv-contact-in">
       <div>
         <p class="nv-label">Start a project</p>
-        <h2 data-nv-reveal>Tell us what you are building.</h2>
+        <h2 data-nv-reveal>Tell us what you are <span class="grad">building.</span></h2>
         <p class="nv-lede">
           A few lines is enough. An engineer reads it and replies within one working day with questions and a first
           opinion.
         </p>
-        <a class="nv-mail" href={`mailto:${brand.email}`}>{brand.email}</a>
+        {!blueprint && <a class="nv-mail" href={`mailto:${brand.email}`}>{brand.email}</a>}
       </div>
       <form class="nv-form" data-nv-form data-email={brand.email}>
         <div class="nv-two">
@@ -217,4 +223,4 @@ const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 
   </section>
 </main>
 
-<Footer extra={extra} blueprint={blueprint} />
+{blueprint ? <SiteFooter /> : <Footer extra={extra} blueprint={blueprint} />}

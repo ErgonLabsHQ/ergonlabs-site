@@ -1,16 +1,13 @@
 ---
 import Site from '../layouts/Site.astro';
 import Nav from '../components/nv/Nav.astro';
-import Footer from '../components/nv/Footer.astro';
-import Icon from '../components/site/Icon.astro';
-import { brand, founders, values } from '../nuvareth';
-
-const valueIcons = ['rigour', 'responsible', 'transparency', 'security', 'research', 'partnership'];
+import SiteFooter from '../components/site/SiteFooter.astro';
+import { brand, founders } from '../nuvareth';
 
 const extra = [{ label: 'Founders', href: '/founders', current: true }];
 ---
 
-<Site title={`Founders — ${brand.name}`} description="Meet the founders of Nuvareth, an AI engineering firm.">
+<Site title={`Founders — ${brand.name}`} description="Meet the founders of Ergon Labs, an AI engineering firm.">
   <Nav home="/" base="/" extra={extra} blueprint />
 
   <main>
@@ -18,7 +15,7 @@ const extra = [{ label: 'Founders', href: '/founders', current: true }];
       <div class="nv-wrap fd-hero-in">
         <div>
           <p class="nv-label">Founders</p>
-          <h1>The engineers behind {brand.name}.</h1>
+          <h1>The engineers behind <span class="grad">{brand.name}.</span></h1>
           <p class="nv-lede">
             {brand.name} was founded by two engineers who bring lead engineering experience across US and European
             companies and a record of published AI research. When you work with us, you work with them directly, from
@@ -45,11 +42,18 @@ const extra = [{ label: 'Founders', href: '/founders', current: true }];
               <circle cx="60" cy="250" r="26"></circle>
               <circle cx="60" cy="250" r="4" class="fill"></circle>
               <rect x="420" y="140" width="60" height="60" rx="6" class="end"></rect>
-              <path d="M438 184V156l24 28V156" class="end"></path>
+              <g class="owl">
+                <path d="M437 161 L434 147 L443 154 Q450 151 457 154 L466 147 L463 161 Q467 169 465 179 Q461 190 450 191 Q439 190 435 179 Q433 169 437 161 Z"></path>
+                <circle cx="444.5" cy="165" r="4.2"></circle>
+                <circle cx="455.5" cy="165" r="4.2"></circle>
+                <circle cx="444.5" cy="165" r="1.6" class="fill"></circle>
+                <circle cx="455.5" cy="165" r="1.6" class="fill"></circle>
+                <path d="M448.3 170.5 L450 173.5 L451.7 170.5"></path>
+              </g>
             </g>
             <text x="60" y="136" class="lbl mid">ENGINEERING</text>
             <text x="60" y="296" class="lbl mid">AI RESEARCH</text>
-            <text x="450" y="226" class="lbl mid">NUVARETH</text>
+            <text x="450" y="226" class="lbl mid">ERGON LABS</text>
           </svg>
         </figure>
       </div>
@@ -60,7 +64,9 @@ const extra = [{ label: 'Founders', href: '/founders', current: true }];
         {founders.map((f) => (
           <article class="fd" id={f.id}>
             <figure class="fd-photo">
-              <img src={f.photo} alt={f.alt} width="800" height="800" loading="lazy" decoding="async" />
+              <div class="fd-frame">
+                <img src={f.photo} alt={f.alt} width="800" height="800" loading="lazy" decoding="async" />
+              </div>
               <figcaption>
                 <span>{f.name}</span>
                 <span>{f.role.split(' · ')[1]}</span>
@@ -96,36 +102,7 @@ const extra = [{ label: 'Founders', href: '/founders', current: true }];
       </div>
     </section>
 
-    <section class="nv-section nv-ai" id="values">
-      <div class="nv-wrap">
-        <div class="nv-head">
-          <p class="nv-label">Our values</p>
-          <h2 data-nv-reveal>What we stand for.</h2>
-          <p class="nv-lede" data-nv-reveal>
-            The principles that guide how we design, build and run AI systems for our clients.
-          </p>
-        </div>
-        <ol class="values">
-          {values.map((v, i) => (
-            <li data-nv-reveal style={`--i:${i % 3}`}>
-              <p class="v-top">
-                <span class="v-ico"><Icon name={valueIcons[i]} size={30} /></span>
-              </p>
-              <h3>{v.title}</h3>
-              <p>{v.text}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-
-    <section class="nv-section">
-      <div class="nv-wrap fd-cta">
-        <h2 data-nv-reveal>Talk to the founders about your project.</h2>
-        <a class="nv-btn" href="/#contact">Start a project <span aria-hidden="true">→</span></a>
-      </div>
-    </section>
   </main>
 
-  <Footer base="/" extra={[{ label: 'Founders', href: '/founders' }]} blueprint />
+  <SiteFooter />
 </Site>

@@ -1,5 +1,5 @@
----
-// Nuvareth top bar. `base` prefixes the in-page anchors (use "/" on pages other than the homepage).
+﻿---
+// Ergon Labs top bar. `base` prefixes the in-page anchors (use "/" on pages other than the homepage).
 import { brand, nvNav } from '../../nuvareth';
 import Logo from '../site/Logo.astro';
 
@@ -17,13 +17,15 @@ const cta = brand.bookingUrl || `${base}#contact`;
   <div class="nv-wrap nv-nav-in">
     <a class="nv-logo" href={home}>
       {blueprint ? (
-        <Logo size={32} />
+        <Logo size={24} inline />
       ) : (
-        <span class="nv-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32"><path d="M10.5 22V10l11 12V10"></path></svg>
-        </span>
+        <>
+          <span class="nv-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M10.5 22V10l11 12V10"></path></svg>
+          </span>
+          {brand.name}
+        </>
       )}
-      {brand.name}
     </a>
     <nav aria-label="Primary">
       {nvNav.map((n) => <a href={`${base}${n.href}`}>{n.label}</a>)}

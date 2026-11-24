@@ -1,0 +1,243 @@
+---
+// Fixed, decorative night sky for the live site: dot grid, slow glows, twinkling stars, drifting fireflies and
+// the odd shooting star. Also wires the cursor spotlight on cards (--mx / --my) and the founder portrait tilt.
+// The big owl in front of the moon lives in NightOwl.astro.
+import NightOwl from './NightOwl.astro';
+
+// deterministic pseudo-random so the build output is stable
+let seed = 7;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const stars = Array.from({ length: 70 }, () => ({
+  x: rnd() * 100,
+  y: rnd() * 100,
+  s: 1 + rnd() * 1.6,
+  d: rnd() * 6,
+  t: 3 + rnd() * 5,
+}));
+const flies = Array.from({ length: 16 }, () => ({
+  x: rnd() * 100,
+  y: 30 + rnd() * 70,
+  d: rnd() * -20,
+  t: 14 + rnd() * 16,
+  dx: (rnd() - 0.5) * 220,
+  dy: -60 - rnd() * 140,
+}));
+---
+
+<div class="bd" aria-hidden="true">
+  <div class="bd-grid"></div>
+  <div class="bd-glow g1"></div>
+  <div class="bd-glow g2"></div>
+  <div class="bd-glow g3"></div>
+  <div class="stars">
+    {stars.map((s) => (
+      <i style={`left:${s.x}%;top:${s.y}%;--s:${s.s}px;animation-delay:${s.d}s;animation-duration:${s.t}s`}></i>
+    ))}
+  </div>
+  <span class="shoot s1"></span>
+  <span class="shoot s2"></span>
+  <div class="flies">
+    {flies.map((f) => (
+      <i style={`left:${f.x}%;top:${f.y}%;--dx:${f.dx}px;--dy:${f.dy}px;animation-delay:${f.d}s;animation-duration:${f.t}s`}></i>
+    ))}
+  </div>
+</div>
+<NightOwl />
+
+<style>
+  .bd {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .bd-grid {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.2px);
+    background-size: 26px 26px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 80%);
+  }
+  .bd-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.5;
+    will-change: transform;
+  }
+  .g1 {
+    width: 46vw;
+    height: 46vw;
+    left: -12vw;
+    top: -18vw;
+    background: radial-gradient(closest-side, rgba(245, 165, 36, 0.45), transparent);
+    animation: drift1 22s ease-in-out infinite alternate;
+  }
+  .g2 {
+    width: 40vw;
+    height: 40vw;
+    right: -10vw;
+    top: 20vh;
+    background: radial-gradient(closest-side, rgba(139, 123, 255, 0.32), transparent);
+    animation: drift2 26s ease-in-out infinite alternate;
+  }
+  .g3 {
+    width: 34vw;
+    height: 34vw;
+    left: 30vw;
+    bottom: -20vw;
+    background: radial-gradient(closest-side, rgba(255, 122, 89, 0.22), transparent);
+    animation: drift1 30s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes drift1 {
+    to {
+      transform: translate(14vw, 10vh) scale(1.15);
+    }
+  }
+  @keyframes drift2 {
+    to {
+      transform: translate(-16vw, 14vh) scale(0.9);
+    }
+  }
+
+  /* twinkling stars */
+  .stars i {
+    position: absolute;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    opacity: 0.15;
+    animation: twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    50% {
+      opacity: 0.9;
+      transform: scale(1.4);
+    }
+  }
+
+  /* shooting stars */
+  .shoot {
+    position: absolute;
+    width: 160px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(255, 220, 150, 0.95), transparent);
+    opacity: 0;
+    transform: rotate(-24deg);
+  }
+  .s1 {
+    top: 14%;
+    left: 70%;
+    animation: shoot 11s ease-in 3s infinite;
+  }
+  .s2 {
+    top: 32%;
+    left: 40%;
+    animation: shoot 17s ease-in 9s infinite;
+  }
+  @keyframes shoot {
+    0% {
+      opacity: 0;
+      transform: rotate(-24deg) translateX(0);
+    }
+    2% {
+      opacity: 1;
+    }
+    8%,
+    100% {
+      opacity: 0;
+      transform: rotate(-24deg) translateX(-520px);
+    }
+  }
+
+  /* fireflies */
+  .flies i {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffd27a;
+    box-shadow: 0 0 8px 2px rgba(245, 165, 36, 0.75);
+    opacity: 0;
+    animation: fly linear infinite;
+  }
+  @keyframes fly {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0);
+    }
+    15%,
+    35%,
+    60% {
+      opacity: 0.9;
+    }
+    25%,
+    50% {
+      opacity: 0.25;
+    }
+    50% {
+      transform: translate(calc(var(--dx) * 0.6), calc(var(--dy) * 0.4));
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--dx), var(--dy));
+    }
+  }
+
+  @media (max-width: 700px) {
+    .flies i:nth-child(n + 9),
+    .stars i:nth-child(n + 40) {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bd-glow,
+    .stars i,
+    .shoot,
+    .flies i {
+      animation: none;
+    }
+    .shoot,
+    .flies i {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // spotlight that follows the cursor across cards
+  const cards = '.nv-services > li, .nv-plans > li, .values li, .nv-points li, .nv-facts > div';
+  addEventListener(
+    'pointermove',
+    (e) => {
+      const el = (e.target as Element | null)?.closest?.(cards) as HTMLElement | null;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      el.style.setProperty('--my', `${e.clientY - r.top}px`);
+    },
+    { passive: true },
+  );
+
+  // founder portraits tilt slightly toward the cursor
+  if (!reduced) {
+    document.querySelectorAll<HTMLElement>('.fd-frame').forEach((f) => {
+      f.addEventListener('pointermove', (e) => {
+        const r = f.getBoundingClientRect();
+        f.style.setProperty('--rx', `${(((e.clientX - r.left) / r.width - 0.5) * 10).toFixed(2)}deg`);
+        f.style.setProperty('--ry', `${(((e.clientY - r.top) / r.height - 0.5) * -10).toFixed(2)}deg`);
+      });
+      f.addEventListener('pointerleave', () => {
+        f.style.setProperty('--rx', '0deg');
+        f.style.setProperty('--ry', '0deg');
+      });
+    });
+  }
+</script>
