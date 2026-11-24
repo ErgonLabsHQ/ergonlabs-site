@@ -301,22 +301,6 @@ img {
   text-align: center;
   gap: 22px;
 }
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  background: var(--card);
-  padding: 7px 12px;
-  font-size: 13.5px;
-  color: #cfcfcf;
-}
-.pill i {
-  width: 9px;
-  height: 9px;
-  background: var(--amber);
-  box-shadow: 0 0 10px rgba(245, 165, 36, 0.7);
-  animation: pill 2.4s ease-in-out infinite;
-}
 @keyframes pill {
   50% {
     opacity: 0.45;
@@ -361,7 +345,7 @@ img {
     filter: none;
   }
 }
-.hero .hs {
+.hero .hf {
   margin-top: clamp(-10px, 1vw, 20px);
 }
 

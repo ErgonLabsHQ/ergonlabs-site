@@ -1,0 +1,30 @@
+---
+// Sticky site nav shared by the homepage and /founders. On other pages the section links point back to the
+// homepage (/#services etc.); `current` marks the active page link.
+import Mark from './Mark.astro';
+import { brand, nvNav } from '../../nuvareth';
+
+interface Props {
+  current?: string;
+}
+const { current } = Astro.props;
+const onHome = Astro.url.pathname === '/';
+const nav = [...nvNav.map((n) => ({ ...n, href: onHome ? n.href : `/${n.href}` })), { label: 'Founders', href: '/founders' }];
+const cta = onHome ? '#contact' : '/#contact';
+---
+
+<header class="nav" data-nav>
+  <div class="wrap nav-in">
+    <a class="brand" href="/" aria-label={brand.name}><Mark /><span>{brand.name}</span></a>
+    <nav class="nav-links" aria-label="Main">
+      {nav.map((n) => <a href={n.href} aria-current={n.href === current ? 'page' : undefined}>{n.label}</a>)}
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-sm" href={cta}>Start a project <span class="arr" aria-hidden="true">→</span></a>
+      <button class="burger" type="button" aria-label="Menu" aria-expanded="false" data-burger><i></i><i></i></button>
+    </div>
+  </div>
+  <nav class="nav-sheet" aria-label="Mobile" data-sheet>
+    {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+  </nav>
+</header>

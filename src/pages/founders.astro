@@ -1,122 +1,90 @@
 ---
-import Site from '../layouts/Site.astro';
-import Nav from '../components/nv/Nav.astro';
-import SiteFooter from '../components/site/SiteFooter.astro';
+// Founders page, in the same studio style as the homepage: centred hero, a "How we work" card with an isometric
+// flow drawing, then one section per founder (portrait, bio, highlights, expertise chips, links).
+import Home from '../layouts/Home.astro';
+import Nav from '../components/home/Nav.astro';
+import Footer from '../components/home/Footer.astro';
+import FlowScene from '../components/home/FlowScene.astro';
 import { brand, founders } from '../nuvareth';
-
-const extra = [{ label: 'Founders', href: '/founders', current: true }];
+import '../styles/founders.css';
 ---
 
-<Site title={`Founders — ${brand.name}`} description="Meet the founders of Ergon Labs, an AI engineering firm.">
-  <Nav home="/" base="/" extra={extra} blueprint />
+<Home title={`Founders — ${brand.name}`} description="Meet the founders of Ergon Labs, an AI engineering firm.">
+  <Nav current="/founders" />
 
   <main>
-    <section class="fd-hero">
-      <div class="nv-wrap fd-hero-in">
-        <div>
-          <p class="nv-label">Founders</p>
-          <h1>The engineers behind <span class="grad">{brand.name}.</span></h1>
-          <p class="nv-lede">
-            {brand.name} was founded by two engineers who bring lead engineering experience across US and European
-            companies and a record of published AI research. When you work with us, you work with them directly, from
-            the first call to production.
-          </p>
+    <section class="hero fd-hero">
+      <div class="stars" aria-hidden="true" data-stars></div>
+      <div class="wrap hero-copy">
+        <h1>
+          {['The', 'engineers', 'behind', ...brand.name.split(' ')].map((w, i, a) => (
+            <span class="wd" style={`--w:${i + 1}`}>{i === a.length - 1 ? `${w}.` : w}</span>
+          ))}
+        </h1>
+        <p class="lede rise" style="--w:7">
+          {brand.name} was founded by two engineers who bring lead engineering experience across US and European
+          companies and a record of published AI research. When you work with us, you work with them directly, from the
+          first call to production.
+        </p>
+        <nav class="fd-jump rise" style="--w:8" aria-label="Founders">
+          {founders.map((f) => (
+            <a class="btn btn-dark" href={`#${f.id}`}>{f.name} <span class="arr" aria-hidden="true">↓</span></a>
+          ))}
+        </nav>
+      </div>
+    </section>
+
+    <section class="sec alt">
+      <div class="wrap">
+        <div class="head">
+          <h2 data-split>Engineering and AI research, one team.</h2>
+          <p class="lede" data-r>Both founders work on your project together, from the first call to production.</p>
+        </div>
+        <div class="card fd-flow" data-r>
+          <FlowScene />
         </div>
       </div>
     </section>
 
-    <section class="fd-flow">
-      <div class="nv-wrap">
-        <div class="fd-flow-card">
-          <div class="fd-flow-copy">
-            <p class="nv-label">How we work</p>
-            <h2 data-nv-reveal>Engineering and AI research, <span class="grad">one team.</span></h2>
-            <p data-nv-reveal>
-              Both founders work on your project together, from the first call to production.
+    {founders.map((f, i) => (
+      <section class:list={['sec', { alt: i % 2 === 1 }]} id={f.id}>
+        <div class:list={['wrap', 'fd', { flip: i % 2 === 1 }]}>
+          <figure class="fd-photo" data-r>
+            <div class="fd-frame">
+              <img src={f.photo} alt={f.alt} width="800" height="800" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+              <span class="hd h-tl" aria-hidden="true"></span>
+              <span class="hd h-tr" aria-hidden="true"></span>
+              <span class="hd h-bl" aria-hidden="true"></span>
+              <span class="hd h-br" aria-hidden="true"></span>
+            </div>
+            <figcaption>
+              <span>{f.name}</span>
+              <span>{f.role.split(' · ')[1]}</span>
+            </figcaption>
+          </figure>
+          <div class="fd-body">
+            <p class="chip" data-r>{f.role}</p>
+            <h2 data-split>{f.name}</h2>
+            <p class="fd-lead" data-r>{f.lead}</p>
+            <div class="fd-bio" data-r>
+              {f.bio.map((p) => <p>{p}</p>)}
+            </div>
+            <ul class="fd-hl" data-r>
+              {f.highlights.map((h) => <li>{h}</li>)}
+            </ul>
+            <ul class="chips" aria-label="Areas of expertise" data-r>
+              {f.stack.map((s) => <li>{s}</li>)}
+            </ul>
+            <p class="fd-links" data-r>
+              {f.links.map((l) => (
+                <a class="btn btn-dark btn-sm" href={l.href} target="_blank" rel="noopener">{l.label} <span class="ext" aria-hidden="true">↗</span></a>
+              ))}
             </p>
           </div>
-          <figure class="fd-draw" aria-hidden="true" data-nv-reveal>
-            <svg viewBox="0 0 520 330">
-              <g class="guide">
-                <path d="M60 28H450M60 22v12M450 22v12"></path>
-                <circle cx="300" cy="170" r="22" class="dash"></circle>
-                <path d="M24 170h8M28 166v8M500 70h8M504 66v8M496 290h8M500 286v8"></path>
-              </g>
-              <text x="255" y="18" class="lbl mid">FIRST CALL → PRODUCTION</text>
-              <g class="ln">
-                <path d="M86 90C200 90 215 170 300 170" pathLength="1"></path>
-                <path d="M86 250C200 250 215 170 300 170" pathLength="1"></path>
-                <path d="M300 170H420" pathLength="1" class="strong"></path>
-                <path d="M320 164v12M340 164v12M360 164v12M380 164v12M400 164v12" class="ticks"></path>
-              </g>
-              <g class="node">
-                <circle cx="60" cy="90" r="26"></circle>
-                <circle cx="60" cy="90" r="4" class="fill"></circle>
-                <circle cx="60" cy="250" r="26"></circle>
-                <circle cx="60" cy="250" r="4" class="fill"></circle>
-                <rect x="420" y="140" width="60" height="60" rx="6" class="end"></rect>
-                <g class="owl">
-                  <path d="M437 161 L434 147 L443 154 Q450 151 457 154 L466 147 L463 161 Q467 169 465 179 Q461 190 450 191 Q439 190 435 179 Q433 169 437 161 Z"></path>
-                  <circle cx="444.5" cy="165" r="4.2"></circle>
-                  <circle cx="455.5" cy="165" r="4.2"></circle>
-                  <circle cx="444.5" cy="165" r="1.6" class="fill"></circle>
-                  <circle cx="455.5" cy="165" r="1.6" class="fill"></circle>
-                  <path d="M448.3 170.5 L450 173.5 L451.7 170.5"></path>
-                </g>
-              </g>
-              <text x="60" y="136" class="lbl mid">ENGINEERING</text>
-              <text x="60" y="296" class="lbl mid">AI RESEARCH</text>
-              <text x="450" y="226" class="lbl mid">ERGON LABS</text>
-            </svg>
-          </figure>
         </div>
-      </div>
-    </section>
-
-    <section class="nv-section">
-      <div class="nv-wrap fd-list">
-        {founders.map((f) => (
-          <article class="fd" id={f.id}>
-            <figure class="fd-photo">
-              <div class="fd-frame">
-                <img src={f.photo} alt={f.alt} width="800" height="800" loading="lazy" decoding="async" />
-              </div>
-              <figcaption>
-                <span>{f.name}</span>
-                <span>{f.role.split(' · ')[1]}</span>
-              </figcaption>
-            </figure>
-            <div class="fd-body">
-              <p class="fd-role">{f.role}</p>
-              <h2 data-nv-reveal>{f.name}</h2>
-              <p class="fd-lead" data-nv-reveal>{f.lead}</p>
-              <div class="fd-bio">
-                {f.bio.map((p) => (
-                  <p>{p}</p>
-                ))}
-              </div>
-              <ul class="fd-hl">
-                {f.highlights.map((h) => (
-                  <li>{h}</li>
-                ))}
-              </ul>
-              <div class="fd-stack" aria-label="Areas of expertise">
-                {f.stack.map((s) => (
-                  <span>{s}</span>
-                ))}
-              </div>
-              <p class="fd-links">
-                {f.links.map((l) => (
-                  <a href={l.href} target="_blank" rel="noopener">{l.label} ↗</a>
-                ))}
-              </p>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-
+      </section>
+    ))}
   </main>
 
-  <SiteFooter />
-</Site>
+  <Footer />
+</Home>

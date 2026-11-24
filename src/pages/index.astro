@@ -3,12 +3,12 @@
 // animated isometric line illustrations, with an amber accent. All copy comes from nuvareth.ts and the earlier
 // homepage components, word for word. Earlier designs are kept under /archive.
 import Home from '../layouts/Home.astro';
-import HeroScene from '../components/home/HeroScene.astro';
+import HeroField from '../components/home/HeroField.astro';
 import IsoScene from '../components/home/IsoScene.astro';
-import Mark from '../components/home/Mark.astro';
-import { brand, services, facts, nvNav, aiPoints, process, engagements, values, faqs, founders } from '../nuvareth';
+import Nav from '../components/home/Nav.astro';
+import Footer from '../components/home/Footer.astro';
+import { brand, services, facts, aiPoints, process, engagements, values, faqs, founders } from '../nuvareth';
 
-const nav = [...nvNav, { label: 'Founders', href: '/founders' }];
 const words = ['Engineering', 'the', 'Next', 'Era', 'of', 'Intelligence.'];
 const ticker = [...new Set(services.flatMap((s) => s.items.slice(0, 3)))].slice(0, 18);
 // rows of three, then two, alternating (spans on a six-column grid)
@@ -44,32 +44,16 @@ const nodes: [string, number, number, number, string, string][] = [
   ['eval', 370, 300, 150, 'Evals + traces', 'every request'],
 ];
 const links = ['M150 175H190', 'M320 175H370', 'M520 165C545 165 545 65 570 65', 'M520 175H570', 'M520 185C545 185 545 285 570 285', 'M445 200V300'];
-const year = new Date().getFullYear();
 ---
 
 <Home>
-  <header class="nav" data-nav>
-    <div class="wrap nav-in">
-      <a class="brand" href="/" aria-label={brand.name}><Mark /><span>{brand.name}</span></a>
-      <nav class="nav-links" aria-label="Main">
-        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
-      </nav>
-      <div class="nav-cta">
-        <a class="btn btn-sm" href="#contact">Start a project <span class="arr" aria-hidden="true">→</span></a>
-        <button class="burger" type="button" aria-label="Menu" aria-expanded="false" data-burger><i></i><i></i></button>
-      </div>
-    </div>
-    <nav class="nav-sheet" aria-label="Mobile" data-sheet>
-      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
-    </nav>
-  </header>
+  <Nav />
 
   <main>
     <!-- hero -->
     <section class="hero">
       <div class="stars" aria-hidden="true" data-stars></div>
       <div class="wrap hero-copy">
-        <p class="pill rise" style="--w:0"><i aria-hidden="true"></i>Ergon Labs / AI engineering firm</p>
         <h1>
           {words.map((w, i) => <span class="wd" style={`--w:${i + 1}`}>{w}</span>)}
         </h1>
@@ -79,7 +63,7 @@ const year = new Date().getFullYear();
           <a class="btn btn-dark" href="/founders">Meet the founders <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </div>
-      <HeroScene />
+      <HeroField />
       <div class="ticker" aria-hidden="true">
         <div class="track">
           {[0, 1].map(() => (
@@ -341,34 +325,5 @@ const year = new Date().getFullYear();
     </section>
   </main>
 
-  <footer class="foot">
-    <div class="wrap foot-in">
-      <div class="foot-talk">
-        <a class="brand" href="/" aria-label={brand.name}><Mark /><span>{brand.name}</span></a>
-        <h2>Let's talk.</h2>
-        <p>Email us directly or find us online.</p>
-        <div class="mail-row">
-          <a class="mail" href={`mailto:${brand.email}`}>{brand.email}</a>
-          <button class="copy" type="button" data-copy={brand.email} aria-label="Copy email address"><span data-copy-label>Copy</span></button>
-        </div>
-      </div>
-      <div class="foot-cols">
-        <div>
-          <p class="foot-h">Pages</p>
-          {nav.map((n) => <a href={n.href}>{n.label}</a>)}
-        </div>
-        <div>
-          <p class="foot-h">Contact</p>
-          <a href={`mailto:${brand.email}`}>Email</a>
-          {brand.socials.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}
-        </div>
-      </div>
-    </div>
-    <div class="wrap foot-base">
-      <span>© {year} {brand.name}. All rights reserved.</span>
-    </div>
-    <svg class="giant" viewBox="0 0 1000 210" aria-hidden="true" data-giant>
-      <text x="500" y="190" text-anchor="middle" textLength="990" lengthAdjust="spacingAndGlyphs">ERGON</text>
-    </svg>
-  </footer>
+  <Footer />
 </Home>
