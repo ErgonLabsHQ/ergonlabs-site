@@ -1,0 +1,77 @@
+---
+// Not-found page: the full owl as mascot (it lands, then looks around), a short message and two ways back.
+// Astro builds this to /404.html, which Vercel serves for any unknown URL.
+import Home from '../layouts/Home.astro';
+import Nav from '../components/home/Nav.astro';
+import Footer from '../components/home/Footer.astro';
+import Btn from '../components/home/Btn.astro';
+import OwlMark from '../components/home/OwlMark.astro';
+import { brand } from '../nuvareth';
+---
+
+<Home title={`Page not found — ${brand.name}`} description="This page does not exist.">
+  <Nav />
+
+  <main>
+    <section class="lost">
+      <div class="wrap lost-in">
+        <OwlMark class="lost-owl" />
+        <p class="lost-code">404</p>
+        <h1>This page flew off.</h1>
+        <p class="lede">The link may be old, or the address may have a typo. Everything else is still here.</p>
+        <div class="lost-actions">
+          <Btn href="/" label="Back to home" />
+          <Btn href="/intro" label="Start a project" variant="secondary" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Home>
+
+<style>
+  .lost {
+    padding: clamp(56px, 10vh, 112px) 0 clamp(80px, 14vh, 140px);
+  }
+  .lost-in {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+  .lost-in :global(.lost-owl) {
+    width: 96px;
+    height: auto;
+    transform-origin: 50% 100%;
+    animation: owl-land 1s cubic-bezier(0.3, 0.7, 0.3, 1) 0.2s both;
+  }
+  .lost-code {
+    margin: 8px 0 0;
+    font: 500 13px/1 var(--mono);
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  h1 {
+    font-size: clamp(36px, 5vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .lede {
+    max-width: 40ch;
+    margin: 0;
+  }
+  .lost-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lost-in :global(.lost-owl) {
+      animation: none;
+    }
+  }
+</style>
