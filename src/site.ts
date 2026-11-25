@@ -10,7 +10,7 @@ export const site = {
   location: 'Prague',
   socials: [
     { label: 'LinkedIn', href: '#' },
-    { label: 'X', href: '#' }, // TODO: company X (Twitter) profile URL
+    { label: 'X', href: 'https://x.com/ErgonLabsHQ' },
   ],
 };
 

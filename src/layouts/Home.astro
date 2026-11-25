@@ -2,7 +2,6 @@
 // Layout for the live homepage: Geist type, the home stylesheet, the custom cursor and the page behaviour
 // (reveals, split headings, scroll-driven sections, demo data, form).
 import { brand } from '../nuvareth';
-import Cursor from '../components/home/Cursor.astro';
 import Behaviour from '../components/home/Behaviour.astro';
 import '../styles/home.css';
 
@@ -31,7 +30,6 @@ const { title = `${brand.name} — ${brand.headline}`, description = brand.intro
   </head>
   <body class="home" id="top">
     <slot />
-    <Cursor />
     <Behaviour />
   </body>
 </html>

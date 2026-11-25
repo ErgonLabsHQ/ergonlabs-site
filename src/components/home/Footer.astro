@@ -1,7 +1,6 @@
 ---
 // Site footer shared by the homepage and /founders: contact details, link columns, and the giant outlined
-// ERGON wordmark with the owl perched on it, wings spread; both draw themselves in when they scroll into view
-// and the owl keeps flapping slowly.
+// ERGON wordmark, which draws itself in when it scrolls into view; then the owl lands on the N.
 import OwlMark from './OwlMark.astro';
 import { brand, nvNav } from '../../nuvareth';
 
@@ -38,8 +37,8 @@ const year = new Date().getFullYear();
   <div class="wrap foot-base">
     <span>© {year} {brand.name}. All rights reserved.</span>
   </div>
-  <svg class="giant" viewBox="0 -250 1000 460" aria-hidden="true" data-giant>
-    <OwlMark variant="ghost" flap="always" crop={false} x={70} y={-240} width={860} height={430} />
+  <svg class="giant" viewBox="0 -120 1000 330" aria-hidden="true" data-giant>
+    <g class="giant-owl"><OwlMark x={842} y={-104} width={112} height={140} /></g>
     <text x="500" y="190" text-anchor="middle" textLength="990" lengthAdjust="spacingAndGlyphs">ERGON</text>
   </svg>
 </footer>

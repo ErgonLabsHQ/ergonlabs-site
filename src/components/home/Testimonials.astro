@@ -32,9 +32,8 @@ const initials = (n: string) =>
               )}
             </div>
             <figure class="ts-body">
-              <svg class="ts-q" viewBox="0 0 40 30" aria-hidden="true"><path d="M0 30V17L8 0h8l-5 15h6v15zM23 30V17l8-17h8l-5 15h6v15z"></path></svg>
               <blockquote>
-                <p>{t.quote}</p>
+                <p>“{t.quote}”</p>
               </blockquote>
               <figcaption>
                 <b>{t.name}</b>
@@ -77,10 +76,10 @@ const initials = (n: string) =>
   .ts-slide {
     grid-area: 1 / 1;
     display: grid;
-    grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
     align-items: center;
-    gap: clamp(24px, 4vw, 56px);
-    padding: 24px;
+    gap: clamp(28px, 5vw, 72px);
+    padding: 24px clamp(24px, 4vw, 56px) 24px 24px;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.6s var(--ease), visibility 0s 0.6s;
@@ -125,18 +124,14 @@ const initials = (n: string) =>
     align-content: center;
     gap: 22px;
   }
-  .ts-q {
-    width: 28px;
-    fill: var(--text);
-  }
   .ts blockquote {
     margin: 0;
   }
   .ts blockquote p {
-    font-size: clamp(18px, 1.8vw, 22px);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.4;
+    font-size: clamp(20px, 2.2vw, 28px);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.35;
     color: var(--text);
     text-wrap: pretty;
   }
@@ -151,7 +146,7 @@ const initials = (n: string) =>
   }
   .ts figcaption {
     display: grid;
-    gap: 2px;
+    gap: 4px;
   }
   .ts figcaption b {
     font-size: 16px;

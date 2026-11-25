@@ -1,51 +1,47 @@
 ---
-// The Ergon Labs owl (the "Faceted" concept): flat angular planes, wings spread wide, amber eyes.
-// Drawn in a 600 x 300 box; the left wing is drawn once and mirrored. Wings pivot at the shoulder (284, 152).
-//   variant  solid - filled with currentColor (nav, light/dark backgrounds)
-//            ghost - near-invisible fill with a hairline outline, eyes still glowing (giant footer wordmark)
-//   flap     always - slow continuous wingbeat; hover - beats when its .brand link is hovered; none
+// The Ergon Labs owl: the sitting owl from the original logo, redrawn in the black-and-white theme. Only the eyes
+// keep a colour (amber). Colours come from --owl-* tokens in home.css, which switch inside .dk sections.
+// Animation (home.css): blinks and glances around; in .brand it lands on load and tilts its head on hover.
 // Pass x / y / width / height to nest it inside another SVG.
 interface Props {
-  variant?: 'solid' | 'ghost';
-  flap?: 'always' | 'hover' | 'none';
   class?: string;
   x?: number;
   y?: number;
   width?: number | string;
   height?: number | string;
-  crop?: boolean; // tight viewBox around the owl (for inline marks)
 }
-const { variant = 'solid', flap = 'hover', class: cls = '', x, y, width, height, crop = true } = Astro.props;
-const wing = 'M284 144 L232 104 L160 94 L92 116 L56 162 L96 150 L112 171 L142 153 L158 175 L188 156 L208 175 L234 159 L262 181 L286 174 Z';
-const head = 'M269 82 L283 99 L300 95 L317 99 L331 82 L336 121 L300 154 L264 121 Z';
-const body = 'M281 148 L319 148 L311 194 L300 202 L289 194 Z';
-const viewBox = crop ? '50 76 500 130' : '0 0 600 300';
+const { class: cls = '', x, y, width, height } = Astro.props;
 ---
 
-<svg
-  class:list={['owl', `owl-${variant}`, `owl-flap-${flap}`, cls]}
-  viewBox={viewBox}
-  x={x}
-  y={y}
-  width={width}
-  height={height}
-  overflow="visible"
-  aria-hidden="true"
->
-  <g class="owl-wing"><path d={wing} class="owl-f"></path></g>
-  <g transform="matrix(-1 0 0 1 600 0)"><g class="owl-wing"><path d={wing} class="owl-f"></path></g></g>
-  <path d={body} class="owl-f"></path>
-  <g class="owl-head">
-    <path d={head} class="owl-f"></path>
-    {[287, 313].map((cx) => (
-      <>
-        <circle cx={cx} cy="119" r="10" class="owl-eye"></circle>
-        <g class="owl-blink">
-          <circle cx={cx} cy="119" r="4.6" class="owl-pupil"></circle>
-          <circle cx={cx - 2.6} cy="116.2" r="1.7" fill="#fff"></circle>
-        </g>
-      </>
-    ))}
-    <path d="M295 129 L305 129 L300 139 Z" class="owl-beak"></path>
+<svg class:list={['owl', cls]} viewBox="0 0 64 80" x={x} y={y} width={width} height={height} overflow="visible" aria-hidden="true">
+  <path d="M12 22 L13 3 L24 13 Z" class="ow-dk"></path>
+  <path d="M52 22 L51 3 L40 13 Z" class="ow-dk"></path>
+  <ellipse cx="32" cy="52" rx="21" ry="24" class="ow-body"></ellipse>
+  <ellipse cx="32" cy="28" rx="22" ry="19" class="ow-head"></ellipse>
+  <path d="M11 44 C8 56 11 68 19 74 C17 64 17 54 19 44 Z" class="ow-dk"></path>
+  <path d="M53 44 C56 56 53 68 45 74 C47 64 47 54 45 44 Z" class="ow-dk"></path>
+  <ellipse cx="32" cy="57" rx="13" ry="16" class="ow-belly"></ellipse>
+  <g class="ow-chev">
+    <path d="M24 50l2 2 2-2M30 50l2 2 2-2M36 50l2 2 2-2"></path>
+    <path d="M23.5 56l2 2 2-2M29.5 56l2 2 2-2M35.5 56l2 2 2-2"></path>
+    <path d="M26 62l2 2 2-2M33 62l2 2 2-2"></path>
+  </g>
+  <circle cx="22.5" cy="28" r="9" class="ow-white"></circle>
+  <circle cx="41.5" cy="28" r="9" class="ow-white"></circle>
+  <g class="ow-pupils">
+    <circle cx="22.5" cy="28" r="5.6" class="ow-iris"></circle>
+    <circle cx="41.5" cy="28" r="5.6" class="ow-iris"></circle>
+    <circle cx="22.5" cy="28" r="2.9" fill="#141414"></circle>
+    <circle cx="41.5" cy="28" r="2.9" fill="#141414"></circle>
+    <circle cx="23.8" cy="26.6" r="1.1" fill="#fff"></circle>
+    <circle cx="42.8" cy="26.6" r="1.1" fill="#fff"></circle>
+  </g>
+  <ellipse class="ow-lid ow-head" cx="22.5" cy="28" rx="9.4" ry="9.4"></ellipse>
+  <ellipse class="ow-lid ow-head" cx="41.5" cy="28" rx="9.4" ry="9.4"></ellipse>
+  <path d="M13.5 18.5 Q22 16.5 30 21.5M50.5 18.5 Q42 16.5 34 21.5" class="ow-brow"></path>
+  <path d="M29.5 33 L34.5 33 L32 39 Z" class="ow-beak"></path>
+  <g class="ow-feet">
+    <path d="M25 74v4M23 74.5l-1.5 3.5M27 74.5l1.5 3.5"></path>
+    <path d="M39 74v4M37 74.5l-1.5 3.5M41 74.5l1.5 3.5"></path>
   </g>
 </svg>

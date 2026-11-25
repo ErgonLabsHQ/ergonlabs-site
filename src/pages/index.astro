@@ -12,8 +12,6 @@ import Btn from '../components/home/Btn.astro';
 import Testimonials from '../components/home/Testimonials.astro';
 import { brand, services, facts, process, engagements, values, faqs, founders } from '../nuvareth';
 
-const words = ['Engineering', 'the', 'Next', 'Era', 'of', 'Intelligence.'];
-const ticker = [...new Set(services.flatMap((s) => s.items.slice(0, 3)))].slice(0, 18);
 // rows of three, then two, alternating (spans on a six-column grid)
 const spans = services.map((_, i) => (i % 5 < 3 ? 2 : 3));
 const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 'Data platform', 'Audit or advice', 'Not sure yet'];
@@ -42,41 +40,33 @@ const pillars = [
   <Nav />
 
   <main>
-    <!-- hero -->
+    <!-- hero: headline, what we do, one call to action (the nav already carries "Start a project" and
+         "Founders"), then the at-a-glance facts directly underneath so the proof sits above the fold -->
     <section class="hero">
       <div class="wrap hero-copy">
-        <h1>
-          {words.map((w, i) => <span class="wd" style={`--w:${i + 1}`}>{w}</span>)}
-        </h1>
-        <p class="lede rise" style="--w:7">{brand.intro}</p>
-        <div class="actions rise" style="--w:8">
-          <Btn href="#contact" label="Start a project" />
-          <Btn href="/founders" label="Meet the founders" variant="secondary" />
+        <h1 class="rise" style="--w:0">Engineering the next era of intelligence.</h1>
+        <div class="hero-side rise" style="--w:1">
+          <p class="lede">
+            We design, build and run AI in production: agents, custom models and the software around them. Lead
+            engineers and AI researchers with experience across US and European companies.
+          </p>
+          <div class="actions">
+            <Btn href={brand.bookingUrl || '#contact'} label="Book a free call" />
+            <p class="hero-note">A free call and a written quote,<br />before you commit to anything.</p>
+          </div>
         </div>
       </div>
-      <HeroField />
-      <div class="ticker" aria-hidden="true">
-        <div class="track">
-          {[0, 1].map(() => (
-            <div class="row">
-              {ticker.map((t) => <span>{t}</span>)}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- facts -->
-    <section class="facts" aria-label="At a glance">
-      <div class="wrap facts-in">
-        {facts.map((f, i) => (
-          <div data-r style={`--i:${i}`}>
+      <ul class="wrap hero-facts rise" style="--w:2" aria-label="At a glance">
+        {facts.map((f) => (
+          <li>
             <b>{f.k}</b>
             <span>{f.v}</span>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
+      <HeroField />
     </section>
+
 
     <!-- services -->
     <section class="sec dk" id="services">
