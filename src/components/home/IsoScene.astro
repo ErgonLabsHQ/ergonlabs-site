@@ -51,18 +51,23 @@ switch (kind) {
     break;
   }
   case 'ml': {
-    [0, 42, 84].forEach((z, i) => {
+    // custom models and data: a database feeding a three-layer model
+    [0, 22, 44].forEach((z, i) => {
+      const c = cyl(-30, 80, z, 26, 18);
+      L.push({ lift: i * 8, parts: [{ d: c.side, k: 'ln' }, { d: c.front, k: 'ln' }, { e: c.top, k: i === 2 ? 'white' : 'top' }] });
+    });
+    [8, 42, 76].forEach((z, i) => {
       L.push({
-        lift: i * 16,
+        lift: i * 14,
         parts: [
-          { d: plane(-55, -55, z, 110, 110), k: i === 2 ? 'top' : 'ghost' },
-          { d: cells(-55, -55, z, 110, 110, 5), k: 'ln' },
-          ...[[1, 1], [3, 2], [2, 4], [4, 0]].slice(0, 2 + i).map(([a, b]) => ({ d: plane(-55 + a * 22, -55 + b * 22, z, 22, 22), k: (a + b + i) % 3 ? 'white' : 'mid' })),
+          { d: plane(10, -80, z, 70, 70), k: i === 2 ? 'top' : 'ghost' },
+          { d: cells(10, -80, z, 70, 70, 4), k: 'ln' },
+          ...[[1, 1], [2, 3], [3, 0]].slice(0, 1 + i).map(([a, b]) => ({ d: plane(10 + a * 17.5, -80 + b * 17.5, z, 17.5, 17.5), k: (a + b + i) % 2 ? 'white' : 'mid' })),
         ],
-        handles: hs(-55, -55, z, 110, 110),
+        handles: hs(10, -80, z, 70, 70),
       });
     });
-    L.push({ parts: [{ d: line([[-55, 55, 0], [-55, 55, 84]]) + line([[55, -55, 0], [55, -55, 84]]) + line([[55, 55, 0], [55, 55, 84]]), k: 'dash' }] });
+    L.push({ parts: [{ d: line([[10, -10, 8], [10, -10, 76]]) + line([[80, -10, 8], [80, -10, 76]]) + line([[80, -80, 8], [80, -80, 76]]), k: 'dash' }, { d: arc([-30, 80, 62], [10, -10, 42], 34), k: 'flow' }] });
     break;
   }
   case 'automation': {
@@ -72,9 +77,14 @@ switch (kind) {
     break;
   }
   case 'web': {
-    L.push({ parts: [{ d: wallX(-80, 20, 0, 150, 100), k: 'top' }, { d: wallX(-80, 20, 88, 150, 12), k: 'ghost' }, { d: wallX(-68, 20, 40, 60, 38), k: 'white' }, { d: wallX(2, 20, 62, 56, 6) + wallX(2, 20, 50, 40, 6) + wallX(-68, 20, 12, 126, 18), k: 'ghost' }] });
-    L.push({ lift: 14, bob: true, parts: [{ d: plane(30, -70, 30, 56, 40), k: 'ghost' }, { d: cells(30, -70, 30, 56, 40, 2), k: 'ln' }, { d: arc([58, -50, 30], [40, 20, 70], 20), k: 'flow' }], handles: hs(30, -70, 30, 56, 40) });
-    L.push({ lift: 24, bob: true, parts: [{ d: plane(-60, -90, 60, 44, 44), k: 'white' }], handles: hs(-60, -90, 60, 44, 44) });
+    // full-stack: a web app and a mobile app, both talking to the backend
+    L.push({ parts: [{ d: wallX(-120, 40, 0, 96, 72), k: 'top' }, { d: wallX(-120, 40, 62, 96, 10), k: 'ghost' }, { d: wallX(-110, 40, 30, 40, 26), k: 'white' }, { d: wallX(-62, 40, 46, 30, 5) + wallX(-62, 40, 36, 24, 5) + wallX(-110, 40, 8, 78, 14), k: 'ghost' }] });
+    L.push({ lift: 12, bob: true, parts: [...solid(-6, 50, 0, 22, 40, 6), { d: plane(-3, 54, 6, 16, 32), k: 'ghost' }, { d: plane(-3, 54, 6, 16, 8), k: 'white' }], handles: hs(-6, 50, 6, 22, 40) });
+    [0, 22, 44].forEach((z, i) => {
+      const b = box(50, -70, z, 44, 44, 18);
+      L.push({ lift: i * 8, parts: [{ d: b.right, k: 'r' }, { d: b.left, k: 'l' }, { d: b.top, k: i === 2 ? 'white' : 'top' }, { d: wallX(58, -26, z + 6, 7, 5), k: i === 1 ? 'mid' : 'white' }] });
+    });
+    L.push({ parts: [{ d: arc([-72, 40, 72], [72, -48, 62], 30), k: 'flow' }, { d: arc([5, 70, 6], [72, -26, 30], 26), k: 'flow' }] });
     break;
   }
   case 'mobile': {
@@ -96,10 +106,11 @@ switch (kind) {
     break;
   }
   case 'cloud': {
+    // cloud, DevOps and security: servers under a shared cloud plane, and a padlock
     L.push({ parts: [...solid(-80, -10, 0, 34, 34, 26), ...solid(-20, 30, 0, 34, 34, 40), ...solid(40, -40, 0, 34, 34, 18)] });
-    // the cloud plane stays low enough that bobbing and the hover lift never reach the card title
     L.push({ parts: [{ d: line([[-63, 7, 26], [-63, 7, 58]]) + line([[-3, 47, 40], [-3, 47, 58]]) + line([[57, -23, 18], [57, -23, 58]]), k: 'flow' }] });
     L.push({ lift: 8, bob: true, parts: [{ d: plane(-88, -52, 58, 170, 116), k: 'ghost' }, { d: cells(-88, -52, 58, 170, 116, 4), k: 'ln' }], handles: hs(-88, -52, 58, 170, 116) });
+    L.push({ lift: 10, bob: true, parts: [{ d: arc([74, 65, 22], [92, 65, 22], 18), k: 'ink2' }, ...solid(70, 60, 0, 26, 10, 22, 'white'), { d: line([[83, 70, 7], [83, 70, 13]]), k: 'ink' }] });
     break;
   }
   case 'data': {
@@ -154,9 +165,45 @@ switch (kind) {
   }
 }
 const floor = grid(140, 20);
+
+// Frame each drawing to its own outline, so every scene fills its band evenly and nothing can spill out of it.
+// Bounds come from the path data (M/L/Q/V commands; arcs only contribute their end point) and the ellipses,
+// padded for the sideways/up movements (conveyor, spread, fix: ~35px) and, above, the hover lift, bobbing and
+// the scan plane.
+let x0 = Infinity,
+  y0 = Infinity,
+  x1 = -Infinity,
+  y1 = -Infinity;
+const add = (x: number, y: number) => {
+  x0 = Math.min(x0, x);
+  x1 = Math.max(x1, x);
+  y0 = Math.min(y0, y);
+  y1 = Math.max(y1, y);
+};
+for (const l of L) {
+  for (const p of l.parts) {
+    if (p.e) {
+      add(p.e.cx - p.e.rx, p.e.cy - p.e.ry);
+      add(p.e.cx + p.e.rx, p.e.cy + p.e.ry);
+      continue;
+    }
+    let cx = 0;
+    for (const [, cmd, args] of p.d!.matchAll(/([MLQVAZ])([^MLQVAZ]*)/g)) {
+      const n = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+      if (cmd === 'V') n.forEach((y) => add(cx, y));
+      else if (cmd === 'A') n.length >= 7 && (add((cx = n[5]), n[6]));
+      else for (let k = 0; k + 1 < n.length; k += 2) add((cx = n[k]), n[k + 1]);
+    }
+  }
+  l.handles?.forEach(([x, y]) => add(x, y));
+}
+const maxLift = Math.max(0, ...L.map((l) => l.lift ?? 0));
+const pad = 26;
+const top = pad + maxLift + 8 + (L.some((l) => l.move === 'scan') ? 46 : 0);
+const vb = [x0 - pad, y0 - top, x1 - x0 + pad * 2, y1 - y0 + top + pad].map((n) => +n.toFixed(1)).join(' ');
 ---
 
-<svg class={`iso ${cls}`} viewBox="-195 -160 390 245" aria-hidden="true" data-iso>
+<svg class={`iso ${cls}`} viewBox={vb} preserveAspectRatio="xMidYMid meet" aria-hidden="true" data-iso>
   <g class="iso-floor"><path d={floor}></path></g>
   {L.map((l, i) => (
     <g class="as" style={`--i:${i}`}>

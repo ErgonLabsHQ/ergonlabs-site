@@ -2,7 +2,8 @@
 // "How we compare": Ergon Labs against an in-house hire and freelancers,
 // row by row. Our column is highlighted. Every claim in our column restates something the site already promises
 // elsewhere (FAQ, process, engagements, principles), so keep them in step if those change.
-// On narrow screens the table scrolls sideways inside its own box.
+// On phones the table becomes a two-column comparison: Ergon Labs against one alternative at a time, picked with
+// a small toggle (in-house hire or freelancers), so every row stays short and readable.
 import OwlMark from './OwlMark.astro';
 import { brand } from '../../nuvareth';
 
@@ -48,6 +49,27 @@ const rows: [string, string, string, string][] = [
           ))}
         </tbody>
       </table>
+    </div>
+
+    <div class="cmp-m" data-cmp data-vs="0">
+      <div class="cmp-tabs" role="tablist" aria-label="Compare with">
+        {cols.map((c, i) => (
+          <button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-cmp-tab={i}>vs {c}</button>
+        ))}
+      </div>
+      <div class="cmp-head" aria-hidden="true">
+        <span class="us"><OwlMark />{brand.name}</span>
+        {cols.map((c, i) => <span class="them" data-col={i}>{c}</span>)}
+      </div>
+      {rows.map(([label, us, a, b]) => (
+        <div class="cmp-row">
+          <h3>{label}</h3>
+          <p class="us">{us}</p>
+          <p class="them" data-col="0">{a}</p>
+          <p class="them" data-col="1">{b}</p>
+        </div>
+      ))}
+    </div>
     </div>
   </div>
 </section>
@@ -133,4 +155,100 @@ const rows: [string, string, string, string][] = [
     height: 30px;
     width: auto;
   }
+  /* phones: Ergon Labs against one alternative at a time, two short columns per row */
+  .cmp-m {
+    display: none;
+  }
+  @media (max-width: 700px) {
+    .cmp-scroll {
+      display: none;
+    }
+    .cmp-m {
+      display: block;
+    }
+  }
+  .cmp-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 18px;
+    background: var(--card);
+  }
+  .cmp-tabs button {
+    height: 40px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: 600 13px/1 var(--font);
+    transition: background-color 0.25s, color 0.25s;
+  }
+  .cmp-tabs button[aria-selected='true'] {
+    background: var(--text);
+    color: var(--bg);
+  }
+  .cmp-head,
+  .cmp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 14px;
+  }
+  .cmp-head {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line-2);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .cmp-head .us {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text);
+  }
+  .cmp-head :global(.owl) {
+    height: 18px;
+    width: auto;
+  }
+  .cmp-row {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .cmp-row h3 {
+    grid-column: 1 / -1;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .cmp-row p {
+    font-size: 14px;
+    line-height: 1.42;
+    color: var(--muted);
+  }
+  .cmp-row .us {
+    color: var(--text);
+    font-weight: 600;
+  }
+  /* show only the chosen alternative */
+  .cmp-m[data-vs='0'] [data-col='1'],
+  .cmp-m[data-vs='1'] [data-col='0'] {
+    display: none;
+  }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cmp]').forEach((box) => {
+    const tabs = [...box.querySelectorAll<HTMLButtonElement>('[data-cmp-tab]')];
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        box.dataset.vs = t.dataset.cmpTab;
+        tabs.forEach((o) => o.setAttribute('aria-selected', String(o === t)));
+      }),
+    );
+  });
+</script>

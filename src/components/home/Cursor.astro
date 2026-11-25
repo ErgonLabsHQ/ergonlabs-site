@@ -177,16 +177,19 @@ const css = `@media (hover: hover) and (pointer: fine) {
 </script>
 
 <script>
-  // Click sound: a very short, quiet synthesized "tick" when a mouse presses a link or button
-  // (the testimonial arrows included). A falling sine chirp plus a tiny high-passed noise burst, about 60 ms.
-  // No audio file; the AudioContext is created on the first click (browsers only allow audio after a gesture).
-  if (matchMedia('(hover: hover) and (pointer: fine)').matches && 'AudioContext' in window) {
+  // Click sound: a very short, quiet synthesized "tick" when a link or button is pressed (the testimonial arrows
+  // included). A falling sine chirp plus a tiny high-passed noise burst, about 60 ms. No audio file.
+  // Mouse: plays on press. Touch: plays on the tap itself (click), because mobile browsers, iOS Safari in
+  // particular, only unlock audio inside a completed tap, not on touch start. The AudioContext is created on the
+  // first press and resumed if the browser suspended it. (On iPhone the ring/silent switch mutes web audio.)
+  const AC: typeof AudioContext | undefined = window.AudioContext ?? (window as any).webkitAudioContext;
+  if (AC) {
     const HOT = "a[href], button:not(:disabled), [role='button']:not([aria-disabled='true']), summary";
     let ac: AudioContext | null = null;
     let noise: AudioBuffer | null = null;
     const tick = () => {
-      ac ??= new AudioContext();
-      if (ac.state === 'suspended') ac.resume();
+      ac ??= new AC();
+      if (ac.state !== 'running') ac.resume();
       const t = ac.currentTime;
       const osc = ac.createOscillator();
       const g = ac.createGain();
@@ -215,12 +218,17 @@ const css = `@media (hover: hover) and (pointer: fine) {
       src.connect(hp).connect(ng).connect(ac.destination);
       src.start(t);
     };
+    let lastType = '';
     document.addEventListener(
       'pointerdown',
       (e) => {
+        lastType = e.pointerType;
         if (e.pointerType === 'mouse' && e.button === 0 && (e.target as Element)?.closest?.(HOT)) tick();
       },
       { passive: true },
     );
+    document.addEventListener('click', (e) => {
+      if (lastType !== 'mouse' && (e.target as Element)?.closest?.(HOT)) tick();
+    });
   }
 </script>
