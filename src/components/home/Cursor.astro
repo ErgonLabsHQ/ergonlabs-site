@@ -8,6 +8,7 @@
 //    over links and buttons, shrinks a little on press and hides over text fields. Its animation loop runs only
 //    while it is catching up, and only `transform` changes per frame (GPU composited).
 // Only on devices with a fine pointer; touch devices and reduced motion keep the plain pointer.
+// 3. A short synthesized click sound when a link or button is pressed with the mouse (script at the end).
 
 const svg = (body: string, w: number, h: number) =>
   `url("data:image/svg+xml,${encodeURIComponent(
@@ -172,5 +173,54 @@ const css = `@media (hover: hover) and (pointer: fine) {
       seen = false;
       setState('hidden');
     });
+  }
+</script>
+
+<script>
+  // Click sound (after kargul.studio): a very short, quiet synthesized "tick" when a mouse presses a link or button
+  // (the testimonial arrows included). A falling sine chirp plus a tiny high-passed noise burst, about 60 ms.
+  // No audio file; the AudioContext is created on the first click (browsers only allow audio after a gesture).
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && 'AudioContext' in window) {
+    const HOT = "a[href], button:not(:disabled), [role='button']:not([aria-disabled='true']), summary";
+    let ac: AudioContext | null = null;
+    let noise: AudioBuffer | null = null;
+    const tick = () => {
+      ac ??= new AudioContext();
+      if (ac.state === 'suspended') ac.resume();
+      const t = ac.currentTime;
+      const osc = ac.createOscillator();
+      const g = ac.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1150, t);
+      osc.frequency.exponentialRampToValueAtTime(540, t + 0.04);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.04, t + 0.002);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+      osc.connect(g).connect(ac.destination);
+      osc.start(t);
+      osc.stop(t + 0.07);
+      if (!noise) {
+        const n = Math.round(0.012 * ac.sampleRate);
+        noise = ac.createBuffer(1, n, ac.sampleRate);
+        const d = noise.getChannelData(0);
+        for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (n / 6));
+      }
+      const src = ac.createBufferSource();
+      const hp = ac.createBiquadFilter();
+      const ng = ac.createGain();
+      src.buffer = noise;
+      hp.type = 'highpass';
+      hp.frequency.value = 2800;
+      ng.gain.value = 0.045;
+      src.connect(hp).connect(ng).connect(ac.destination);
+      src.start(t);
+    };
+    document.addEventListener(
+      'pointerdown',
+      (e) => {
+        if (e.pointerType === 'mouse' && e.button === 0 && (e.target as Element)?.closest?.(HOT)) tick();
+      },
+      { passive: true },
+    );
   }
 </script>

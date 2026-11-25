@@ -1,0 +1,136 @@
+---
+// "How we compare" (after kargul.studio's comparison table): Ergon Labs against an in-house hire and freelancers,
+// row by row. Our column is highlighted. Every claim in our column restates something the site already promises
+// elsewhere (FAQ, process, engagements, principles), so keep them in step if those change.
+// On narrow screens the table scrolls sideways inside its own box.
+import OwlMark from './OwlMark.astro';
+import { brand } from '../../nuvareth';
+
+const cols = ['In-house hire', 'Freelancers'];
+const rows: [string, string, string, string][] = [
+  ['Cost', 'Fixed price for sprints and audits, agreed before work starts', 'A full salary, benefits and recruiting fees', 'Low rate, but rework adds up'],
+  ['Time to start', 'Within days', 'Months to hire and onboard', 'Weeks to find a good one'],
+  ['Seniority', 'Lead engineers and AI researchers, start to finish', "One person's skill set", 'Varies a lot'],
+  ['Range', 'Strategy, models, software and infrastructure in one team', 'Every new skill means a new hire', 'One skill each'],
+  ['Progress', 'A demo every week, on a link you can open', 'Depends on your process', "Updates when they're free"],
+  ['AI quality', 'Tested against your real cases, measured in production', 'Depends on their AI experience', 'Often a demo, not a tested system'],
+  ['Ownership', 'Your repository, cloud and IP from the first commit', 'Yours, until the knowledge leaves with them', 'Often spread across their accounts'],
+  ['Commitment', 'Month to month, stop at the end of any month', 'A hard hire to undo', 'Quality is a gamble'],
+];
+---
+
+<section class="sec dk" id="compare">
+  <div class="wrap">
+    <div class="head">
+      <h2 data-split>How we compare.</h2>
+      <p class="lede" data-r>What changes when you bring in {brand.name} instead of hiring or contracting.</p>
+    </div>
+
+    <div class="cmp-scroll" data-r>
+      <table class="cmp">
+        <thead>
+          <tr>
+            <td class="cmp-corner"></td>
+            <th scope="col" class="us">
+              <span class="cmp-brand"><OwlMark /><span>{brand.name}</span></span>
+            </th>
+            {cols.map((c) => <th scope="col">{c}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(([label, us, a, b]) => (
+            <tr>
+              <th scope="row">{label}</th>
+              <td class="us">{us}</td>
+              <td>{a}</td>
+              <td>{b}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cmp-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: -18px;
+    padding-inline: 18px;
+  }
+  .cmp-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .cmp {
+    width: 100%;
+    min-width: 760px;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .cmp th,
+  .cmp td {
+    height: 76px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+    vertical-align: middle;
+  }
+  .cmp-corner,
+  .cmp tbody th {
+    width: 150px;
+  }
+  .cmp thead th {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .cmp tbody th {
+    text-align: left;
+    padding-left: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .cmp td {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--muted);
+    text-wrap: balance;
+  }
+  /* our column: card shade with side rules */
+  .cmp .us {
+    background: var(--card);
+    border-inline: 1px solid var(--line-2);
+    color: var(--text);
+  }
+  .cmp thead .us {
+    border-top: 1px solid var(--line-2);
+  }
+  .cmp td.us {
+    font-weight: 600;
+  }
+  .cmp tbody tr:last-child th,
+  .cmp tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .cmp tbody tr:last-child .us {
+    border-bottom: 1px solid var(--line-2);
+  }
+  .cmp thead th:nth-child(3),
+  .cmp tbody td:nth-child(3) {
+    border-right: 1px solid var(--line);
+  }
+  .cmp-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    letter-spacing: -0.04em;
+  }
+  .cmp-brand :global(.owl) {
+    height: 30px;
+    width: auto;
+  }
+</style>
