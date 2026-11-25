@@ -1,0 +1,270 @@
+/* /audit and /careers (after kargul.studio's audit and careers pages), on top of home.css:
+   a centred hero with a status pill, then a plain two-column form straight on the page background. */
+
+.ap {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(56px, 9vh, 96px) 0 clamp(80px, 12vh, 128px);
+}
+/* the owl, huge and faint, behind the form (kargul puts its K mark there) */
+.ap-mark {
+  position: absolute;
+  left: 50%;
+  top: 40px;
+  width: min(720px, 120vw);
+  height: auto;
+  translate: -50% 0;
+  opacity: 0.04;
+  filter: grayscale(1);
+  pointer-events: none;
+  z-index: 0;
+}
+.ap-mark .ow-pupils,
+.ap-mark .ow-lid {
+  animation: none;
+}
+.ap-in {
+  position: relative;
+  z-index: 1;
+  max-width: 572px;
+  margin-inline: auto;
+}
+.ap-head {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 16px;
+  margin-bottom: var(--head-gap);
+}
+.ap-head h1 {
+  font-size: 36px;
+  line-height: 1.16;
+  letter-spacing: -0.03em;
+  max-width: 13ch;
+  margin: 8px 0 0;
+}
+.ap-head .lede {
+  max-width: 400px;
+  font-size: 14px;
+  line-height: 22px;
+  margin: 0;
+}
+
+/* "Limited spots available" pill with a pulsing green square */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+  background: var(--card);
+  font: 500 13px/22px var(--font);
+  color: var(--text);
+}
+.pill i {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  background: #22a559;
+}
+.pill i::before,
+.pill i::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  animation: pill-ping 2s var(--ease) infinite;
+}
+.pill i::after {
+  animation-delay: 0.3s;
+}
+@keyframes pill-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  80%, 100% { transform: scale(2.6); opacity: 0; }
+}
+
+.ap-form {
+  display: grid;
+  gap: 24px;
+}
+.ap-form .two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+}
+.ap-form label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.ap-form label > span {
+  font: 600 16px/24px var(--font);
+  letter-spacing: -0.01em;
+}
+.ap-form input,
+.ap-form textarea {
+  width: 100%;
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: var(--text);
+  font: 500 14px/24px var(--font);
+  padding: 9px 16px;
+  transition: border-color 0.2s;
+}
+.ap-form textarea {
+  resize: vertical;
+  min-height: 150px;
+  padding-top: 12px;
+}
+.ap-form input::placeholder,
+.ap-form textarea::placeholder {
+  color: var(--muted);
+}
+.ap-form input:focus,
+.ap-form textarea:focus {
+  outline: none;
+  border-color: var(--text);
+}
+.ap-form .send {
+  margin-top: 16px;
+}
+.ap-form .btn-block {
+  padding-block: 18px;
+  font-size: 15px;
+}
+.ap-form .center {
+  display: flex;
+  justify-content: center;
+}
+.ap-note {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .ap-form .two {
+    grid-template-columns: 1fr;
+  }
+  .ap-head h1 {
+    font-size: 30px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pill i::before,
+  .pill i::after {
+    animation: none;
+  }
+}
+
+/* /intro: one step at a time, a progress bar under the form */
+.steps {
+  max-width: 784px;
+}
+.step {
+  display: grid;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.step[hidden] {
+  display: none;
+}
+.step h1,
+.step h2 {
+  text-align: center;
+  font-size: clamp(36px, 4.2vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin: 0 0 12px;
+}
+.step h2 {
+  font-size: clamp(28px, 3.2vw, 40px);
+}
+.step .ap-note {
+  margin-top: -24px;
+}
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.opt {
+  display: inline-flex !important;
+  cursor: pointer;
+}
+.opt input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.ap-form .opt span {
+  padding: 14px 20px;
+  background: var(--card);
+  font: 600 14px/1 var(--font);
+  letter-spacing: -0.01em;
+  transition: background-color 0.2s, color 0.2s;
+}
+.opt:hover span {
+  background: var(--hover);
+}
+.ap-form .opt input:checked + span {
+  background: var(--text);
+  color: var(--bg);
+}
+.opt input:focus-visible + span {
+  outline: 1px solid var(--text);
+  outline-offset: 2px;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.step-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+.step-nav .back {
+  background: none;
+  border: 0;
+  padding: 18px 12px;
+  font: 700 15px/1 var(--font);
+  color: var(--muted);
+  cursor: pointer;
+}
+.step-nav .back:hover {
+  color: var(--text);
+}
+.step-nav .next:disabled {
+  background: #a8a8a8;
+  color: #efefef;
+  opacity: 1;
+  cursor: not-allowed;
+  scale: 1;
+}
+.progress {
+  width: 304px;
+  max-width: 100%;
+  height: 4px;
+  margin: 48px auto 0;
+  background: var(--card);
+}
+.progress i {
+  display: block;
+  height: 100%;
+  width: 20%;
+  background: var(--text);
+  transition: width 0.45s var(--ease-io);
+}

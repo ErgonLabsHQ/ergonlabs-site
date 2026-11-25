@@ -11,11 +11,11 @@ import Footer from '../components/home/Footer.astro';
 import Btn from '../components/home/Btn.astro';
 import Testimonials from '../components/home/Testimonials.astro';
 import Compare from '../components/home/Compare.astro';
-import { brand, services, facts, process, engagements, values, faqs, founders } from '../nuvareth';
+import { brand, homeServices as services, facts, process, engagements, values, faqs, founders } from '../nuvareth';
 
-// rows of three, then two, alternating (spans on a six-column grid)
-const spans = services.map((_, i) => (i % 5 < 3 ? 2 : 3));
-const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 'Data platform', 'Audit or advice', 'Not sure yet'];
+// two rows of three (spans on a six-column grid)
+const spans = services.map(() => 2);
+const needs = ['AI agents', 'Custom models', 'Automation', 'Product design', 'Web or mobile app', 'Data platform', 'Audit or advice', 'Not sure yet'];
 
 // "Our view" statement (from the earlier Manifesto section)
 const mfHead = 'Production AI is an engineering discipline.';
@@ -37,7 +37,7 @@ const pillars = [
 
 ---
 
-<Home>
+<Home title="Ergon Labs — AI and engineering partner for scale-ups and enterprise products">
   <Nav />
 
   <main>
@@ -45,14 +45,14 @@ const pillars = [
          "Founders"), then the at-a-glance facts directly underneath so the proof sits above the fold -->
     <section class="hero">
       <div class="wrap hero-copy">
-        <h1 class="rise" style="--w:0">Engineering the next era of intelligence.</h1>
+        <h1 class="rise" style="--w:0">An AI and engineering partner for scale-ups and enterprise products.</h1>
         <div class="hero-side rise" style="--w:1">
           <p class="lede">
-            We design, build and run AI in production: agents, custom models and the software around them. Lead
-            engineers and AI researchers with experience across US and European companies.
+            We work as a senior extension of your team, designing, building and running AI in production: agents,
+            custom models and the products around them.
           </p>
           <div class="actions">
-            <Btn href={brand.bookingUrl || '#contact'} label="Book a free call" />
+            <Btn href={brand.bookingUrl || '#contact'} label="Book a free call" drop="free" />
             <p class="hero-note">A free call and a written quote,<br />before you commit to anything.</p>
           </div>
         </div>
@@ -75,8 +75,8 @@ const pillars = [
         <div class="head">
           <h2 data-split>End-to-end engineering, with AI at the core.</h2>
           <p class="lede" data-r>
-            One senior team across strategy, models, software and infrastructure, so nothing falls into the gap between
-            separate vendors.
+            One senior team across strategy, design, models, software and infrastructure, so nothing falls into the gap
+            between separate vendors.
           </p>
         </div>
         <ul class="svc">
@@ -86,7 +86,7 @@ const pillars = [
               <IsoScene kind={s.id} />
               <p>{s.blurb}</p>
               <ul class="chips">
-                {s.items.slice(0, 5).map((it) => <li>{it}</li>)}
+                {s.items.map((it) => <li>{it}</li>)}
               </ul>
             </li>
           ))}
@@ -187,7 +187,7 @@ const pillars = [
     <section class="sec alt" id="founders">
       <div class="wrap">
         <div class="head">
-          <h2 data-split>The engineers behind {brand.name}.</h2>
+          <h2 data-split>The founders behind {brand.name}.</h2>
         </div>
         <ul class="team">
           {founders.map((f, i) => (

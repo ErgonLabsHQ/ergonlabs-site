@@ -1,0 +1,46 @@
+---
+// Careers page (after kargul.studio/careers): open applications, a short form that opens an email to us.
+import Home from '../layouts/Home.astro';
+import Nav from '../components/home/Nav.astro';
+import Footer from '../components/home/Footer.astro';
+import Btn from '../components/home/Btn.astro';
+import OwlMark from '../components/home/OwlMark.astro';
+import { brand } from '../nuvareth';
+import '../styles/apply.css';
+---
+
+<Home title={`Careers — ${brand.name}`} description="Join Ergon Labs. We work only with senior engineers and AI researchers.">
+  <Nav current="/careers" />
+
+  <main>
+    <section class="ap">
+      <OwlMark class="ap-mark" />
+      <div class="wrap">
+        <div class="ap-in">
+          <div class="ap-head rise" style="--w:0">
+            <span class="pill"><i aria-hidden="true"></i>Open applications</span>
+            <h1>Think you're one of the best? Join us.</h1>
+            <p class="lede">
+              We design, build and run AI in production for companies across the US and Europe, and we only work with
+              senior engineers and researchers. Send us your best work and we'll reach out if it's a fit.
+            </p>
+          </div>
+
+          <form class="ap-form rise" style="--w:1" data-mail-form data-subject="Application" data-email={brand.email}>
+            <div class="two">
+              <label><span>Name</span><input name="name" autocomplete="name" placeholder="Jane Doe" required /></label>
+              <label><span>Email</span><input name="email" type="email" autocomplete="email" placeholder="jane@email.com" required /></label>
+              <label><span>GitHub or portfolio</span><input name="portfolio" type="url" placeholder="https://github.com/you" required /></label>
+              <label><span>Skills</span><input name="skills" placeholder="LLM agents, ML, backend, infra, etc" /></label>
+            </div>
+            <div class="send center">
+              <Btn type="submit" label="Apply now" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Home>

@@ -18,7 +18,7 @@
       autoRaf: true,
       lerp: 0.085,
       smoothWheel: true,
-      anchors: { offset: -72 },
+      anchors: { offset: -104 },
     });
   }
 
@@ -193,6 +193,20 @@
         if (label) label.textContent = 'Copy failed';
       }
       setTimeout(() => label && (label.textContent = 'Copy'), 1800);
+    }),
+  );
+
+  // /audit and /careers: every filled field goes into the email body, under its label
+  document.querySelectorAll<HTMLFormElement>('[data-mail-form]').forEach((f) =>
+    f.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const d = new FormData(f);
+      const lines = [...f.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[name], textarea[name]')]
+        .map((el) => [el.closest('label')?.querySelector('span')?.textContent ?? el.name, String(d.get(el.name) ?? '').trim()])
+        .filter(([, v]) => v)
+        .map(([k, v]) => (v.includes('\n') ? `${k}:\n${v}` : `${k}: ${v}`));
+      const subject = `${f.dataset.subject} from ${d.get('name')}`;
+      window.location.href = `mailto:${f.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n\n'))}`;
     }),
   );
 

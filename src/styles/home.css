@@ -66,7 +66,7 @@
 }
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 112px;
   -webkit-text-size-adjust: 100%;
 }
 body.home {
@@ -167,6 +167,8 @@ img {
 }
 .btn .drop {
   max-width: 3em;
+  /* on the way back, wait for the arrow to start leaving before the word reopens (same reason as below) */
+  transition-delay: 0.2s;
 }
 .btn .arr {
   max-width: 0;
@@ -178,6 +180,7 @@ img {
   max-width: 0;
   margin-left: 0;
   opacity: 0;
+  transition-delay: 0s;
 }
 .btn:hover .arr,
 .btn:focus-visible .arr {
@@ -185,6 +188,8 @@ img {
   margin-left: 0.35em;
   opacity: 1;
   transform: none;
+  /* start once the word has begun to collapse, so the button never briefly widens and re-wraps text beside it */
+  transition-delay: 0.2s;
 }
 .btn-dark {
   --b: var(--card);
@@ -236,6 +241,39 @@ img {
   transition: background-color 0.4s, border-color 0.4s, color 0.4s;
   border-bottom: 1px solid transparent;
   color: var(--text);
+}
+/* free-audit bar on top of the sticky header (after kargul.studio): always dark, arrow nudges right on hover */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding-inline: 18px;
+  background: #232323;
+  color: #efefef;
+  font: 600 13px/18px var(--font);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.topbar svg {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.25;
+  stroke-linecap: square;
+  transition: transform 0.4s var(--ease-io);
+}
+.topbar:hover svg,
+.topbar:focus-visible svg {
+  transform: translateX(3px);
+}
+@media (max-width: 420px) {
+  .topbar {
+    font-size: 12px;
+  }
 }
 .nav.scrolled,
 .nav.open {
@@ -291,6 +329,22 @@ img {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+/* "Our services": plain bold text beside the button, like kargul's "See our work" */
+.nav-quiet {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  padding: 0 12px;
+  transition: opacity 0.2s;
+}
+.nav-quiet:hover {
+  opacity: 0.65;
+}
+@media (max-width: 960px) {
+  .nav-quiet {
+    display: none;
+  }
 }
 .burger {
   display: none;
@@ -365,11 +419,11 @@ img {
   align-items: end;
 }
 .hero h1 {
-  font-size: clamp(40px, 5.4vw, 66px);
+  font-size: clamp(36px, 4.2vw, 54px);
   font-weight: 700;
   letter-spacing: -0.035em;
-  line-height: 1.02;
-  max-width: 11ch;
+  line-height: 1.04;
+  max-width: 17ch;
 }
 .hero-side {
   display: grid;
@@ -445,7 +499,7 @@ img {
     align-items: start;
   }
   .hero h1 {
-    max-width: 13ch;
+    max-width: 17ch;
   }
   .hero-facts {
     grid-template-columns: 1fr 1fr;
@@ -1431,7 +1485,8 @@ html:not(.js) .giant text {
 }
 .brand:hover .owl,
 .brand:focus-visible .owl {
-  animation: owl-tilt 0.7s ease-in-out;
+  /* keep owl-land first in the list so it is not restarted when the hover ends (that replayed the drop-in) */
+  animation: owl-land 0.9s cubic-bezier(0.3, 0.7, 0.3, 1) 0.15s both, owl-tilt 0.7s ease-in-out;
 }
 /* perched on the N of the giant footer wordmark: lands when the footer scrolls into view */
 .giant-owl {

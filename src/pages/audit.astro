@@ -1,0 +1,51 @@
+---
+// Free audit page (after kargul.studio/audit): centred hero, then a short form that opens an email to us.
+// No top banner here, since it points to this page.
+import Home from '../layouts/Home.astro';
+import Nav from '../components/home/Nav.astro';
+import Footer from '../components/home/Footer.astro';
+import Btn from '../components/home/Btn.astro';
+import OwlMark from '../components/home/OwlMark.astro';
+import { brand } from '../nuvareth';
+import '../styles/apply.css';
+---
+
+<Home title={`Free AI audit — ${brand.name}`} description="Send us your product, repository or AI feature and a senior engineer will show you what to fix, for free.">
+  <Nav current="/audit" banner={false} />
+
+  <main>
+    <section class="ap">
+      <OwlMark class="ap-mark" />
+      <div class="wrap">
+        <div class="ap-in">
+          <div class="ap-head rise" style="--w:0">
+            <span class="pill"><i aria-hidden="true"></i>Limited spots available</span>
+            <h1>We'll find what's holding back your product. For free.</h1>
+            <p class="lede">
+              Send us a link to your product, repository or AI feature. A senior engineer will record a short video
+              showing exactly what to fix: reliability, code quality, security and cost.
+            </p>
+          </div>
+
+          <form class="ap-form rise" style="--w:1" data-mail-form data-subject="Free audit request" data-email={brand.email}>
+            <div class="two">
+              <label><span>Name</span><input name="name" autocomplete="name" placeholder="Jane Doe" required /></label>
+              <label><span>Email</span><input name="email" type="email" autocomplete="email" placeholder="jane@company.com" required /></label>
+              <label><span>Product or repository URL</span><input name="url" type="url" placeholder="https://yourproduct.com" required /></label>
+              <label><span>Focus area</span><input name="focus" placeholder="AI accuracy, slow pages, cloud cost, etc" /></label>
+            </div>
+            <label>
+              <span>More details</span>
+              <textarea name="details" rows="5" placeholder="Anything we should know before we start?"></textarea>
+            </label>
+            <div class="send">
+              <Btn type="submit" label="Get my free audit" size="block" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Home>

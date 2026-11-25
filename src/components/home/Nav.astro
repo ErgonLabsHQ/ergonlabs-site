@@ -1,33 +1,46 @@
 ---
-// Sticky site nav shared by the homepage and /founders. On other pages the section links point back to the
-// homepage (/#services etc.); `current` marks the active page link.
+// Sticky site nav shared by every page. After kargul.studio: page links on the left (founders, free audit,
+// careers), a quiet "Our services" link and "Start a project" (-> /intro) on the right. The homepage section
+// links live in the footer. `current` marks the active page link.
 import OwlMark from './OwlMark.astro';
 import Btn from './Btn.astro';
-import { brand, nvNav } from '../../nuvareth';
+import { brand } from '../../nuvareth';
 
 interface Props {
   current?: string;
+  /** the "free audit" bar above the nav (after kargul.studio); off on /audit itself */
+  banner?: boolean;
 }
-const { current } = Astro.props;
+const { current, banner = true } = Astro.props;
 const onHome = Astro.url.pathname === '/';
-// the "AI in production" section was replaced by testimonials
-const links = nvNav.flatMap((n) => (n.href === '#ai' ? [{ label: 'Testimonials', href: '#testimonials' }] : [n]));
-const nav = [...links.map((n) => ({ ...n, href: onHome ? n.href : `/${n.href}` })), { label: 'Founders', href: '/founders' }];
-const cta = onHome ? '#contact' : '/#contact';
+const nav = [
+  { label: 'Founders', href: '/founders' },
+  { label: 'Free audit', href: '/audit' },
+  { label: 'Careers', href: '/careers' },
+];
+const services = onHome ? '#services' : '/#services';
 ---
 
 <header class="nav" data-nav>
+  {banner && (
+    <a class="topbar" href="/audit">
+      <span>Get your AI system or codebase audited. For free</span>
+      <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.75 9h9M9 14.25 14.25 9 9 3.75"></path></svg>
+    </a>
+  )}
   <div class="wrap nav-in">
     <a class="brand" href="/" aria-label={brand.name}><OwlMark /><span>{brand.name}</span></a>
     <nav class="nav-links" aria-label="Main">
       {nav.map((n) => <a href={n.href} aria-current={n.href === current ? 'page' : undefined}>{n.label}</a>)}
     </nav>
     <div class="nav-cta">
-      <Btn href={cta} label="Start a project" size="sm" />
+      <a class="nav-quiet" href={services}>Our services</a>
+      <Btn href="/intro" label="Start a project" size="sm" />
       <button class="burger" type="button" aria-label="Menu" aria-expanded="false" data-burger><i></i><i></i></button>
     </div>
   </div>
   <nav class="nav-sheet" aria-label="Mobile" data-sheet>
     {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+    <a href={services}>Our services</a>
   </nav>
 </header>

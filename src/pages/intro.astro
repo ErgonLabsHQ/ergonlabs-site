@@ -1,0 +1,139 @@
+---
+// "Start a project" intake (after kargul.studio/intro): one short question per step with a progress bar.
+// Continue stays disabled until the step is answered. The last step opens an email to us with every answer,
+// the same way the other forms on the site work.
+import Home from '../layouts/Home.astro';
+import Nav from '../components/home/Nav.astro';
+import Footer from '../components/home/Footer.astro';
+import OwlMark from '../components/home/OwlMark.astro';
+import { brand } from '../nuvareth';
+import '../styles/apply.css';
+
+const needs = ['AI agents', 'Custom models', 'Automation', 'Web or mobile app', 'Product design', 'Data platform', 'Audit or advice', 'Not sure yet'];
+const budgets = ['Under $10k', '$10k – $25k', '$25k – $50k', '$50k – $100k', '$100k+', 'Not sure yet'];
+const timing = ['As soon as possible', 'Within a month', 'In 1 – 3 months', 'Just exploring'];
+---
+
+<Home title={`Start a project — ${brand.name}`} description="Tell us about your project. An engineer replies within one working day.">
+  <Nav current="/intro" />
+
+  <main>
+    <section class="ap intro">
+      <OwlMark class="ap-mark" />
+      <div class="wrap">
+        <form class="ap-in ap-form steps rise" style="--w:0" data-intro data-email={brand.email} novalidate>
+          <fieldset class="step" data-step>
+            <h1>Let's chat!</h1>
+            <div class="two">
+              <label><span>Name</span><input name="name" autocomplete="name" placeholder="Jane Doe" required /></label>
+              <label><span>Company name</span><input name="company" autocomplete="organization" placeholder="Acme Inc." required /></label>
+              <label><span>Email</span><input name="email" type="email" autocomplete="email" placeholder="jane@company.com" required /></label>
+              <label><span>Website</span><input name="website" type="url" placeholder="https://company.com" /></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="step" data-step hidden>
+            <h2>What can we help with?</h2>
+            <p class="ap-note">Pick as many as you like.</p>
+            <div class="opts">
+              {needs.map((n) => (
+                <label class="opt"><input type="checkbox" name="need" value={n} required /><span>{n}</span></label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset class="step" data-step hidden>
+            <h2>What budget do you have in mind?</h2>
+            <div class="opts">
+              {budgets.map((b) => (
+                <label class="opt"><input type="radio" name="budget" value={b} required /><span>{b}</span></label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset class="step" data-step hidden>
+            <h2>When would you like to start?</h2>
+            <div class="opts">
+              {timing.map((t) => (
+                <label class="opt"><input type="radio" name="timing" value={t} required /><span>{t}</span></label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset class="step" data-step hidden>
+            <h2>Tell us about the project.</h2>
+            <label>
+              <span class="sr">Project details</span>
+              <textarea name="details" rows="6" required placeholder="What you need, by when, and what is in the way."></textarea>
+            </label>
+            <p class="ap-note">An engineer reads it and replies within one working day.</p>
+          </fieldset>
+
+          <div class="step-nav">
+            <button class="back" type="button" data-back hidden>Back</button>
+            <button class="btn next" type="submit" data-next disabled>Continue</button>
+          </div>
+          <div class="progress" aria-hidden="true"><i data-bar></i></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Home>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-intro]');
+  if (form) {
+    const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
+    const next = form.querySelector<HTMLButtonElement>('[data-next]')!;
+    const back = form.querySelector<HTMLButtonElement>('[data-back]')!;
+    const bar = form.querySelector<HTMLElement>('[data-bar]')!;
+    let at = 0;
+
+    // a step is answered when its text fields are valid and every checkbox/radio group has a pick
+    const answered = (s: HTMLFieldSetElement) => {
+      const fields = [...s.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input:not([type=checkbox]):not([type=radio]), textarea')];
+      const groups = new Set([...s.querySelectorAll<HTMLInputElement>('input[type=checkbox], input[type=radio]')].map((i) => i.name));
+      return fields.every((f) => f.checkValidity() && (!f.required || f.value.trim())) &&
+        [...groups].every((g) => s.querySelector(`input[name="${g}"]:checked`));
+    };
+    const show = () => {
+      steps.forEach((s, i) => (s.hidden = i !== at));
+      back.hidden = at === 0;
+      next.textContent = at === steps.length - 1 ? 'Send' : 'Continue';
+      bar.style.width = `${((at + 1) / steps.length) * 100}%`;
+      next.disabled = !answered(steps[at]);
+      steps[at].querySelector<HTMLElement>('input, textarea')?.focus({ preventScroll: true });
+    };
+    form.addEventListener('input', () => (next.disabled = !answered(steps[at])));
+    back.addEventListener('click', () => {
+      at = Math.max(0, at - 1);
+      show();
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!answered(steps[at])) return;
+      if (at < steps.length - 1) {
+        at += 1;
+        show();
+        return;
+      }
+      const d = new FormData(form);
+      const body = [
+        `Name: ${d.get('name')}`,
+        `Company: ${d.get('company')}`,
+        `Email: ${d.get('email')}`,
+        d.get('website') ? `Website: ${d.get('website')}` : '',
+        `Help with: ${d.getAll('need').join(', ')}`,
+        `Budget: ${d.get('budget')}`,
+        `Start: ${d.get('timing')}`,
+        '',
+        String(d.get('details')),
+      ].filter((l, i) => l || i === 7).join('\n');
+      const subject = `Project enquiry from ${d.get('name')} (${d.get('company')})`;
+      window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+    show();
+  }
+</script>

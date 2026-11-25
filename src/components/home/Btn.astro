@@ -12,12 +12,16 @@ interface Props {
   target?: string;
   rel?: string;
   class?: string;
+  /** the word that collapses on hover, when it should not be the first filler word (e.g. "free") */
+  drop?: string;
 }
-const { label, href, variant = 'primary', size = 'md', arrow = '→', type = 'button', target, rel, class: cls = '' } = Astro.props;
-const fillers = new Set(['a', 'an', 'the', 'our', 'your', 'this']);
+const { label, href, variant = 'primary', size = 'md', arrow = '→', type = 'button', target, rel, class: cls = '', drop } = Astro.props;
+const fillers = new Set(['a', 'an', 'the', 'our', 'your', 'my', 'this']);
 const words = label.split(' ');
 // drop the first filler word that is not the first or last word
-const dropAt = words.findIndex((w, i) => i > 0 && i < words.length - 1 && fillers.has(w.toLowerCase()));
+const dropAt = drop
+  ? words.findIndex((w) => w.toLowerCase() === drop.toLowerCase())
+  : words.findIndex((w, i) => i > 0 && i < words.length - 1 && fillers.has(w.toLowerCase()));
 const classes = ['btn', variant === 'secondary' && 'btn-dark', size === 'sm' && 'btn-sm', size === 'block' && 'btn-block', cls];
 const Tag = href ? 'a' : 'button';
 ---
