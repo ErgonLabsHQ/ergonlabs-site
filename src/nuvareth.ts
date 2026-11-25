@@ -24,7 +24,7 @@ export const services = allServices
   .filter((s) => s.id !== 'games')
   .map((s) => (blurbs[s.id] ? { ...s, blurb: blurbs[s.id] } : s));
 
-// the homepage's six services (after kargul.studio's short list): the detailed site.ts list grouped so nothing
+// the homepage's six services: the detailed site.ts list grouped so nothing
 // overlaps. `id` picks the IsoScene drawing.
 export const homeServices = [
   {
@@ -32,42 +32,42 @@ export const homeServices = [
     title: 'AI and agents',
     blurb:
       'Agents, assistants and LLM features that do a real job inside your product or operations, from first prototype to monitored production. Each one is tested against your real cases before anyone relies on it.',
-    items: ['Custom agents', 'RAG over your data', 'Voice agents', 'In-app assistants', 'Workflow automation', 'Evals and guardrails', 'MCP and tool integrations', 'LangGraph'],
+    items: ['Agents', 'RAG', 'Voice AI', 'Assistants', 'Automation', 'Evals', 'MCP'],
   },
   {
     id: 'ml',
     title: 'Custom models and data',
     blurb:
       'When an off-the-shelf model is not good enough, we train, fine-tune and serve one that is, and build the data pipelines underneath it, because most AI projects are data projects first.',
-    items: ['Fine-tuning', 'PyTorch', 'Computer vision', 'Forecasting', 'Data pipelines', 'Vector databases', 'Model serving', 'MLOps'],
+    items: ['Fine-tuning', 'PyTorch', 'Vision', 'Forecasting', 'Pipelines', 'Vector DBs', 'MLOps'],
   },
   {
     id: 'design',
     title: 'Product UI/UX',
     blurb:
       'Research, flows and pixel-perfect designs for web, mobile and AI products, including interfaces people can trust when a model is in the loop. Simple for your users, and straightforward for engineers to build.',
-    items: ['Figma', 'User research', 'Web apps', 'Mobile apps', 'Design systems', 'Dashboards', 'AI interfaces', 'Prototypes'],
+    items: ['Figma', 'Research', 'Web apps', 'Mobile apps', 'Design systems', 'Dashboards'],
   },
   {
     id: 'web',
     title: 'Full-stack product engineering',
     blurb:
       'From design to production: web apps, mobile apps, backends and APIs, built by senior engineers with tests from the first release. Websites and landing pages too, when your product needs them.',
-    items: ['Next.js', 'TypeScript', 'React Native', 'Node.js', 'Python', 'PostgreSQL', 'APIs', 'Websites'],
+    items: ['Next.js', 'TypeScript', 'React Native', 'Node.js', 'Python', 'PostgreSQL'],
   },
   {
     id: 'cloud',
     title: 'Cloud, DevOps and security',
     blurb:
       'Infrastructure defined as code, automated deployments, monitoring and security reviews, so releases are routine and costs stay visible.',
-    items: ['AWS', 'Google Cloud', 'Azure', 'Terraform', 'Docker', 'Kubernetes', 'CI/CD', 'Security reviews'],
+    items: ['AWS', 'GCP', 'Azure', 'Terraform', 'Docker', 'Kubernetes', 'CI/CD'],
   },
   {
     id: 'rescue',
     title: 'Rescue, audits and advice',
     blurb:
       'Stabilising fast-built products and legacy systems, independent code and architecture audits, and a senior engineer at the table when a decision is expensive. It can start with a free audit.',
-    items: ['Code audits', 'Architecture reviews', 'Legacy modernisation', 'AI-built app cleanup', 'Performance', 'Fractional CTO'],
+    items: ['Code audits', 'Architecture', 'Modernisation', 'Performance', 'Fractional CTO'],
   },
 ];
 

@@ -83,11 +83,13 @@ const pillars = [
           {services.map((s, i) => (
             <li class="card" data-r data-tilt style={`--span:${spans[i]};--i:${i % 3}`}>
               <h3>{s.title}</h3>
-              <IsoScene kind={s.id} />
-              <p>{s.blurb}</p>
-              <ul class="chips">
-                {s.items.map((it) => <li>{it}</li>)}
-              </ul>
+              <div class="svc-art"><IsoScene kind={s.id} /></div>
+              <div class="svc-text">
+                <p>{s.blurb}</p>
+                <ul class="chips">
+                  {s.items.map((it) => <li>{it}</li>)}
+                </ul>
+              </div>
             </li>
           ))}
         </ul>

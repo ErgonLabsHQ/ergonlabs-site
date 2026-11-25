@@ -1,4 +1,4 @@
-/* /audit and /careers (after kargul.studio's audit and careers pages), on top of home.css:
+/* /audit and /careers, on top of home.css:
    a centred hero with a status pill, then a plain two-column form straight on the page background. */
 
 .ap {
@@ -6,7 +6,7 @@
   overflow: hidden;
   padding: clamp(56px, 9vh, 96px) 0 clamp(80px, 12vh, 128px);
 }
-/* the owl, huge and faint, behind the form (kargul puts its K mark there) */
+/* the owl, huge and faint, behind the form */
 .ap-mark {
   position: absolute;
   left: 50%;

@@ -1,26 +1,27 @@
 ---
-// Homepage behaviour: smooth scrolling (Lenis), nav state and mobile menu, scroll reveals, word-split headings, isometric scenes that
+// Homepage behaviour: nav state and mobile menu, scroll reveals, word-split headings, isometric scenes that
 // assemble on entry, card hover tilt, the "Our view" words lighting up with scroll, the process rail, the giant
 // footer wordmark drawing itself, the nav matching the band beneath it, copy-email and the form.
 ---
 
 <script>
-  import Lenis from 'lenis';
-  import 'lenis/dist/lenis.css';
-
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
 
-  // smooth, eased wheel scrolling (touch keeps the device's native scrolling). Page anchors glide to their
-  // section, offset for the sticky nav. Skipped entirely for visitors who ask for reduced motion.
-  if (!reduced) {
-    new Lenis({
-      autoRaf: true,
-      lerp: 0.085,
-      smoothWheel: true,
-      anchors: { offset: -104 },
+  // native scrolling (wheel smoothing made the page feel slow). Anchor links still glide
+  // via CSS scroll-behavior, offset for the sticky header by scroll-padding-top in home.css.
+
+  // logo owl: one full head tilt per hover, never cut short when the pointer leaves
+  document.querySelectorAll<HTMLElement>('.brand').forEach((b) => {
+    const owl = b.querySelector<SVGElement>('.owl');
+    if (!owl || reduced) return;
+    const tilt = () => owl.classList.add('tilt');
+    b.addEventListener('mouseenter', tilt);
+    b.addEventListener('focus', tilt);
+    owl.addEventListener('animationend', (e) => {
+      if (e.animationName === 'owl-tilt') owl.classList.remove('tilt');
     });
-  }
+  });
 
   // nav
   const nav = document.querySelector<HTMLElement>('[data-nav]');

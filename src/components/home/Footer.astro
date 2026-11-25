@@ -1,41 +1,69 @@
 ---
-// Site footer shared by the homepage and /founders: contact details, link columns, and the giant outlined
-// ERGON wordmark, which draws itself in when it scrolls into view; then the owl lands on the N.
+// Site footer: logo and copyright on the left, link columns with bold headings on the right,
+// square social buttons, then the giant outlined ERGON wordmark, which draws itself in when it scrolls into view;
+// then the owl lands on the N.
 import OwlMark from './OwlMark.astro';
-import { brand, nvNav } from '../../nuvareth';
+import { brand, homeServices } from '../../nuvareth';
 
 const onHome = Astro.url.pathname === '/';
-// the "AI in production" section was replaced by testimonials
-const links = nvNav.flatMap((n) => (n.href === '#ai' ? [{ label: 'Testimonials', href: '#testimonials' }] : [n]));
-const nav = [...links.map((n) => ({ ...n, href: onHome ? n.href : `/${n.href}` })), { label: 'Founders', href: '/founders' }, { label: 'Free audit', href: '/audit' }, { label: 'Careers', href: '/careers' }];
+const at = (hash: string) => (onHome ? hash : `/${hash}`);
+const cols = [
+  {
+    h: 'Pages',
+    links: [
+      { label: 'Home', href: '/' },
+      { label: 'Founders', href: '/founders' },
+      { label: 'Free audit', href: '/audit' },
+      { label: 'Careers', href: '/careers' },
+      { label: 'Start a project', href: '/intro' },
+    ],
+  },
+  { h: 'Services', links: homeServices.map((s) => ({ label: s.title, href: at('#services') })) },
+  {
+    h: 'Company',
+    links: [
+      { label: 'Process', href: at('#process') },
+      { label: 'Engagements', href: at('#engagements') },
+      { label: 'Testimonials', href: at('#testimonials') },
+      { label: 'FAQ', href: at('#faq') },
+    ],
+  },
+  { h: 'Contact', links: [{ label: 'Email', href: `mailto:${brand.email}` }] },
+];
+const socials = brand.socials.filter((s) => s.href && s.href !== '#');
 const year = new Date().getFullYear();
 ---
 
 <footer class="foot dk">
   <div class="wrap foot-in">
-    <div class="foot-talk">
+    <div class="foot-id">
       <a class="brand" href="/" aria-label={brand.name}><OwlMark /><span>{brand.name}</span></a>
-      <h2>Let's talk.</h2>
-      <p>Email us directly or find us online.</p>
-      <div class="mail-row">
-        <a class="mail" href={`mailto:${brand.email}`}>{brand.email}</a>
-        <button class="copy" type="button" data-copy={brand.email} aria-label="Copy email address"><span data-copy-label>Copy</span></button>
-      </div>
+      <span class="foot-copy">© {year}. {brand.name}</span>
     </div>
     <div class="foot-cols">
-      <div>
-        <p class="foot-h">Pages</p>
-        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
-      </div>
-      <div>
-        <p class="foot-h">Contact</p>
-        <a href={`mailto:${brand.email}`}>Email</a>
-        {brand.socials.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}
-      </div>
+      {cols.map((c) => (
+        <div>
+          <p class="foot-h">{c.h}</p>
+          {c.links.map((l) => <a href={l.href}>{l.label}</a>)}
+        </div>
+      ))}
+      {socials.length > 0 && (
+        <div>
+          <p class="foot-h">Social</p>
+          <div class="foot-social">
+            {socials.map((s) => (
+              <a href={s.href} target="_blank" rel="noopener" aria-label={s.label}>
+                {s.label === 'X' ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3Zm-1.08 16.2h1.7L7.4 4.73H5.58L16.67 19.2Z"></path></svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.83v1.5h.05c.53-1 1.84-2.06 3.8-2.06 4.06 0 4.82 2.67 4.82 6.15v6.41h-4v-5.69c0-1.36-.03-3.1-1.89-3.1-1.9 0-2.18 1.48-2.18 3v5.79H9.5v-11Z"></path></svg>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-  <div class="wrap foot-base">
-    <span>© {year} {brand.name}. All rights reserved.</span>
   </div>
   <svg class="giant" viewBox="0 -120 1000 330" aria-hidden="true" data-giant>
     <g class="giant-owl"><OwlMark x={842} y={-104} width={112} height={140} /></g>

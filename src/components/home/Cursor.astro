@@ -1,5 +1,5 @@
 ---
-// Custom cursor (after kargul.studio), in two parts:
+// Custom cursor, in two parts:
 // 1. The pointer itself: a crisp black arrow with a white outline, and a white pointing hand over anything
 //    clickable. Drawn here as small SVGs and set with CSS `cursor: url()`, so the operating system draws it with
 //    zero lag.
@@ -115,7 +115,7 @@ const css = `@media (hover: hover) and (pointer: fine) {
     const tick = (now: number) => {
       const dt = last ? Math.min((now - last) / 1000, 0.05) : 1 / 60;
       last = now;
-      const k = 1 - Math.exp(-7 * dt); // same follow rate as kargul.studio
+      const k = 1 - Math.exp(-7 * dt);
       x += (tx - x) * k;
       y += (ty - y) * k;
       if (Math.abs(tx - x) < 0.05 && Math.abs(ty - y) < 0.05) {
@@ -177,7 +177,7 @@ const css = `@media (hover: hover) and (pointer: fine) {
 </script>
 
 <script>
-  // Click sound (after kargul.studio): a very short, quiet synthesized "tick" when a mouse presses a link or button
+  // Click sound: a very short, quiet synthesized "tick" when a mouse presses a link or button
   // (the testimonial arrows included). A falling sine chirp plus a tiny high-passed noise burst, about 60 ms.
   // No audio file; the AudioContext is created on the first click (browsers only allow audio after a gesture).
   if (matchMedia('(hover: hover) and (pointer: fine)').matches && 'AudioContext' in window) {

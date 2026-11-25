@@ -1,5 +1,5 @@
 ---
-// Sticky site nav shared by every page. After kargul.studio: page links on the left (founders, free audit,
+// Sticky site nav shared by every page: page links on the left (founders, free audit,
 // careers), a quiet "Our services" link and "Start a project" (-> /intro) on the right. The homepage section
 // links live in the footer. `current` marks the active page link.
 import OwlMark from './OwlMark.astro';
@@ -8,7 +8,7 @@ import { brand } from '../../nuvareth';
 
 interface Props {
   current?: string;
-  /** the "free audit" bar above the nav (after kargul.studio); off on /audit itself */
+  /** the "free audit" bar above the nav; off on /audit itself */
   banner?: boolean;
 }
 const { current, banner = true } = Astro.props;
@@ -35,7 +35,7 @@ const services = onHome ? '#services' : '/#services';
     </nav>
     <div class="nav-cta">
       <a class="nav-quiet" href={services}>Our services</a>
-      <Btn href="/intro" label="Start a project" size="sm" />
+      <Btn href="/intro" label="Start a project" size="sm" variant="secondary" />
       <button class="burger" type="button" aria-label="Menu" aria-expanded="false" data-burger><i></i><i></i></button>
     </div>
   </div>

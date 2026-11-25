@@ -1,4 +1,4 @@
-/* Ergon Labs site. Black and white studio theme (after kargul.studio): Geist, light grey and white bands with
+/* Ergon Labs site. Black and white studio theme: Geist, light grey and white bands with
    charcoal bands between, square corners everywhere, flat cards, uppercase chips, hairline isometric drawings.
    Spacing: 80px section padding, 42px under section heads, 24px between cards, 18px 24px inside cards.
 
@@ -65,6 +65,8 @@
   box-sizing: border-box;
 }
 html {
+  /* dark page scrollbar */
+  scrollbar-color: #6b6b6b #232323;
   scroll-behavior: smooth;
   scroll-padding-top: 112px;
   -webkit-text-size-adjust: 100%;
@@ -113,7 +115,7 @@ img {
 }
 
 .wrap {
-  width: min(980px, 100% - 36px);
+  width: min(1102px, 100% - 36px);
   margin-inline: auto;
 }
 .center {
@@ -242,7 +244,7 @@ img {
   border-bottom: 1px solid transparent;
   color: var(--text);
 }
-/* free-audit bar on top of the sticky header (after kargul.studio): always dark, arrow nudges right on hover */
+/* free-audit bar on top of the sticky header: always dark, arrow nudges right on hover */
 .topbar {
   display: flex;
   align-items: center;
@@ -296,7 +298,7 @@ img {
 }
 .nav-links {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   font-size: 13px;
   color: var(--muted);
 }
@@ -330,7 +332,7 @@ img {
   gap: 8px;
   align-items: center;
 }
-/* "Our services": plain bold text beside the button, like kargul's "See our work" */
+/* "Our services": plain bold text beside the button */
 .nav-quiet {
   font-size: 13px;
   font-weight: 700;
@@ -615,21 +617,39 @@ img {
   grid-template-columns: repeat(6, 1fr);
   gap: var(--gap);
 }
+/* cards: title, a short art band, then text and chips. The scene is drawn about twice the
+   card's width behind everything and cropped by the card, so it bleeds off the edges */
 .svc > li {
   grid-column: span var(--span);
   display: flex;
   flex-direction: column;
   gap: var(--gap);
+  padding: 18px 24px;
+  min-height: 392px;
+  overflow: hidden;
+  isolation: isolate;
 }
-.svc .iso {
-  margin: -6px -8px -8px;
-  height: clamp(150px, 15vw, 190px);
+.svc-art {
+  position: relative;
+  z-index: -1;
+  width: 100%;
+  aspect-ratio: 344 / 150;
+  margin-block: auto;
+  pointer-events: none;
 }
-.svc > li[style*='--span:3'] .iso {
-  height: clamp(160px, 16vw, 210px);
+.svc-art .iso {
+  position: absolute;
+  left: 52%;
+  top: 60%;
+  width: 160%;
+  max-width: none;
+  height: auto;
+  translate: -50% -50%;
 }
-.svc .chips {
-  margin-top: auto;
+.svc-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
 }
 @media (max-width: 960px) {
   .svc {
@@ -1291,15 +1311,48 @@ img {
 }
 
 /* ---------- footer ---------- */
+/* footer: logo + copyright left, columns with 18px bold headings and 14px grey links right */
 .foot {
   position: relative;
-  padding-top: var(--sec-y);
+  padding-top: 56px;
   overflow: hidden;
 }
 .foot-in {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 48px;
+}
+.foot-id {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  justify-items: start;
+}
+.foot-copy {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 22px;
+}
+.foot-social {
+  display: flex;
+  gap: 6px;
+}
+.foot-cols .foot-social a {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--card);
+  color: var(--text);
+  transition: background-color 0.2s;
+}
+.foot-cols .foot-social a:hover {
+  background: var(--hover);
+}
+.foot-social svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
 }
 .foot-talk {
   display: grid;
@@ -1345,22 +1398,26 @@ img {
 }
 .foot-cols {
   display: flex;
-  gap: 64px;
+  gap: 56px;
 }
-.foot-cols div {
-  display: grid;
-  gap: 10px;
-  align-content: start;
+.foot-cols > div {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  align-items: flex-start;
 }
 .foot-h {
-  color: var(--dim);
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 3px;
 }
 .foot-cols a {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 22px;
   transition: color 0.2s;
 }
 .foot-cols a:hover {
@@ -1377,7 +1434,7 @@ img {
   display: block;
   width: 100%;
   height: auto;
-  margin-top: -10px;
+  margin-top: 0;
   margin-bottom: -2.2%;
 }
 .giant text {
@@ -1402,7 +1459,8 @@ html:not(.js) .giant text {
     grid-template-columns: 1fr;
   }
   .foot-cols {
-    gap: 40px;
+    flex-wrap: wrap;
+    gap: 32px 40px;
   }
 }
 
@@ -1483,9 +1541,9 @@ html:not(.js) .giant text {
   transform-origin: 50% 100%;
   animation: owl-land 0.9s cubic-bezier(0.3, 0.7, 0.3, 1) 0.15s both;
 }
-.brand:hover .owl,
-.brand:focus-visible .owl {
-  /* keep owl-land first in the list so it is not restarted when the hover ends (that replayed the drop-in) */
+/* the script adds .tilt on hover/focus and removes it when the tilt ends, so the tilt always plays to the finish
+   even if the pointer leaves early. owl-land stays first so it is not restarted (that replayed the drop-in) */
+.brand .owl.tilt {
   animation: owl-land 0.9s cubic-bezier(0.3, 0.7, 0.3, 1) 0.15s both, owl-tilt 0.7s ease-in-out;
 }
 /* perched on the N of the giant footer wordmark: lands when the footer scrolls into view */
@@ -1524,7 +1582,7 @@ html:not(.js) .giant text {
   .ow-lid,
   .ow-pupils,
   .brand .owl,
-  .brand:hover .owl,
+  .brand .owl.tilt,
   .giant.in .giant-owl {
     animation: none !important;
   }
