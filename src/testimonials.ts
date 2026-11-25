@@ -1,9 +1,9 @@
 // Client testimonials for the homepage.
 //
 // PLACEHOLDER CONTENT for the design phase: every name, company, quote and photo below is invented or a stand-in
-// so the section can be designed and reviewed. While `testimonialsArePlaceholders` is true the section shows a
-// visible "placeholder" notice. Before the site is used for business, replace every entry with a real, approved
-// testimonial (with the client's permission to use their name, title and photo) and set the flag to false.
+// so the section can be designed and reviewed. The section no longer shows a placeholder notice, so replace every
+// entry with a real, approved testimonial (with the client's permission to use their name, title and photo) and
+// set the flag to false as soon as possible.
 //
 // `photo` is optional: put a square headshot in public/clients/ and set e.g. photo: '/clients/jane.webp'.
 // Without one, the card shows the client's initials.
