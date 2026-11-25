@@ -3,8 +3,9 @@
 // waves roll across it, the pillars under the cursor rise into a hill (the cursor's position is projected back
 // onto the grid), the tallest crests turn charcoal, a few tiles flash dark now and then, and the field rises
 // from the centre outwards on load. Edges fade into the page.
-// Performance: 17 x 17 pillars, colours precomputed into lookup tables (no per-pillar string building), device
-// pixel ratio capped at 1.5, and the loop stops while the hero is offscreen. One still frame for reduced motion.
+// Performance: each pillar variant (height step x flashing) is drawn once into a small cached canvas and copied
+// with drawImage each frame; the floor grid is drawn once per size. Device pixel ratio capped at 1.25, and the
+// loop stops while the hero is offscreen. One still frame for reduced motion.
 ---
 
 <div class="hf" aria-hidden="true">
@@ -81,9 +82,14 @@
       hover = 0,
       hoverT = 0;
 
+    // canvas position in page coordinates, so pointer moves never have to measure the layout
+    let pageL = 0,
+      pageT = 0;
     const resize = () => {
       const r = cv.getBoundingClientRect();
-      dpr = Math.min(1.5, devicePixelRatio || 1);
+      pageL = r.left + scrollX;
+      pageT = r.top + scrollY;
+      dpr = Math.min(1.25, devicePixelRatio || 1);
       W = r.width;
       H = r.height;
       cv.width = Math.round(W * dpr);
@@ -91,14 +97,14 @@
       cell = Math.min((W / (2 * N * C)) * 1.02, (H * 0.92) / (N * S * 2 + 3.2));
       ox = W / 2;
       oy = H * 0.5 - N * cell * S + cell * 2.4;
+      prerender();
     };
 
     addEventListener(
       'pointermove',
       (e) => {
-        const r = cv.getBoundingClientRect();
-        const px = (e.clientX - r.left - ox) / (C * cell);
-        const py = (e.clientY - r.top - oy + cell * 0.8) / (S * cell);
+        const px = (e.clientX - (pageL - scrollX) - ox) / (C * cell);
+        const py = (e.clientY - (pageT - scrollY) - oy + cell * 0.8) / (S * cell);
         ti = (px + py) / 2 - 0.5;
         tj = (py - px) / 2 - 0.5;
         hoverT = ti > -3 && tj > -3 && ti < N + 3 && tj < N + 3 ? 1 : 0;
@@ -106,35 +112,103 @@
       { passive: true },
     );
 
+    // Pre-drawn pillars. Every pillar has the same footprint, so its look depends only on its height (quantised to
+    // 1/HQ of a cell, about a pixel) and whether it is flashing. Each variant is drawn once into a small canvas and
+    // then copied with drawImage, instead of filling and stroking three shapes per pillar on every frame.
+    const HQ = 32;
+    type Sprite = { img: HTMLCanvasElement; ax: number; ay: number };
+    let sprites = new Map<number, Sprite>();
+    let floor: HTMLCanvasElement | null = null;
+    const sprite = (q: number, spark: boolean): Sprite => {
+      const key = q * 2 + (spark ? 1 : 0);
+      const hit = sprites.get(key);
+      if (hit) return hit;
+      const h = q / HQ;
+      const cs = C * cell * dpr,
+        ss = S * cell * dpr,
+        z = h * cell * dpr,
+        pad = 2;
+      const hw = (1 - 2 * G) * cs;
+      const minY = 2 * G * ss - z,
+        maxY = 2 * (1 - G) * ss;
+      const img = document.createElement('canvas');
+      img.width = Math.ceil(hw * 2 + pad * 2);
+      img.height = Math.ceil(maxY - minY + pad * 2);
+      const g = img.getContext('2d')!;
+      const ax = hw + pad,
+        ay = -minY + pad; // where the cell origin sits inside the sprite
+      g.translate(ax, ay);
+      g.lineWidth = dpr;
+      g.lineJoin = 'round';
+      const lv = Math.max(0, Math.min(LV - 1, Math.round(((h - 1.5) / 1.9) * (LV - 1))));
+      g.strokeStyle = spark ? EDGE[LV - 1] : EDGE[lv];
+      const A = [0, 2 * G * ss],
+        B = [hw, ss],
+        Cc = [0, 2 * (1 - G) * ss],
+        D = [-hw, ss];
+      const face = (pts: number[][], fill: string) => {
+        g.beginPath();
+        g.moveTo(pts[0][0], pts[0][1]);
+        for (let n = 1; n < pts.length; n++) g.lineTo(pts[n][0], pts[n][1]);
+        g.closePath();
+        g.fillStyle = fill;
+        g.fill();
+        g.stroke();
+      };
+      face([[B[0], B[1] - z], [Cc[0], Cc[1] - z], Cc, B], RIGHT);
+      face([[D[0], D[1] - z], [Cc[0], Cc[1] - z], Cc, D], LEFT);
+      face([[A[0], A[1] - z], [B[0], B[1] - z], [Cc[0], Cc[1] - z], [D[0], D[1] - z]], spark ? SPARK : TOP[lv]);
+      const out = { img, ax: Math.round(ax), ay: Math.round(ay) };
+      sprites.set(key, out);
+      return out;
+    };
+    const prerender = () => {
+      sprites = new Map();
+      floor = document.createElement('canvas');
+      floor.width = cv.width;
+      floor.height = cv.height;
+      const g = floor.getContext('2d')!;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.lineWidth = 1;
+      g.strokeStyle = 'rgba(0,0,0,0.06)';
+      const cs = C * cell,
+        ss = S * cell;
+      g.beginPath();
+      for (let k = -4; k <= N + 4; k++) {
+        g.moveTo(ox + (k + 4) * cs, oy + (k - 4) * ss);
+        g.lineTo(ox + (k - N - 4) * cs, oy + (k + N + 4) * ss);
+        g.moveTo(ox + (-4 - k) * cs, oy + (k - 4) * ss);
+        g.lineTo(ox + (N + 4 - k) * cs, oy + (k + N + 4) * ss);
+      }
+      g.stroke();
+    };
+
     const t0 = performance.now();
     let running = true;
     let raf = 0;
+    let last = t0;
+    // frame-rate independent easing: the same feel at 60 Hz and 120 Hz
+    const ease = (k: number, dt: number) => 1 - Math.pow(1 - k, dt * 60);
 
     const frame = (now: number) => {
+      const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
+      last = now;
       const t = ((now - t0) / 1000) * 1.15;
       const intro = reduced ? 1 : Math.min(1, (now - t0) / 1800);
-      mi += (ti - mi) * 0.14;
-      mj += (tj - mj) * 0.14;
-      hover += (hoverT - hover) * 0.06;
+      mi += (ti - mi) * ease(0.14, dt);
+      mj += (tj - mj) * ease(0.14, dt);
+      hover += (hoverT - hover) * ease(0.06, dt);
 
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, W, H);
-      ctx.lineWidth = 1;
-      ctx.lineJoin = 'round';
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, cv.width, cv.height);
       const cs = C * cell;
       const ss = S * cell;
 
-      // floor grid
-      ctx.globalAlpha = intro;
-      ctx.strokeStyle = 'rgba(0,0,0,0.06)';
-      ctx.beginPath();
-      for (let k = -4; k <= N + 4; k++) {
-        ctx.moveTo(ox + (k + 4) * cs, oy + (k - 4) * ss);
-        ctx.lineTo(ox + (k - N - 4) * cs, oy + (k + N + 4) * ss);
-        ctx.moveTo(ox + (-4 - k) * cs, oy + (k - 4) * ss);
-        ctx.lineTo(ox + (N + 4 - k) * cs, oy + (k + N + 4) * ss);
+      // floor grid: drawn once per size, copied each frame
+      if (floor) {
+        ctx.globalAlpha = intro;
+        ctx.drawImage(floor, 0, 0);
       }
-      ctx.stroke();
 
       for (const c of cells) {
         const { i, j, d } = c;
@@ -149,67 +223,22 @@
         h = Math.max(0.15, h) * (k * k * (3 - 2 * k));
         if (h <= 0.01) continue;
 
-        const lv = Math.max(0, Math.min(LV - 1, Math.round(((h - 1.5) / 1.9) * (LV - 1))));
-        let top = TOP[lv];
-        let edge = EDGE[lv];
+        let spark = false;
         if (c.spark >= 0) {
           const sp = sparkAt.get(c.spark)!;
-          if (((t + sp.p) % sp.d) / sp.d < 0.2) {
-            top = SPARK;
-            edge = EDGE[LV - 1];
-          }
+          spark = ((t + sp.p) % sp.d) / sp.d < 0.2;
         }
-
-        // pillar corners on screen (world x/y in cells, z = height in px)
-        const x0 = i + G,
-          x1 = i + 1 - G,
-          y0 = j + G,
-          y1 = j + 1 - G;
-        const z = h * cell;
-        const Ax = ox + (x0 - y0) * cs,
-          Ay = oy + (x0 + y0) * ss;
-        const Bx = ox + (x1 - y0) * cs,
-          By = oy + (x1 + y0) * ss;
-        const Cx = ox + (x1 - y1) * cs,
-          Cy = oy + (x1 + y1) * ss;
-        const Dx = ox + (x0 - y1) * cs,
-          Dy = oy + (x0 + y1) * ss;
-
+        const q = Math.round(h * HQ);
+        const spr = sprite(q, spark);
         ctx.globalAlpha = c.fade * intro;
-        ctx.strokeStyle = edge;
-        ctx.beginPath();
-        ctx.moveTo(Bx, By - z);
-        ctx.lineTo(Cx, Cy - z);
-        ctx.lineTo(Cx, Cy);
-        ctx.lineTo(Bx, By);
-        ctx.closePath();
-        ctx.fillStyle = RIGHT;
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(Dx, Dy - z);
-        ctx.lineTo(Cx, Cy - z);
-        ctx.lineTo(Cx, Cy);
-        ctx.lineTo(Dx, Dy);
-        ctx.closePath();
-        ctx.fillStyle = LEFT;
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(Ax, Ay - z);
-        ctx.lineTo(Bx, By - z);
-        ctx.lineTo(Cx, Cy - z);
-        ctx.lineTo(Dx, Dy - z);
-        ctx.closePath();
-        ctx.fillStyle = top;
-        ctx.fill();
-        ctx.stroke();
+        ctx.drawImage(spr.img, Math.round((ox + (i - j) * cs) * dpr) - spr.ax, Math.round((oy + (i + j) * ss) * dpr) - spr.ay);
       }
       ctx.globalAlpha = 1;
       if (running && !reduced) raf = requestAnimationFrame(frame);
     };
 
     resize();
+    addEventListener('load', resize);
     new ResizeObserver(() => {
       resize();
       if (reduced) frame(t0 + 10000);
@@ -221,7 +250,10 @@
       new IntersectionObserver(([e]) => {
         const was = running;
         running = e.isIntersecting;
-        if (running && !was) raf = requestAnimationFrame(frame);
+        if (running && !was) {
+          last = performance.now();
+          raf = requestAnimationFrame(frame);
+        }
         if (!running) cancelAnimationFrame(raf);
       }).observe(cv);
       raf = requestAnimationFrame(frame);

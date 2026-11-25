@@ -1,12 +1,26 @@
 ---
-// Homepage behaviour: nav state and mobile menu, scroll reveals, word-split headings, isometric scenes that
+// Homepage behaviour: smooth scrolling (Lenis), nav state and mobile menu, scroll reveals, word-split headings, isometric scenes that
 // assemble on entry, card hover tilt, the "Our view" words lighting up with scroll, the process rail, the giant
 // footer wordmark drawing itself, the nav matching the band beneath it, copy-email and the form.
 ---
 
 <script>
+  import Lenis from 'lenis';
+  import 'lenis/dist/lenis.css';
+
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
+
+  // smooth, eased wheel scrolling (touch keeps the device's native scrolling). Page anchors glide to their
+  // section, offset for the sticky nav. Skipped entirely for visitors who ask for reduced motion.
+  if (!reduced) {
+    new Lenis({
+      autoRaf: true,
+      lerp: 0.085,
+      smoothWheel: true,
+      anchors: { offset: -72 },
+    });
+  }
 
   // nav
   const nav = document.querySelector<HTMLElement>('[data-nav]');
@@ -46,51 +60,127 @@
   );
   document.querySelectorAll('[data-r], [data-split], [data-iso], [data-giant]').forEach((el) => io.observe(el));
 
-  // card tilt toward the cursor
-  if (!reduced && matchMedia('(hover: hover)').matches) {
+  // card tilt toward the cursor: one style write per frame, rect measured once on enter
+  if (!reduced && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const stale: (() => void)[] = [];
     document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((c) => {
-      c.addEventListener('pointermove', (e) => {
-        const r = c.getBoundingClientRect();
-        c.style.setProperty('--rx', `${(((e.clientY - r.top) / r.height - 0.5) * -3).toFixed(2)}deg`);
-        c.style.setProperty('--ry', `${(((e.clientX - r.left) / r.width - 0.5) * 3).toFixed(2)}deg`);
-        c.style.setProperty('--gx', `${e.clientX - r.left}px`);
-        c.style.setProperty('--gy', `${e.clientY - r.top}px`);
-      });
+      let r: DOMRect | null = null;
+      stale.push(() => (r = null));
+      let px = 0,
+        py = 0,
+        queued = false;
+      const apply = () => {
+        queued = false;
+        r ??= c.getBoundingClientRect();
+        c.style.setProperty('--rx', `${(((py - r.top) / r.height - 0.5) * -3).toFixed(2)}deg`);
+        c.style.setProperty('--ry', `${(((px - r.left) / r.width - 0.5) * 3).toFixed(2)}deg`);
+        c.style.setProperty('--gx', `${(px - r.left).toFixed(0)}px`);
+        c.style.setProperty('--gy', `${(py - r.top).toFixed(0)}px`);
+      };
+      c.addEventListener(
+        'pointermove',
+        (e) => {
+          px = e.clientX;
+          py = e.clientY;
+          if (!queued) {
+            queued = true;
+            requestAnimationFrame(apply);
+          }
+        },
+        { passive: true },
+      );
       c.addEventListener('pointerleave', () => {
+        r = null;
         c.style.setProperty('--rx', '0deg');
         c.style.setProperty('--ry', '0deg');
       });
     });
+    // card positions change when the page scrolls; measure again on the next move
+    addEventListener('scroll', () => stale.forEach((f) => f()), { passive: true });
   }
 
-  // scroll-driven: "Our view" words and the process rail
+  // looping illustrations only animate while on screen
+  const loopIO = new IntersectionObserver((entries) => {
+    for (const e of entries) e.target.classList.toggle('off', !e.isIntersecting);
+  });
+  document.querySelectorAll('.iso, .pillars, [data-loop]').forEach((el) => loopIO.observe(el));
+
+  // the nav takes the colour scheme of whatever band is underneath it (observer on a 1px line under the nav,
+  // instead of hit-testing on every scroll event)
+  if (nav) {
+    const under = new Set<Element>();
+    let navIO: IntersectionObserver | null = null;
+    const watch = () => {
+      navIO?.disconnect();
+      under.clear();
+      const y = nav.offsetHeight + 2;
+      navIO = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) e.isIntersecting ? under.add(e.target) : under.delete(e.target);
+          nav.classList.toggle('dk', under.size > 0);
+        },
+        { rootMargin: `-${y}px 0px -${Math.max(0, innerHeight - y - 1)}px 0px` },
+      );
+      document.querySelectorAll('.dk').forEach((el) => !nav.contains(el) && el !== nav && navIO!.observe(el));
+    };
+    watch();
+    let rt = 0;
+    addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = window.setTimeout(watch, 150);
+    });
+  }
+
+  // scroll-driven: nav state, "Our view" words and the process rail, at most once per frame
   const mfText = document.querySelector<HTMLElement>('[data-mf-text]');
   const mfWords = mfText ? [...mfText.querySelectorAll('span')] : [];
   const tl = document.querySelector<HTMLElement>('[data-tl]');
   const tlFill = document.querySelector<HTMLElement>('[data-tl-fill]');
   const tlItems = [...document.querySelectorAll<HTMLElement>('[data-tl-item]')];
-  const onScroll = () => {
+  let lastLit = -1,
+    lastP = -1,
+    ticking = false;
+  const near = (el: HTMLElement) => {
+    const r = el.getBoundingClientRect();
+    return r.bottom > -innerHeight && r.top < innerHeight * 2 ? r : null;
+  };
+  const update = () => {
+    ticking = false;
     nav?.classList.toggle('scrolled', scrollY > 24);
-    // the nav takes the colour scheme of whatever band is underneath it
-    if (nav) {
-      const under = document.elementsFromPoint(innerWidth / 2, nav.offsetHeight + 4).find((el) => !nav.contains(el));
-      nav.classList.toggle('dk', !!under?.closest('.dk'));
-    }
     if (mfText) {
-      const r = mfText.getBoundingClientRect();
-      const p = Math.max(0, Math.min(1, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
-      const n = reduced ? mfWords.length : Math.round(p * mfWords.length);
-      mfWords.forEach((w, i) => w.classList.toggle('lit', i < n));
+      const r = near(mfText);
+      if (r) {
+        const p = Math.max(0, Math.min(1, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
+        const n = reduced ? mfWords.length : Math.round(p * mfWords.length);
+        if (n !== lastLit) {
+          mfWords.forEach((w, i) => w.classList.toggle('lit', i < n));
+          lastLit = n;
+        }
+      }
     }
     if (tl && tlFill) {
-      const r = tl.getBoundingClientRect();
-      const p = reduced ? 1 : Math.max(0, Math.min(1, (innerHeight * 0.7 - r.top) / (r.height * 0.8)));
-      tlFill.style.setProperty("--p", p.toFixed(3));
-      tlItems.forEach((it, i) => it.classList.toggle('on', p >= i / tlItems.length + 0.02));
+      const r = near(tl);
+      if (r) {
+        const p = reduced ? 1 : Math.max(0, Math.min(1, (innerHeight * 0.7 - r.top) / (r.height * 0.8)));
+        if (Math.abs(p - lastP) > 0.002) {
+          tlFill.style.setProperty('--p', p.toFixed(3));
+          tlItems.forEach((it, i) => it.classList.toggle('on', p >= i / tlItems.length + 0.02));
+          lastP = p;
+        }
+      }
     }
   };
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    },
+    { passive: true },
+  );
+  update();
 
   // copy email
   document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) =>

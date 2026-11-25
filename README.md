@@ -43,7 +43,8 @@ Both pages end with the same footer: a centred contact section, a large wordmark
   - `src/components/site/Owl.astro`: the owl drawing used in the logo and footer.
   - `src/components/site/Logo.astro`: the logo. The default lockup has the owl perched on the N of ERGON; the
     `inline` version (owl beside the wordmark) is used in the navigation bar.
-  - `public/ergon-owl.svg`: the favicon (renamed from ergon-favicon.svg so browsers drop the cached old icon).
+  - `public/owl-icon.svg`: the favicon, the owl on its own (dark owl, light owl in dark mode). Give it a new file
+    name whenever it changes: browsers cache favicons by URL.
 - **Background:**
   - `src/components/site/Backdrop.astro`: dot grid, glows, stars, fireflies and shooting stars, plus the cursor
     spotlight on cards and the tilt on founder photos.

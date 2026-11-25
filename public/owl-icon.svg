@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80">
+  <!-- Ergon Labs favicon: the sitting owl on its own (no tile). Dark owl for light browser chrome; light owl when
+       the system is in dark mode, so it stays visible on either tab bar. Amber eyes in both. -->
+  <style>
+    .dk { fill: #1b1b1b; } .bd { fill: #2c2c2c; } .hd { fill: #363636; } .bl { fill: #ececec; }
+    .wh { fill: #fafafa; } .br { stroke: #101010; } .bk { fill: #c4c4c4; } .ch { stroke: #2c2c2c; }
+    @media (prefers-color-scheme: dark) {
+      .dk { fill: #9c9c9c; } .bd { fill: #b5b5b5; } .hd { fill: #c8c8c8; } .bl { fill: #f4f4f4; }
+      .wh { fill: #ffffff; } .br { stroke: #5e5e5e; } .bk { fill: #232323; } .ch { stroke: #b5b5b5; }
+    }
+  </style>
+  <path class="dk" d="M12 22 L13 3 L24 13 Z"/>
+  <path class="dk" d="M52 22 L51 3 L40 13 Z"/>
+  <ellipse class="bd" cx="32" cy="52" rx="21" ry="24"/>
+  <ellipse class="hd" cx="32" cy="28" rx="22" ry="19"/>
+  <path class="dk" d="M11 44 C8 56 11 68 19 74 C17 64 17 54 19 44 Z"/>
+  <path class="dk" d="M53 44 C56 56 53 68 45 74 C47 64 47 54 45 44 Z"/>
+  <ellipse class="bl" cx="32" cy="57" rx="13" ry="16"/>
+  <path class="ch" d="M24 50l2 2 2-2M30 50l2 2 2-2M36 50l2 2 2-2M23.5 56l2 2 2-2M29.5 56l2 2 2-2M35.5 56l2 2 2-2" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle class="wh" cx="22.5" cy="28" r="9"/>
+  <circle class="wh" cx="41.5" cy="28" r="9"/>
+  <circle cx="22.5" cy="28" r="5.6" fill="#f5a524"/>
+  <circle cx="41.5" cy="28" r="5.6" fill="#f5a524"/>
+  <circle cx="22.5" cy="28" r="2.9" fill="#141414"/>
+  <circle cx="41.5" cy="28" r="2.9" fill="#141414"/>
+  <path class="br" d="M13.5 18.5 Q22 16.5 30 21.5M50.5 18.5 Q42 16.5 34 21.5" fill="none" stroke-width="2.4" stroke-linecap="round"/>
+  <path class="bk" d="M29.5 33 L34.5 33 L32 39 Z"/>
+</svg>
