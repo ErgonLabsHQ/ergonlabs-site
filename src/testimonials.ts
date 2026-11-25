@@ -46,10 +46,10 @@ export const testimonials: Testimonial[] = [
   {
     quote:
       'They tested everything on our real invoices before it went anywhere near production, so the launch was boring in the best possible way.',
-    name: 'Nadia Haddad',
+    name: 'Lucía Moreno',
     role: 'Operations Lead',
     company: 'Halden',
-    photo: '/clients/nadia-haddad.webp',
+    photo: '/clients/lucia-moreno.webp',
   },
   {
     quote: "The people on the first call were the people who wrote the code. That doesn't happen often, and it showed.",
@@ -61,9 +61,9 @@ export const testimonials: Testimonial[] = [
   {
     quote:
       "Straight answers about what AI could and couldn't do for us, and a fixed price before we started. We'll be working with them again.",
-    name: 'Hannah Okafor',
+    name: 'Emma Novak',
     role: 'Director of Data',
     company: 'Cedar Health',
-    photo: '/clients/hannah-okafor.webp',
+    photo: '/clients/emma-novak.webp',
   },
 ];
