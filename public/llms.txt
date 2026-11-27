@@ -1,0 +1,36 @@
+# Ergon Labs
+
+> Ergon Labs is an AI engineering firm: an AI and engineering partner for scale-ups and enterprise products. Lead engineers and AI researchers with experience across US and European companies, building agents, custom models and the systems around them.
+
+We work as a senior extension of a client's team, designing, building and running AI in production. Every engagement starts with a free call and a written quote. Clients own the code, cloud and IP from the first commit, and see a working demo every week.
+
+## Pages
+
+- [Home](https://www.ergonlabs.studio/): services, process, engagement models, principles and FAQ
+- [Founders](https://www.ergonlabs.studio/founders): Muhammad Rizwan (co-founder, engineering) and Talha Asif (co-founder, AI research)
+- [Free AI audit](https://www.ergonlabs.studio/audit): send a product, repository or AI feature and a senior engineer shows what to fix, for free
+- [Start a project](https://www.ergonlabs.studio/intro): project enquiry form; an engineer replies within one working day
+- [Careers](https://www.ergonlabs.studio/careers): we work only with senior engineers and AI researchers
+
+## Services
+
+- AI and agents: agents, assistants and LLM features (RAG, voice AI, automation, evals, MCP), tested against real cases before anyone relies on them
+- Custom models and data: training, fine-tuning and serving models, plus the data pipelines underneath (PyTorch, vision, forecasting, vector databases, MLOps)
+- Product UI/UX: research, flows and designs for web, mobile and AI products
+- Full-stack product engineering: web apps, mobile apps, backends and APIs (Next.js, TypeScript, React Native, Node.js, Python, PostgreSQL)
+- Cloud, DevOps and security: infrastructure as code, automated deployments, monitoring and security reviews (AWS, GCP, Azure, Terraform, Kubernetes)
+- Rescue, audits and advice: stabilising fast-built and legacy systems, code and architecture audits, fractional CTO
+
+## Ways to work together
+
+- Sprint: a prototype, an MVP, an AI proof of concept (fixed price)
+- Build: a whole product
+- Embed: senior engineers joining a team that is short of senior people (billed monthly)
+- Advise: a decision you only get to make once
+
+## Contact
+
+- Email: ergonlabs.hq@gmail.com
+- LinkedIn: https://www.linkedin.com/company/ergonlabs-studio
+- X: https://x.com/ErgonLabsHQ
+- GitHub: https://github.com/ErgonLabsHQ

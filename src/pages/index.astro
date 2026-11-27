@@ -18,6 +18,25 @@ const spans = services.map(() => 2);
 const needs = ['AI agents', 'Custom models', 'Automation', 'Product design', 'Web or mobile app', 'Data platform', 'Audit or advice', 'Not sure yet'];
 
 // "Our view" statement (from the earlier Manifesto section)
+// structured data: the FAQ (so answer engines can quote it) and the service catalogue
+const origin = Astro.site?.origin ?? 'https://www.ergonlabs.studio';
+const schema = [
+  {
+    '@type': 'FAQPage',
+    '@id': `${origin}/#faq`,
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@type': 'OfferCatalog',
+    '@id': `${origin}/#services`,
+    name: 'AI and engineering services',
+    itemListElement: services.map((s) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: s.title, description: s.blurb, provider: { '@id': `${origin}/#organization` } },
+    })),
+  },
+];
+
 const mfHead = 'Production AI is an engineering discipline.';
 const mfParts: [string, boolean][] = [
   ['It has to handle', false],
@@ -37,7 +56,11 @@ const pillars = [
 
 ---
 
-<Home title="Ergon Labs — AI and engineering partner for scale-ups and enterprise products">
+<Home
+  title="Ergon Labs — AI engineering partner for scale-ups and enterprise"
+  description="AI engineering firm building agents, custom models and production AI products. Senior engineers and AI researchers with US and European experience."
+  schema={schema}
+>
   <Nav />
 
   <main>

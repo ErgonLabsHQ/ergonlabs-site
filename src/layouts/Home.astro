@@ -1,6 +1,8 @@
 ---
 // Layout for the live homepage: Geist type, the home stylesheet, the custom cursor and the page behaviour
-// (reveals, split headings, scroll-driven sections, demo data, form).
+// (reveals, split headings, scroll-driven sections, demo data, form). Also carries the search and share metadata:
+// canonical URL, Open Graph / Twitter cards and JSON-LD (Organization + WebSite on every page, plus any
+// page-specific `schema` passed in).
 import { brand } from '../nuvareth';
 import Cursor from '../components/home/Cursor.astro';
 import Behaviour from '../components/home/Behaviour.astro';
@@ -9,8 +11,56 @@ import '../styles/home.css';
 interface Props {
   title?: string;
   description?: string;
+  /** extra JSON-LD nodes for this page (FAQPage, Person, ...) */
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
 }
-const { title = `${brand.name} — ${brand.headline}`, description = brand.intro } = Astro.props;
+const { title = `${brand.name} — ${brand.headline}`, description = brand.intro, schema = [], noindex = false } = Astro.props;
+
+const origin = Astro.site?.origin ?? 'https://www.ergonlabs.studio';
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', origin).href;
+const ogImage = `${origin}/og.png`;
+
+const orgId = `${origin}/#organization`;
+const graph = [
+  {
+    '@type': 'ProfessionalService',
+    '@id': orgId,
+    name: brand.name,
+    url: `${origin}/`,
+    logo: `${origin}/owl-logo.png`,
+    image: ogImage,
+    description: brand.intro,
+    email: brand.email,
+    slogan: 'An AI and engineering partner for scale-ups and enterprise products.',
+    knowsAbout: [
+      'AI agents',
+      'Large language models',
+      'Retrieval-augmented generation',
+      'LLM evaluation',
+      'Model fine-tuning',
+      'Machine learning operations',
+      'Full-stack product engineering',
+      'Product UI/UX design',
+      'Cloud infrastructure and DevOps',
+      'Code and architecture audits',
+    ],
+    founder: [
+      { '@type': 'Person', '@id': `${origin}/founders#rizwan`, name: 'Muhammad Rizwan' },
+      { '@type': 'Person', '@id': `${origin}/founders#talha`, name: 'Talha Asif' },
+    ],
+    sameAs: ['https://www.linkedin.com/company/ergonlabs-studio', 'https://x.com/ErgonLabsHQ', 'https://github.com/ErgonLabsHQ'],
+  },
+  {
+    '@type': 'WebSite',
+    '@id': `${origin}/#website`,
+    url: `${origin}/`,
+    name: brand.name,
+    publisher: { '@id': orgId },
+  },
+  ...schema,
+];
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -20,14 +70,30 @@ const { title = `${brand.name} — ${brand.headline}`, description = brand.intro
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={canonical} />}
     <meta name="theme-color" content="#efefef" />
+    <meta property="og:site_name" content={brand.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${brand.name}: an AI and engineering partner for scale-ups and enterprise products`} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@ErgonLabsHQ" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="icon" type="image/svg+xml" href="/owl-icon.svg" />
+    <link rel="apple-touch-icon" href="/owl-logo.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script type="application/ld+json" set:html={jsonLd} is:inline />
   </head>
   <body class="home" id="top">
     <slot />

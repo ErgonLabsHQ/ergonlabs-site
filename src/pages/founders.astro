@@ -7,9 +7,23 @@ import Footer from '../components/home/Footer.astro';
 import Btn from '../components/home/Btn.astro';
 import { brand, founders } from '../nuvareth';
 import '../styles/founders.css';
+
+const origin = Astro.site?.origin ?? 'https://www.ergonlabs.studio';
+const schema = founders.map((f) => ({
+  '@type': 'Person',
+  '@id': `${origin}/founders#${f.id}`,
+  name: f.name,
+  jobTitle: f.role.replace(' · ', ', '),
+  description: f.lead,
+  image: `${origin}${f.photo}`,
+  url: `${origin}/founders#${f.id}`,
+  worksFor: { '@id': `${origin}/#organization` },
+  knowsAbout: f.stack,
+  sameAs: f.links.map((l) => l.href),
+}));
 ---
 
-<Home title={`Founders — ${brand.name}`} description="Meet the founders of Ergon Labs, an AI engineering firm.">
+<Home title={`Founders — ${brand.name}`} description="Meet Muhammad Rizwan and Talha Asif, the engineer and AI researcher who founded Ergon Labs, an AI engineering firm." schema={schema}>
   <Nav current="/founders" />
 
   <main>

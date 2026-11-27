@@ -8,9 +8,22 @@ import Btn from '../components/home/Btn.astro';
 import OwlMark from '../components/home/OwlMark.astro';
 import { brand } from '../nuvareth';
 import '../styles/apply.css';
+
+const origin = Astro.site?.origin ?? 'https://www.ergonlabs.studio';
+const schema = [
+  {
+    '@type': 'Service',
+    '@id': `${origin}/audit#service`,
+    name: 'Free AI and product audit',
+    serviceType: 'Code, architecture and AI feature audit',
+    description: 'Send us your product, repository or AI feature and a senior engineer will show you what to fix, for free.',
+    provider: { '@id': `${origin}/#organization` },
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+];
 ---
 
-<Home title={`Free AI audit — ${brand.name}`} description="Send us your product, repository or AI feature and a senior engineer will show you what to fix, for free.">
+<Home title={`Free AI audit — ${brand.name}`} description="Send us your product, repository or AI feature and a senior engineer will show you what to fix, for free." schema={schema}>
   <Nav current="/audit" banner={false} />
 
   <main>

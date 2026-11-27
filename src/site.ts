@@ -9,7 +9,7 @@ export const site = {
   bookingUrl: '', // optional: Cal.com / Calendly link. When set, the main buttons point to it.
   location: 'Prague',
   socials: [
-    { label: 'LinkedIn', href: '#' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/ergonlabs-studio' },
     { label: 'X', href: 'https://x.com/ErgonLabsHQ' },
   ],
 };
