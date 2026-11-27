@@ -1,0 +1,81 @@
+---
+// The Lab index: everything we publish to explain or test something. The newest piece is shown large,
+// the rest in a three-column grid. Pieces are listed in src/lab/pieces.ts.
+import Home from '../../layouts/Home.astro';
+import Nav from '../../components/home/Nav.astro';
+import Footer from '../../components/home/Footer.astro';
+import Closing from '../../components/home/Closing.astro';
+import { pieces, fmtDate } from '../../lab/pieces';
+import '../../styles/lab-index.css';
+
+const [lead, ...rest] = pieces;
+---
+
+<Home title="Lab — Ergon Labs" description="Interactive explanations, studies and notes from Ergon Labs on how AI systems behave in real products.">
+  <Nav current="/lab" />
+
+  <main>
+    <section class="sec lab-ix">
+      <div class="wrap">
+        <div class="head rise" style="--w:0">
+          <h1>Lab</h1>
+          <p class="lede">How AI systems behave inside real products, shown with things you can run in your browser.</p>
+        </div>
+
+        {
+          lead && (
+            <a class="lab-lead rise" style="--w:1" href={lead.href}>
+              <div class="lab-pic dk">
+                <img src={lead.image} alt={lead.alt} width="1600" height="1040" />
+              </div>
+              <div class="lab-txt">
+                <p class="lab-meta">
+                  <span>{fmtDate(lead.date)}</span>
+                  <span>{lead.topic}</span>
+                  <span>{lead.kind}</span>
+                  <span>{lead.minutes} min</span>
+                </p>
+                <h2>{lead.title}</h2>
+                <p class="lab-blurb">{lead.blurb}</p>
+                <span class="lab-more">
+                  Open it
+                  <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.75 9h9M9 14.25 14.25 9 9 3.75" /></svg>
+                </span>
+              </div>
+            </a>
+          )
+        }
+
+        {
+          rest.length > 0 && (
+            <div class="lab-grid">
+              {rest.map((p) => (
+                <a class="lab-card" href={p.href}>
+                  <div class="lab-pic dk">
+                    <img src={p.image} alt={p.alt} loading="lazy" />
+                  </div>
+                  <div class="lab-txt">
+                    <p class="lab-meta">
+                      <span>{fmtDate(p.date)}</span>
+                      <span>{p.topic}</span>
+                      <span>{p.minutes} min</span>
+                    </p>
+                    <h2>{p.title}</h2>
+                    <span class="lab-more">
+                      Open it
+                      <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3.75 9h9M9 14.25 14.25 9 9 3.75" /></svg>
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <Closing />
+  </main>
+
+  <Footer />
+</Home>

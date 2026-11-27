@@ -1,0 +1,241 @@
+---
+// Lab piece: "Why the AI forgot what you said". A scroll-driven isometric scene that shows how a context
+// window fills up and what the app around a model does about it, followed by a sandbox the visitor can drive.
+// Scene code: src/lab/desk (convo.ts = the conversation model, engine.ts = the drawing, page.ts = this page).
+// `?film` hides the page furniture so the same scene can be captured for video.
+import Home from '../../layouts/Home.astro';
+import Nav from '../../components/home/Nav.astro';
+import Footer from '../../components/home/Footer.astro';
+import Closing from '../../components/home/Closing.astro';
+import '../../styles/lab.css';
+
+const steps = [
+  {
+    chip: 'Tokens',
+    h: 'A message arrives as tokens.',
+    p: [
+      'Before a model sees text, the text is cut into tokens: short words, pieces of longer words, punctuation. In English a token is about four characters.',
+      'This message is 20 tokens. Three of them matter more than the rest.',
+    ],
+  },
+  {
+    chip: 'Every turn',
+    h: 'Each turn, everything is sent again.',
+    p: [
+      'A model keeps nothing between turns. To get a reply, the app sends the whole conversation so far, and the model reads it from the first token.',
+      'A longer chat means more to read, and more to pay for, on every single turn.',
+    ],
+  },
+  {
+    chip: 'The window',
+    h: 'There is a limit to what fits.',
+    p: [
+      'One request can only hold so many tokens. That limit is the context window.',
+      'Ours holds 108 so you can watch it fill. Real ones hold from about 100,000 to over a million, and long chats, large documents and agents that work for hours fill those too.',
+    ],
+  },
+  {
+    chip: 'Overflow',
+    h: 'Something has to go.',
+    p: [
+      'The next message does not fit. The model will not make room: a request that is too long is refused.',
+      'So the app decides what to leave out, and the usual choice is the oldest turn. Here, that was the one about peanuts.',
+    ],
+  },
+  {
+    chip: 'The result',
+    h: 'Your screen still shows it. The model never got it.',
+    p: [
+      'A few turns later you ask for dinner. The message about your allergy is still there when you scroll up, but it was not in what the model was sent.',
+      'It did not forget. It answered from what it had.',
+    ],
+  },
+  {
+    chip: 'Pin',
+    h: 'Keep what matters at the front.',
+    p: [
+      'The app writes the important facts into a short note and sends it at the start of every request. A pinned note never falls out.',
+      'It costs its tokens on every turn, so it has to stay short.',
+    ],
+  },
+  {
+    chip: 'Summarise',
+    h: 'Fold old turns into a summary.',
+    p: [
+      'Before old turns are dropped, a model writes a short summary of them and the summary takes their place. Here they shrink to about a fifth of their size.',
+      'It works only if the summary keeps the right details, so someone has to test that it does.',
+    ],
+  },
+  {
+    chip: 'Retrieve',
+    h: 'Store old turns and fetch them back.',
+    p: [
+      'Dropped turns go to a store outside the window. On each new question the app searches the store and puts the related turns back.',
+      'Asking about dinner brings the allergy back. Everything now depends on the search finding the right turn.',
+    ],
+  },
+];
+
+const left = [
+  {
+    h: 'The real numbers are far bigger',
+    p: 'A window of 108 tokens fills in nine messages. A window of a million takes much longer, and the same thing happens when it does.',
+  },
+  {
+    h: 'Tokens here are approximate',
+    p: 'Every model has its own tokeniser. Ours splits on words and punctuation, which lands near the usual four characters per token in English.',
+  },
+  {
+    h: 'A full window is not read evenly',
+    p: 'Models recall details from the middle of a very long context less reliably than from its start or end (Liu et al., 2023, "Lost in the Middle"). Fitting is not the same as being used.',
+  },
+  {
+    h: 'What gets dropped is a product decision',
+    p: 'Some apps drop the oldest turns, some summarise, some end the chat. If you are building one, this choice is yours and it should be tested.',
+  },
+];
+---
+
+<Home
+  title="Why the AI forgot what you said — Ergon Labs"
+  description="An interactive explanation of the context window: how a chat fills it, what gets dropped, and the three ways apps keep the important parts."
+>
+  <Nav current="/lab" banner={false} />
+
+  <main class="cw-main">
+    <section class="cw dk" data-cw>
+      <div class="cw-stage" data-stage>
+        <canvas class="cw-canvas" data-canvas aria-hidden="true"></canvas>
+
+        <div class="cw-meter" data-meter>
+          <span class="cw-meter-l">Tokens sent</span>
+          <span class="cw-meter-n"><b data-used>14</b> / <span data-cap>108</span></span>
+          <i class="cw-meter-bar"><i data-bar></i></i>
+        </div>
+
+        <ul class="cw-legend" aria-hidden="true">
+          <li><i class="t-user"></i>You</li>
+          <li><i class="t-ai"></i>Assistant</li>
+          <li><i class="t-system"></i>Instructions</li>
+          <li><i class="t-fact"></i>The allergy</li>
+        </ul>
+
+        <p class="cw-strip" data-strip aria-hidden="true"></p>
+        <div class="cw-bubble" data-bubble hidden><p data-bubble-text></p><span data-bubble-note></span></div>
+        <div class="cw-tag" data-tag hidden></div>
+        <div class="cw-tip" data-tip hidden></div>
+        <!-- film capture only (?film): the line being spoken -->
+        <div class="cw-cap" data-cap aria-hidden="true">
+          <span class="chip" data-cap-chip hidden></span>
+          <p class="cw-cap-h" data-cap-h></p>
+          <p class="cw-cap-sub" data-cap-sub hidden></p>
+        </div>
+      </div>
+
+      <div class="cw-steps">
+        <article class="cw-step cw-first" data-step>
+          <div class="cw-card">
+            <a class="chip" href="/lab">Ergon Labs</a>
+            <h1>Why the AI forgot what you said.</h1>
+            <p class="lede">
+              A model does not remember a conversation. It reads what it is sent, and there is a limit to how much
+              that can be. Scroll to watch one chat run into that limit.
+            </p>
+            <p class="cw-hint"><span></span>Scroll, or <a href="#sandbox">go to the sandbox</a></p>
+          </div>
+        </article>
+        {
+          steps.map((s) => (
+            <article class="cw-step" data-step>
+              <div class="cw-card">
+                <span class="chip">{s.chip}</span>
+                <h2>{s.h}</h2>
+                {s.p.map((t) => <p>{t}</p>)}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="cw-box dk" id="sandbox" data-sandbox>
+      <div class="wrap">
+        <div class="cw-box-head">
+          <h2>Now run it yourself.</h2>
+          <p class="lede">
+            Same chat, your settings. Shrink the window, pick what the app does when it fills, and ask about dinner.
+            Hover any tile to read its token.
+          </p>
+        </div>
+
+        <div class="cw-controls">
+          <label class="cw-range">
+            <span>Window size <b data-sb-cap-out>108</b> tokens</span>
+            <input type="range" min="60" max="180" step="6" value="108" data-sb-cap />
+          </label>
+          <div class="cw-modes" role="radiogroup" aria-label="When the window is full">
+            <span>When it is full</span>
+            <button type="button" role="radio" aria-checked="true" data-sb-mode="drop">Drop the oldest</button>
+            <button type="button" role="radio" aria-checked="false" data-sb-mode="pin">Pin a note</button>
+            <button type="button" role="radio" aria-checked="false" data-sb-mode="sum">Summarise</button>
+            <button type="button" role="radio" aria-checked="false" data-sb-mode="store">Store and fetch</button>
+          </div>
+          <button type="button" class="cw-reset" data-sb-reset>Start over</button>
+        </div>
+
+        <div class="cw-lab">
+          <div class="cw-chat">
+            <ol class="cw-log" data-sb-log aria-live="polite"></ol>
+            <div class="cw-quick">
+              <button type="button" data-sb-say="Can you book dinner for our last night?">Ask for dinner</button>
+              <button type="button" data-sb-say="What am I allergic to?">Ask about the allergy</button>
+              <button type="button" data-sb-chat>Add small talk</button>
+            </div>
+            <form class="cw-send" data-sb-form>
+              <input name="q" autocomplete="off" placeholder="Type a message" aria-label="Your message" maxlength="160" />
+              <button type="submit">Send</button>
+            </form>
+          </div>
+          <div class="cw-stage cw-stage-box" data-sb-stage>
+            <canvas class="cw-canvas" data-sb-canvas aria-hidden="true"></canvas>
+            <div class="cw-meter">
+              <span class="cw-meter-l">Tokens sent</span>
+              <span class="cw-meter-n"><b data-sb-used>0</b> / <span data-sb-capn>108</span></span>
+              <i class="cw-meter-bar"><i data-sb-bar></i></i>
+            </div>
+            <div class="cw-bubble" data-sb-bubble hidden><p data-sb-bubble-text></p></div>
+            <div class="cw-tip" data-sb-tip hidden></div>
+          </div>
+        </div>
+        <p class="cw-fine">No language model runs on this page. The replies are scripted and depend only on whether the allergy is in the window, which is the point.</p>
+      </div>
+    </section>
+
+    <section class="sec alt cw-left">
+      <div class="wrap">
+        <div class="head">
+          <h2>What this picture leaves out</h2>
+          <p class="lede">A simple model of a real mechanism. These are the parts we flattened.</p>
+        </div>
+        <div class="cw-notes">
+          {
+            left.map((n) => (
+              <div class="card">
+                <h3>{n.h}</h3>
+                <p>{n.p}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <Closing />
+  </main>
+
+  <Footer />
+</Home>
+
+<script>
+  import '../../lab/desk/page.ts';
+</script>

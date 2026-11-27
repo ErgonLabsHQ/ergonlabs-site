@@ -1,0 +1,55 @@
+---
+// Closing section for the Lab pages: a large line, the pillar field from the homepage hero, then the way in.
+// HeroField draws on a single canvas, so use this once per page and not on the homepage.
+import Btn from './Btn.astro';
+import HeroField from './HeroField.astro';
+
+interface Props {
+  line?: string;
+}
+const { line = 'Bring us the hard part.' } = Astro.props;
+---
+
+<section class="closing">
+  <div class="wrap">
+    <h2 data-r>{line}</h2>
+  </div>
+  <HeroField />
+  <div class="closing-cta">
+    <Btn href="/intro" label="Start a project" />
+    <Btn href="/#services" label="See our services" variant="secondary" />
+  </div>
+</section>
+
+<style>
+  .closing {
+    padding: 72px 0 110px;
+    text-align: center;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .closing h2 {
+    font-size: clamp(38px, 5.2vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    margin-bottom: 8px;
+  }
+  .closing-cta {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: -36px;
+  }
+  @media (max-width: 899px) {
+    .closing {
+      padding: 48px 0 72px;
+    }
+    .closing-cta {
+      margin-top: 12px;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
